@@ -1,101 +1,32 @@
+var http = require('http'),
+    path = require('path'),
+    read = require('fs').readFileSync;
+
 import express from 'express';
+import React from 'react';
+import jsx from 'react-jsx';
 
-let querystring = require('querystring')
-let admin = require("firebase-admin")
-let request = require('request')
-let config = require('./config.json')
-
-// TODO: Use promise to pipe requests
-// TODO: Set up rules on FB
-// TODO: Make `state` parameter a HMAC signature so we can verify integrity
-
-admin.initializeApp({
-  credential: admin.credential.cert(require(config.firebase.creds)),
-  databaseURL: config.firebase.url
-})
-
-let app = express()
-let db = admin.database()
+import {app, config} from './init.js'
+import * as auth from './auth.js'
 
 
-app.get("/auth", function (req, res) {
-    let q = querystring.stringify({
-        response_type: 'code',
-        client_id: config.linkedIn.clientId,
-        client_secret: config.linkedIn.clientSecret,
-        redirect_uri: config.linkedIn.redirectUri,
-        state: new Date().getTime()
-    })
+app.use('/css', express.static('../public-site/public/css'))
+app.use('/font-awesome', express.static('../public-site/public/font-awesome'))
+app.use('/fonts', express.static('../public-site/public/fonts'))
+app.use('/img', express.static('../public-site/public/img'))
+app.use('/js', express.static('../public-site/public/js'))
 
-    let linkedInURL = "https://www.linkedin.com/oauth/v2/authorization?"
-    res.redirect(303, linkedInURL + q)
-})
 
-app.get("/auth/callback", function (req, res) {
-    let code = req.query.code
-    // let state := req.params.state
-    retrieveAccessToken(res, code)
-})
+app.get('/', function (req, res) {
+    var templates = {
+      index: jsx.server(read(path.join(__dirname, '../public-site/public/index.jsx'), 'utf-8'), {raw: true}),
+    };
 
-function retrieveAccessToken(res, code) {
-    let reqOptions = {
-        url: 'https://www.linkedin.com/oauth/v2/accessToken',
-        headers: {
-            'Content-Type': "application/x-www-form-urlencoded"
-        },
-        form: {
-            grant_type: 'authorization_code',
-            code: code,
-            client_id: config.linkedIn.clientId,
-            client_secret: config.linkedIn.clientSecret,
-            redirect_uri: config.linkedIn.redirectUri
-        },
-        json: true
-    }
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/html');
 
-    request.post(reqOptions, function(err, httpResponse, token) {
-        if (err != undefined) {
-            res.send(500, err)
-            return
-        }
-
-        if (token.error) {
-            res.status(500).send(body.error_description)
-            return
-        }
-
-        // access_token
-        // expires_in
-        getUserId(res, token)
-    })
-}
-
-function getUserId(res, token) {
-    let reqOptions = {
-        url: 'https://api.linkedin.com/v1/people/~:(id,first-name,last-name)?format=json',
-        headers: {'Authorization': 'Bearer ' + token.access_token},
-        json: true
-    }
-
-    request.get(reqOptions, function(err, httpResponse, user) {
-        if (err != undefined) {
-            res.send(500, err)
-            return
-        }
-
-        let data = {}
-        data[user.id] = {token: token, user: user}
-        db.ref("/users").set(data)
-        res.send('Done!')
-    })
-}
-
-app.get("/auth/accept", function (req, res) {
-    res.send('Hello World!')
-})
-
-app.get("/auth/cancel", function (req, res) {
-    res.send('Hello World!')
+    let data = {}
+    res.end('<!DOCTYPE html>\n' + templates.index(data, {html: true}));
 })
 
 app.listen(config.web.port, config.web.host, function () {

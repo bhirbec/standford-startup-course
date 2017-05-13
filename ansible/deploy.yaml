@@ -1,0 +1,30 @@
+- hosts: all
+  vars:
+    project: letsresume
+    project_dir: /home/bhirbec/{{ project }}
+
+  tasks:
+    - name: Sync files
+      synchronize:
+        src: "../{{ item }}"
+        dest: "{{ project_dir }}"
+        recursive: yes
+        delete: yes
+      with_items:
+        - public
+        - secrets
+        - server
+
+    - name: Install packages based on package.json
+      npm:
+        path: "{{ project_dir }}/server"
+        state: present
+
+    - name: Copy upstart conf
+      template: src=upstart.conf dest=/etc/init/letsresume.conf
+      sudo: yes
+
+    - name: Restart web service
+      command: service letsresume restart
+      sudo: yes
+

@@ -1,0 +1,33 @@
+- hosts: all
+  sudo: yes
+
+  vars:
+    version: 1
+
+  tasks:
+    - name: Download APT packages
+      apt: name={{item}} update_cache=true
+      with_items:
+        # - build-essential
+        - curl
+
+    # # Node.js install
+    - name: Setup APT for Nodejs
+      shell: curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+
+    - name: Install Node.js
+      apt: pkg=nodejs
+
+    # - name: Restar MySQL
+    #   shell: service mysql start
+
+    # - name: Restart AppArmor
+    #   shell: service apparmor restart
+
+    # # TODO: we need db/init.sql but haven't cloned the repo yet
+    # - name: Setup database
+    #   shell: |
+    #     mysql -u root -e "
+    #       create user if not exists '{{ mysql_user }}' identified by '{{ mysql_user_pwd }}';
+    #       grant all privileges on {{ mysql_db }} . * to {{ mysql_user }};
+    #     "

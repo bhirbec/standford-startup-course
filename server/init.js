@@ -1,6 +1,16 @@
 import express from 'express'
 import * as admin from 'firebase-admin'
-import * as config from './config.json'
+import cmdArgs from 'command-line-args'
+
+
+let options = cmdArgs([{
+	name: 'config',
+	alias: 'c',
+	type: String,
+	defaultValue: '../secrets/config-dev.json'}
+])
+
+let config = require(options.config)
 
 // TODO: Set up rules on FB
 admin.initializeApp({

@@ -13,6 +13,7 @@
     "babel-preset-es2015": "^6.0.0"
   },
   "dependencies": {
+    "command-line-args": "^4.0.4",
     "express": "^4.15.2",
     "expressjs": "^1.0.1",
     "firebase-admin": "^4.2.1",

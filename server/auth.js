@@ -75,7 +75,7 @@ function getUserId(res, token) {
         let data = {}
         data[user.id] = {token: token, user: user}
         fb.ref("/users").set(data)
-        res.send('Done!')
+        res.send(JSON.stringify(user))
     })
 }
 

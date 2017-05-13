@@ -7,9 +7,9 @@
     <meta name="author" content="" />
     <title>Landing Page - Start Bootstrap Theme</title>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/landing-page.css?1" rel="stylesheet" />
-    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href={asset("/public/css/bootstrap.min.css")} rel="stylesheet" />
+    <link href={asset("/public/css/landing-page.css")} rel="stylesheet" />
+    <link href={asset("/public/font-awesome/css/font-awesome.min.css")} rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
 
     {/* HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries */}
@@ -89,7 +89,7 @@
                     <p className="lead">A special thanks to <a target="_blank" href="http://join.deathtothestockphoto.com/">Death to the Stock Photo</a> for providing the photographs that you see in this template. Visit their website to become a member.</p>
                 </div>
                 <div className="col-lg-5 col-lg-offset-2 col-sm-6">
-                    <img className="img-responsive" src="img/ipad.png" alt="" />
+                    <img className="img-responsive" src="/public/img/ipad.png" alt="" />
                 </div>
             </div>
         </div>
@@ -105,7 +105,7 @@
                     <p className="lead">Turn your 2D designs into high quality, 3D product shots in seconds using free Photoshop actions by <a target="_blank" href="http://www.psdcovers.com/">PSDCovers</a>! Visit their website to download some of their awesome, free photoshop actions!</p>
                 </div>
                 <div className="col-lg-5 col-sm-pull-6  col-sm-6">
-                    <img className="img-responsive" src="img/dog.png" alt="" />
+                    <img className="img-responsive" src="/public/img/dog.png" alt="" />
                 </div>
             </div>
         </div>
@@ -121,7 +121,7 @@
                     <p className="lead">This template features the 'Lato' font, part of the <a target="_blank" href="http://www.google.com/fonts">Google Web Font library</a>, as well as <a target="_blank" href="http://fontawesome.io">icons from Font Awesome</a>.</p>
                 </div>
                 <div className="col-lg-5 col-lg-offset-2 col-sm-6">
-                    <img className="img-responsive" src="img/phones.png" alt="" />
+                    <img className="img-responsive" src="/public/img/phones.png" alt="" />
                 </div>
             </div>
 
@@ -171,7 +171,7 @@
         </div>
     </footer>
 
-    <script src="js/jquery.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script src={asset("/public/js/jquery.js")}></script>
+    <script src={asset("/public/js/bootstrap.min.js")}></script>
 </body>
 </html>

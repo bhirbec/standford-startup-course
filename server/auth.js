@@ -1,13 +1,17 @@
 let querystring = require('querystring')
 let request = require('request')
 
-import {app, fb, config} from './init.js'
+import {fb, config} from './init.js'
 
 
 // TODO: Use promise to pipe requests
 // TODO: Make `state` parameter a HMAC signature so we can verify integrity
+module.exports = function (app) {
+    app.get("/auth", auth)
+    app.get("/auth/callback", callback)
+}
 
-app.get("/auth", function (req, res) {
+function auth(req, res) {
     let q = querystring.stringify({
         response_type: 'code',
         client_id: config.linkedIn.clientId,
@@ -18,13 +22,14 @@ app.get("/auth", function (req, res) {
 
     let linkedInURL = "https://www.linkedin.com/oauth/v2/authorization?"
     res.redirect(303, linkedInURL + q)
-})
+}
 
-app.get("/auth/callback", function (req, res) {
+function callback(req, res) {
     let code = req.query.code
     // let state := req.params.state
+    // req.secret = config.authCookie.secret
     retrieveAccessToken(res, code)
-})
+}
 
 function retrieveAccessToken(res, code) {
     let reqOptions = {
@@ -44,12 +49,12 @@ function retrieveAccessToken(res, code) {
 
     request.post(reqOptions, function(err, httpResponse, token) {
         if (err != undefined) {
-            res.send(500, err)
+            res.status(500).send('Post to linkedin failed: ' + err)
             return
         }
 
         if (token.error) {
-            res.status(500).send(body.error_description)
+            res.status(500).send('Cannot retrieve token: ' + token.error_description)
             return
         }
 
@@ -115,15 +120,28 @@ function getUserId(res, token) {
             return
         }
 
-        fb.ref('/users').child(data.id).set({token: token, user: data})
-        res.send(JSON.stringify(data))
+        let p = fb.ref('users').child(data.id).set({token: token, user: data})
+
+        p.then(function (err) {
+            if (err != undefined) {
+                console.log('Saving user to Firebase failed: ', err)
+                res.send(500, err)
+                return
+            }
+
+            let options = {
+                maxAge: 1000 * 60 * config.authCookie.maxAgeMinute,
+                httpOnly: true,
+                signed: true
+            }
+
+            res.cookie(config.authCookie.name, {id: data.id}, options)
+            res.redirect(303, '/me')
+        })
+
+        p.catch(function (error) {
+            console.log('Unexpected error with Firebase: ', error)
+            res.redirect(303, '/')
+        })
     })
 }
-
-app.get('/auth/accept', function (req, res) {
-    res.send('Hello World!')
-})
-
-app.get('/auth/cancel', function (req, res) {
-    res.send('Hello World!')
-})

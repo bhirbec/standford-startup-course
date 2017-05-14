@@ -1,4 +1,4 @@
-import express from 'express'
+import cookieParser from 'cookie-parser'
 import * as admin from 'firebase-admin'
 import cmdArgs from 'command-line-args'
 
@@ -18,7 +18,6 @@ admin.initializeApp({
   databaseURL: config.firebase.url
 })
 
-let app = express()
 let fb = admin.database()
 
-export {app, fb, config}
+export {fb, config}

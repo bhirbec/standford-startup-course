@@ -21,7 +21,7 @@ var templates = {
 let app = express()
 
 // cookie middleware (MUST be declared before the endpoints using it)
-app.use('*', cookieParser(config.authCookie.secret));
+app.use(cookieParser(config.authCookie.secret));
 
 // static asset
 app.use(staticAsset(path.join(__dirname,  "..")));
@@ -39,15 +39,15 @@ app.get('/', function (req, res) {
 
 app.get('/me', function (req, res) {
     let success = function (snap) {
-        res.send(200, JSON.stringify(snap.val()))
+        res.status(200).send(JSON.stringify(snap.val()))
     }
 
     let error = function (err) {
-        res.send(500, err)
+        res.status(500).send(err)
     }
 
     let id = req.signedCookies.auth.id
-    fb.ref('users').child('-MUbqjth8R').once('value', success, error)
+    fb.ref('users').child(id).once('value', success, error)
 })
 
 app.listen(config.web.port, config.web.host, function () {

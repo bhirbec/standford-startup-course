@@ -120,7 +120,7 @@ function getUserId(res, token) {
             return
         }
 
-        let p = fb.ref('users').child(data.id).set({token: token, user: data})
+        let p = fb.ref('oauth/linkedin').child(data.id).set({token: token, user: data})
 
         p.then(function (err) {
             if (err != undefined) {

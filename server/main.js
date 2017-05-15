@@ -34,7 +34,7 @@ app.get('/me', function (req, res) {
     }
 
     let id = req.signedCookies.auth.id
-    fb.ref('users').child(id).once('value', success, error)
+    fb.ref('oauth/linkedin').child(id).once('value', success, error)
 })
 
 app.listen(config.web.port, config.web.host, function () {

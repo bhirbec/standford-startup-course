@@ -1,22 +1,12 @@
-var http = require('http'),
-    path = require('path'),
-    read = require('fs').readFileSync;
-
+var path = require('path')
 import staticAsset from 'static-asset'
 
 import express from 'express'
 import cookieParser from 'cookie-parser'
 
-import React from 'react'
-import jsx from 'react-jsx'
-
-import {fb, config} from './init.js'
+import {fb, config, renderHTML} from './init.js'
 import auth from './auth.js'
 
-
-var templates = {
-  index: jsx.server(read(path.join(__dirname, '../app/index.jsx'), 'utf-8'), {raw: true}),
-};
 
 let app = express()
 
@@ -31,15 +21,12 @@ app.use('/public', express.static(path.join(__dirname, "../public/")));
 auth(app)
 
 app.get('/', function (req, res) {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/html');
-    let data = {asset: req.assetFingerprint}
-    res.end('<!DOCTYPE html>\n' + templates.index(data, {html: true}));
+    renderHTML(req, res, 'home', {})
 })
 
 app.get('/me', function (req, res) {
     let success = function (snap) {
-        res.status(200).send(JSON.stringify(snap.val()))
+        renderHTML(req, res, 'profile', snap.val().user)
     }
 
     let error = function (err) {

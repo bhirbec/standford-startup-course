@@ -1,56 +1,11 @@
-<html lang="en">
-<head>
-    <meta charSet="utf-8" />
-    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Landing Page - Start Bootstrap Theme</title>
-
-    <link href={asset("/public/css/bootstrap.min.css")} rel="stylesheet" />
-    <link href={asset("/public/css/landing-page.css")} rel="stylesheet" />
-    <link href={asset("/public/font-awesome/css/font-awesome.min.css")} rel="stylesheet" type="text/css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/5.1.1/bootstrap-social.css" rel="stylesheet" type="text/css" />
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
-
-    {/* HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries */}
-    {/* WARNING: Respond.js doesn't work if you view the page via file:// */}
-    <meta name="react-comment-hack" dangerouslySetInnerHTML={{__html: `
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->`}}>
-    </meta>
-</head>
-<body>
-    <nav className="navbar navbar-default navbar-fixed-top topnav" role="navigation">
-        <div className="container topnav">
-            <div className="navbar-header">
-                <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span className="sr-only">Toggle navigation</span>
-                    <span className="icon-bar"></span>
-                    <span className="icon-bar"></span>
-                    <span className="icon-bar"></span>
-                </button>
-                <a className="navbar-brand topnav" href="#">LETSRESUME</a>
-            </div>
-            <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul className="nav navbar-nav navbar-right">
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
+<div>
     <div className="intro-header">
         <div className="container">
             <div className="row">
                 <div className="col-lg-12">
                     <div className="intro-message">
-                        <h1>Resume built by the crowd!</h1>
-                        <h3>Use your network to create your one-page resume</h3>
+                        <h1>Never write your resume again!</h1>
+                        <h3>Resume built by the crowd.</h3>
                         <hr className="intro-divider" />
                         <ul className="list-inline intro-social-buttons">
                             <li>
@@ -65,7 +20,6 @@
             </div>
         </div>
     </div>
-
     <div className="content-section-a">
         <div className="container">
             <div className="row">
@@ -81,7 +35,6 @@
             </div>
         </div>
     </div>
-
     <div className="content-section-b">
         <div className="container">
             <div className="row">
@@ -97,7 +50,6 @@
             </div>
         </div>
     </div>
-
     <div className="content-section-a">
         <div className="container">
             <div className="row">
@@ -113,7 +65,6 @@
             </div>
         </div>
     </div>
-
     <div className="banner">
         <div className="container">
             <div className="row">
@@ -136,7 +87,6 @@
             </div>
         </div>
     </div>
-
     <footer>
         <div className="container">
             <div className="row">
@@ -155,8 +105,4 @@
             </div>
         </div>
     </footer>
-
-    <script src={asset("/public/js/jquery.js")}></script>
-    <script src={asset("/public/js/bootstrap.min.js")}></script>
-</body>
-</html>
+</div>

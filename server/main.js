@@ -15,7 +15,7 @@ import auth from './auth.js'
 
 
 var templates = {
-  index: jsx.server(read(path.join(__dirname, '../public/index.jsx'), 'utf-8'), {raw: true}),
+  index: jsx.server(read(path.join(__dirname, '../app/index.jsx'), 'utf-8'), {raw: true}),
 };
 
 let app = express()

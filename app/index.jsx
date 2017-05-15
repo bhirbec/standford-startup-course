@@ -44,7 +44,6 @@
         </div>
     </nav>
 
-    <a name="about"></a>
     <div className="intro-header">
         <div className="container">
             <div className="row">
@@ -67,7 +66,6 @@
         </div>
     </div>
 
-	<a  name="services"></a>
     <div className="content-section-a">
         <div className="container">
             <div className="row">
@@ -113,11 +111,9 @@
                     <img className="img-responsive" src="/public/img/phones.png" alt="" />
                 </div>
             </div>
-
         </div>
     </div>
 
-	<a  name="contact"></a>
     <div className="banner">
         <div className="container">
             <div className="row">

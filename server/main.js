@@ -24,17 +24,30 @@ app.get('/', function (req, res) {
     renderHTML(req, res, 'home', {})
 })
 
-app.get('/me', function (req, res) {
-    let success = function (snap) {
+// TODO: handle 404 when @handle does not exist
+// TODO: merge with /me
+app.get('/@*', function (req, res) {
+    let h = req.path.substring(2).split('/')[0]
+    let p = fb.ref('handle').child(h).once('value')
+
+    p.then(function (snap) {
+        return fb.ref('profile').child(snap.val()).once('value')
+    }).then(function (snap) {
         renderHTML(req, res, 'profile', snap.val())
-    }
-
-    let error = function (err) {
+    }).catch(function (err) {
         res.status(500).send(err)
-    }
+    })
+})
 
+app.get('/me', function (req, res) {
     let id = req.signedCookies.auth.id
-    fb.ref('profile').child(id).once('value', success, error)
+    let p = fb.ref('profile').child(id).once('value')
+
+    p.then(function (snap) {
+        renderHTML(req, res, 'profile', snap.val())
+    }).catch(function (err) {
+        res.status(500).send(err)
+    })
 })
 
 app.listen(config.web.port, config.web.host, function () {

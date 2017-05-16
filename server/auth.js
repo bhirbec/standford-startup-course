@@ -126,14 +126,14 @@ function getUserId(res, token) {
 
 function saveLinkedinData(token, data, res) {
     // TODO: open a transaction?
-    let p = fb.ref('oauth/linkedin').child(data.id).set({token: token})
+    let p = fb.ref('oauth/linkedin').child(data.id).set(token)
 
     p.then(function () {
         // TODO generate id to handle duplicate with other oauth provider?
         return fb.ref('profile').child(data.id).once('value')
     }).then(function (snap) {
         if (!snap.exists()) {
-            return fb.ref('profile').child(data.id).set(data)
+            return createProfile(data)
         } else {
             return null
         }
@@ -151,6 +151,15 @@ function saveLinkedinData(token, data, res) {
     })
 }
 
+function createProfile(data) {
+    let p = fb.ref('profile').child(data.id).set(data)
+    let h = createHandle(data)
+    // TODO: do not override handle if it already exist
+    p.then(() => fb.ref('handle').child(h).set(data.id))
+    return p
+}
+
 function createHandle(data) {
-    return data.firstName.substring(0, 1) + data.lastName
+    let h = data.firstName.substring(0, 1) + data.lastName
+    return h.toLowerCase()
 }

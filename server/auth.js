@@ -109,7 +109,7 @@ function getUserId(res, token) {
         json: true
     }
 
-    request.get(reqOptions, function(err, httpResponse, data) {
+    request.get(reqOptions, function (err, httpResponse, data) {
         if (err != undefined) {
             res.send(500, err)
             return
@@ -120,28 +120,37 @@ function getUserId(res, token) {
             return
         }
 
-        let p = fb.ref('oauth/linkedin').child(data.id).set({token: token, user: data})
-
-        p.then(function (err) {
-            if (err != undefined) {
-                console.log('Saving user to Firebase failed: ', err)
-                res.send(500, err)
-                return
-            }
-
-            let options = {
-                maxAge: 1000 * 60 * config.authCookie.maxAgeMinute,
-                httpOnly: true,
-                signed: true
-            }
-
-            res.cookie(config.authCookie.name, {id: data.id}, options)
-            res.redirect(303, '/me')
-        })
-
-        p.catch(function (error) {
-            console.log('Unexpected error with Firebase: ', error)
-            res.redirect(303, '/')
-        })
+        saveLinkedinData(token, data, res)
     })
+}
+
+function saveLinkedinData(token, data, res) {
+    // TODO: open a transaction?
+    let p = fb.ref('oauth/linkedin').child(data.id).set({token: token})
+
+    p.then(function () {
+        // TODO generate id to handle duplicate with other oauth provider?
+        return fb.ref('profile').child(data.id).once('value')
+    }).then(function (snap) {
+        if (!snap.exists()) {
+            return fb.ref('profile').child(data.id).set(data)
+        } else {
+            return null
+        }
+    }).then(function () {
+        res.cookie(config.authCookie.name, {id: data.id}, {
+            maxAge: 1000 * 60 * config.authCookie.maxAgeMinute,
+            httpOnly: true,
+            signed: true
+        })
+
+        res.redirect(303, '/me')
+    }).catch(function (err) {
+        console.log('Unexpected error with Firebase: ', err)
+        res.redirect(303, '/')
+    })
+}
+
+function createHandle(data) {
+    return data.firstName.substring(0, 1) + data.lastName
 }

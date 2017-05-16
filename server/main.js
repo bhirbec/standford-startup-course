@@ -26,7 +26,7 @@ app.get('/', function (req, res) {
 
 app.get('/me', function (req, res) {
     let success = function (snap) {
-        renderHTML(req, res, 'profile', snap.val().user)
+        renderHTML(req, res, 'profile', snap.val())
     }
 
     let error = function (err) {
@@ -34,7 +34,7 @@ app.get('/me', function (req, res) {
     }
 
     let id = req.signedCookies.auth.id
-    fb.ref('oauth/linkedin').child(id).once('value', success, error)
+    fb.ref('profile').child(id).once('value', success, error)
 })
 
 app.listen(config.web.port, config.web.host, function () {

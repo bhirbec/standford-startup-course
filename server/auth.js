@@ -144,7 +144,7 @@ function saveLinkedinData(token, data, res) {
             signed: true
         })
 
-        res.redirect(303, '/me')
+        res.redirect(303, '/thanks')
     }).catch(function (err) {
         console.log('Unexpected error with Firebase: ', err)
         res.redirect(303, '/')

@@ -4,7 +4,7 @@ import staticAsset from 'static-asset'
 import express from 'express'
 import cookieParser from 'cookie-parser'
 
-import {fb, config, renderHTML} from './init.js'
+import {fb, config, renderLayoutHTML, renderHTML} from './init.js'
 import auth from './auth.js'
 
 
@@ -21,7 +21,11 @@ app.use('/public', express.static(path.join(__dirname, "../public/")));
 auth(app)
 
 app.get('/', function (req, res) {
-    renderHTML(req, res, 'home', {})
+    renderHTML(req, res, 'home_simple', {})
+})
+
+app.get('/thanks', function (req, res) {
+    renderHTML(req, res, 'thanks', {})
 })
 
 // TODO: handle 404 when @handle does not exist

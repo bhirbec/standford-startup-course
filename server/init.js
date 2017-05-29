@@ -27,10 +27,10 @@ admin.initializeApp({
 let fb = admin.database()
 
 let templates = {
-  layout: jsx.server(read(path.join(__dirname, '../home/layout.jsx'), 'utf-8'), {raw: true}),
-  home: jsx.server(read(path.join(__dirname, '../home/home.jsx'), 'utf-8'), {raw: true}),
-  thanks: jsx.server(read(path.join(__dirname, '../home/thanks.jsx'), 'utf-8'), {raw: true}),
-  profile: jsx.server(read(path.join(__dirname, '../home/profile.jsx'), 'utf-8'), {raw: true}),
+  layout: jsx.server(read(path.join(__dirname, '../app/public/layout.jsx'), 'utf-8'), {raw: true}),
+  home: jsx.server(read(path.join(__dirname, '../app/public/home.jsx'), 'utf-8'), {raw: true}),
+  thanks: jsx.server(read(path.join(__dirname, '../app/public/thanks.jsx'), 'utf-8'), {raw: true}),
+  profile: jsx.server(read(path.join(__dirname, '../app/public/profile.jsx'), 'utf-8'), {raw: true}),
 };
 
 function renderHTML(req, res, templ, data) {

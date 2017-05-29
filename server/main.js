@@ -25,11 +25,11 @@ app.use('/static', express.static(path.join(__dirname, "../static/")));
 auth(app)
 
 app.get('/', function (req, res) {
-    renderHTML(req, res, 'home', req.query)
+    renderHTML(req, res, 'public/home.jsx', req.query)
 })
 
 app.get('/thanks', function (req, res) {
-    renderHTML(req, res, 'thanks', {})
+    renderHTML(req, res, 'public/thanks.jsx', {})
 })
 
 app.post('/register', function (req, res) {
@@ -56,7 +56,7 @@ app.get('/@*', function (req, res) {
     p.then(function (snap) {
         return fb.ref('profile').child(snap.val()).once('value')
     }).then(function (snap) {
-        renderHTML(req, res, 'profile', snap.val())
+        renderHTML(req, res, 'public/profile.jsx', snap.val())
     }).catch(function (err) {
         res.status(500).send(err)
     })
@@ -67,7 +67,7 @@ app.get('/me', function (req, res) {
     let p = fb.ref('profile').child(id).once('value')
 
     p.then(function (snap) {
-        renderHTML(req, res, 'profile', snap.val())
+        renderHTML(req, res, 'public/profile.jsx', snap.val())
     }).catch(function (err) {
         res.status(500).send(err)
     })

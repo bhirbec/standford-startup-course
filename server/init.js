@@ -26,17 +26,13 @@ admin.initializeApp({
 
 let fb = admin.database()
 
-let templates = {
-  layout: jsx.server(read(path.join(__dirname, '../app/public/layout.jsx'), 'utf-8'), {raw: true}),
-  home: jsx.server(read(path.join(__dirname, '../app/public/home.jsx'), 'utf-8'), {raw: true}),
-  thanks: jsx.server(read(path.join(__dirname, '../app/public/thanks.jsx'), 'utf-8'), {raw: true}),
-  profile: jsx.server(read(path.join(__dirname, '../app/public/profile.jsx'), 'utf-8'), {raw: true}),
-};
-
-function renderHTML(req, res, templ, data) {
+function renderHTML(req, res, path, data) {
 
     class Content extends Component {
-        render() { return templates[templ](this) }
+        render() {
+            let templ = loadTemplate(path)
+            return templ(this)
+        }
     }
     Content.defaultProps = data
 
@@ -47,7 +43,20 @@ function renderHTML(req, res, templ, data) {
 
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/html');
-    res.end('<!DOCTYPE html>\n' + templates.layout(context, {html: true}));
+
+    let layout = loadTemplate('public/layout.jsx')
+    res.end('<!DOCTYPE html>\n' + layout(context, {html: true}));
+}
+
+let templates = {}
+
+function loadTemplate(filePath) {
+    let temp = templates[filePath];
+    if (temp == undefined) {
+        let str = read(path.join(__dirname, '../app/', filePath), 'utf-8')
+        templates[filePath] = jsx.server(str, {raw: true})
+    }
+    return templates[filePath]
 }
 
 export {fb, config, renderHTML}

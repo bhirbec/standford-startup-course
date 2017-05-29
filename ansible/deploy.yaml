@@ -12,10 +12,11 @@
         delete: yes
       with_items:
         - app
+        - home
+        - package.json
         - public
         - secrets
         - server
-        - package.json
 
     - name: Install packages based on package.json
       npm:

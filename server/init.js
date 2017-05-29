@@ -27,14 +27,14 @@ admin.initializeApp({
 let fb = admin.database()
 
 let templates = {
-  layout: jsx.server(read(path.join(__dirname, '../app/layout.jsx'), 'utf-8'), {raw: true}),
-  home: jsx.server(read(path.join(__dirname, '../app/home.jsx'), 'utf-8'), {raw: true}),
-  home_simple: jsx.server(read(path.join(__dirname, '../app/home_simple.jsx'), 'utf-8'), {raw: true}),
-  profile: jsx.server(read(path.join(__dirname, '../app/profile.jsx'), 'utf-8'), {raw: true}),
-  thanks: jsx.server(read(path.join(__dirname, '../app/thanks.jsx'), 'utf-8'), {raw: true}),
+  layout: jsx.server(read(path.join(__dirname, '../home/layout.jsx'), 'utf-8'), {raw: true}),
+  home: jsx.server(read(path.join(__dirname, '../home/home.jsx'), 'utf-8'), {raw: true}),
+  thanks: jsx.server(read(path.join(__dirname, '../home/thanks.jsx'), 'utf-8'), {raw: true}),
+  profile: jsx.server(read(path.join(__dirname, '../home/profile.jsx'), 'utf-8'), {raw: true}),
 };
 
-function renderLayoutHTML(req, res, templ, data) {
+function renderHTML(req, res, templ, data) {
+
     class Content extends Component {
         render() { return templates[templ](this) }
     }
@@ -50,14 +50,4 @@ function renderLayoutHTML(req, res, templ, data) {
     res.end('<!DOCTYPE html>\n' + templates.layout(context, {html: true}));
 }
 
-function renderHTML(req, res, templ, data) {
-    let context = {}
-    context.data = data
-    context.asset = req.assetFingerprint
-
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/html');
-    res.end('<!DOCTYPE html>\n' + templates[templ](context, {html: true}));
-}
-
-export {fb, config, renderLayoutHTML, renderHTML}
+export {fb, config, renderHTML}

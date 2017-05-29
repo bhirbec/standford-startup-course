@@ -1,11 +1,12 @@
 <html lang="en">
 <head>
+    <link rel="icon" href={asset("/public/img/favicon.jpg")} type="image/x-icon"/>
     <meta charSet="utf-8" />
     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Letsresume - Resume built by the crowd</title>
+    <title>LetsResume - Resume built by the crowd</title>
 
     <link href={asset("/public/css/bootstrap.min.css")} rel="stylesheet" />
     <link href={asset("/public/css/landing-page.css")} rel="stylesheet" />
@@ -24,7 +25,7 @@
 </head>
 <body>
     <nav className="navbar navbar-default navbar-fixed-top topnav" role="navigation"
-         style={{backgroundColor: 'transparent'}}>
+         style={{ backgroundColor: 'transparent' }}>
         <div className="container topnav">
             <div className="navbar-header">
                 <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -33,33 +34,28 @@
                     <span className="icon-bar"></span>
                     <span className="icon-bar"></span>
                 </button>
-                <a className="navbar-brand topnav" href="/"
-                   style={{color: 'white', fontWeight: 'bold', letterSpacing: '2px', fontSize: '16px'}}>
-                    <span>LETS</span><span style={{color: '#fcbcb5'}}>RESUME</span>
+                <a id="logo" className="navbar-brand topnav" href="/">
+                   <span>LETS</span>
+                   <span className="salmon">RESUME</span>
                 </a>
             </div>
         </div>
     </nav>
 
-    <div className="intro-header"
-         style={{height: '100%'}}>
+    <div className="intro-header">
         <div className="container">
             <div className="row">
                 <div className="col-lg-12">
                     <div className="intro-message">
-                        <h1>Your resume built by the crowd.</h1>
+                        <h1>
+                            Your resume, <span className="salmon">built by the crowd.</span>
+                        </h1>
+                        <h2 style={{marginTop: '50px'}}>
+                            Never write a résumé again!<br />
+                            Your network will do it for you.
+                        </h2>
 
-                        <h3 style={{margin: '50px 0', letterSpacing: '1px'}}>
-                            Never write your resume again! Ask your network to write it for you!
-                        </h3>
-
-                        <div style={{margin: '50px 0', fontSize: '16px'}}>
-                            We are currently being incubated at Stanford University. Sign up below to be notified when Letsresume is available to the general public!
-                        </div>
-
-                        <div style={{margin: '50px 0', fontSize: '16px'}}>
-                            Thank you! We will get in touch soon!
-                        </div>
+                        <Content />
                     </div>
                 </div>
             </div>

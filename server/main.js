@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // static asset
 app.use(staticAsset(path.join(__dirname,  "..")));
-app.use('/public', express.static(path.join(__dirname, "../public/")));
+app.use('/static', express.static(path.join(__dirname, "../static/")));
 
 // setup auth endpoints
 auth(app)

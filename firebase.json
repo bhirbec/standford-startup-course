@@ -1,0 +1,13 @@
+{
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "hosting": {
+    "public": "functions/app/static",
+    "rewrites": [
+      {"source": "/", "function": "app"},
+      {"source": "/thanks", "function": "app"},
+      {"source": "/register", "function": "app"}
+    ]
+  }
+}

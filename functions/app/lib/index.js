@@ -1,14 +1,17 @@
-var path = require('path')
-import staticAsset from 'static-asset'
+const path = require('path')
+const staticAsset = require('static-asset')
+const express = require('express')
 
-import express from 'express'
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser'
+const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 
-import {fb, config, renderLayoutHTML, renderHTML} from './init.js'
-import auth from './auth.js'
+const auth = require('./auth.js')
+const init = require('./init.js')
 
-
+let fb = init.fb
+let config = init.config
+let renderLayoutHTML = init.renderLayoutHTML
+let renderHTML = init.renderHTML
 let app = express()
 
 // cookie middleware (MUST be declared before the endpoints using it)
@@ -18,18 +21,18 @@ app.use(cookieParser(config.authCookie.secret));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // static asset
-app.use(staticAsset(path.join(__dirname,  "..")));
-app.use('/static', express.static(path.join(__dirname, "../static/")));
+app.use(staticAsset(path.join(process.cwd(),  "app/static/")));
+app.use('/public', express.static(path.join(process.cwd(), "app/static/public")));
 
 // setup auth endpoints
 auth(app)
 
 app.get('/', function (req, res) {
-    renderHTML(req, res, 'public/home.jsx', req.query)
+    renderHTML(req, res, 'home.jsx', req.query)
 })
 
 app.get('/thanks', function (req, res) {
-    renderHTML(req, res, 'public/thanks.jsx', {})
+    renderHTML(req, res, 'thanks.jsx', {})
 })
 
 app.post('/register', function (req, res) {
@@ -73,6 +76,4 @@ app.get('/me', function (req, res) {
     })
 })
 
-app.listen(config.web.port, config.web.host, function () {
-    console.log('Starting web server on ' + config.web.host + ':' + config.web.port)
-})
+module.exports = app

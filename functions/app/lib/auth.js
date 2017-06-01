@@ -1,7 +1,9 @@
 let querystring = require('querystring')
 let request = require('request')
 
-import {fb, config} from './init.js'
+const init = require('./init.js')
+const fb = init.fb
+const config = init.config
 
 
 // TODO: Use promise to pipe requests

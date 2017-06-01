@@ -1,26 +1,28 @@
 var path = require('path'),
     read = require('fs').readFileSync;
 
-import cookieParser from 'cookie-parser'
-import * as admin from 'firebase-admin'
-import cmdArgs from 'command-line-args'
+const cookieParser = require('cookie-parser')
+const admin = require('firebase-admin')
+const cmdArgs = require('command-line-args')
 
-import React, { Component } from 'react';
-import jsx from 'react-jsx'
-
+const jsx = require('react-jsx')
+const React = require('react')
+const Component = React.Component
 
 let options = cmdArgs([{
     name: 'config',
     alias: 'c',
     type: String,
-    defaultValue: '../secrets/config-dev.json'}
-])
+    defaultValue: path.join(process.cwd(), 'app/secrets/config-dev.json')
+}])
 
 let config = require(options.config)
 
 // TODO: Set up rules on FB
+let fbCredsPath = path.join(process.cwd(), config.firebase.creds)
+
 admin.initializeApp({
-  credential: admin.credential.cert(require(config.firebase.creds)),
+  credential: admin.credential.cert(require(fbCredsPath)),
   databaseURL: config.firebase.url
 })
 
@@ -44,7 +46,7 @@ function renderHTML(req, res, path, data) {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/html');
 
-    let layout = loadTemplate('public/layout.jsx')
+    let layout = loadTemplate('layout.jsx')
     res.end('<!DOCTYPE html>\n' + layout(context, {html: true}));
 }
 
@@ -53,10 +55,10 @@ let templates = {}
 function loadTemplate(filePath) {
     let temp = templates[filePath];
     if (temp == undefined) {
-        let str = read(path.join(__dirname, '../app/', filePath), 'utf-8')
+        let str = read(path.join(process.cwd(), 'app/templates', filePath), 'utf-8')
         templates[filePath] = jsx.server(str, {raw: true})
     }
     return templates[filePath]
 }
 
-export {fb, config, renderHTML}
+module.exports = {fb:fb, config: config, renderHTML: renderHTML}

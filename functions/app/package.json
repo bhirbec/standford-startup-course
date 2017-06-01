@@ -1,18 +1,9 @@
 {
-  "name": "auth",
+  "name": "app",
   "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
-  "scripts": {
-    "start": "babel-node --presets es2015 server/main.js"
-  },
-  "author": "benoit.hirbec@gmail.com",
-  "license": "ISC",
-  "devDependencies": {
-    "babel-cli": "^6.0.0",
-    "babel-preset-es2015": "^6.0.0"
-  },
+  "description": "letsResume web app",
   "dependencies": {
+    "lib": "file:./lib",
     "body-parser": "^1.17.2",
     "command-line-args": "^4.0.4",
     "cookie-parser": "^1.4.3",
@@ -24,5 +15,6 @@
     "react-jsx": "^1.0.0",
     "request": "^2.81.0",
     "static-asset": "^0.6.0"
-  }
+  },
+  "private": true
 }

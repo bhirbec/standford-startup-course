@@ -5,12 +5,11 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 
-const init = require('./init.js')
+const fb = require('./init.js').fb
+const config = require('./init.js').config
+const renderHTML = require('./template.js').renderHTML
 
-let fb = init.fb
-let config = init.config
-let renderLayoutHTML = init.renderLayoutHTML
-let renderHTML = init.renderHTML
+
 let app = express()
 
 // cookie middleware (MUST be declared before the endpoints using it)

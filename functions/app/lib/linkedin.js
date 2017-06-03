@@ -1,5 +1,5 @@
-let querystring = require('querystring')
-let request = require('request')
+const querystring = require('querystring')
+const request = require('request')
 
 const init = require('./init.js')
 const fb = init.fb

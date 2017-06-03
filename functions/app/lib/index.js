@@ -5,7 +5,6 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 
-const auth = require('./auth.js')
 const init = require('./init.js')
 
 let fb = init.fb
@@ -23,9 +22,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // static asset
 app.use(staticAsset(path.join(process.cwd(),  "app/static/")));
 app.use('/public', express.static(path.join(process.cwd(), "app/static/public")));
-
-// setup auth endpoints
-auth(app)
 
 app.get('/', function (req, res) {
     renderHTML(req, res, 'home.jsx', req.query)

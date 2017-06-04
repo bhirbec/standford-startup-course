@@ -9,10 +9,10 @@ const options = cmdArgs([{
     name: 'config',
     alias: 'c',
     type: String,
-    defaultValue: path.join(process.cwd(), 'app/secrets/config-dev.json')
+    defaultValue: 'app/secrets/config-prod.json'
 }])
 
-const config = require(options.config)
+const config = require(path.join(process.cwd(), options.config))
 
 // load firebase
 const fbCredsPath = path.join(process.cwd(), config.firebase.creds)

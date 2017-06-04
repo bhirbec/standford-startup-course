@@ -9,6 +9,7 @@
     <title>LetsResume - Resume built by the crowd</title>
 
     <link href={asset("/public/css/bootstrap.min.css")} rel="stylesheet" />
+    <link href={asset("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/5.1.1/bootstrap-social.min.css")} rel="stylesheet" />
     <link href={asset("/public/css/landing-page.css")} rel="stylesheet" />
     <link href={asset("/public/font-awesome/css/font-awesome.min.css")} rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/5.1.1/bootstrap-social.css" rel="stylesheet" type="text/css" />

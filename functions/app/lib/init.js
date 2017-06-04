@@ -14,11 +14,12 @@ const options = cmdArgs([{
 
 const config = require(options.config)
 
-// TODO: Set up rules on FB
+// load firebase
 const fbCredsPath = path.join(process.cwd(), config.firebase.creds)
+const fbConfig = require(fbCredsPath)
 
 admin.initializeApp({
-  credential: admin.credential.cert(require(fbCredsPath)),
+  credential: admin.credential.cert(fbConfig),
   databaseURL: config.firebase.url
 })
 

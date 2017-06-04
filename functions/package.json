@@ -2,9 +2,19 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "dependencies": {
-    "app": "file:./app",
+    "body-parser": "^1.17.2",
+    "command-line-args": "^4.0.4",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.15.2",
+    "expressjs": "^1.0.1",
     "firebase-admin": "~4.2.1",
-    "firebase-functions": "^0.5"
+    "firebase-functions": "^0.5",
+    "googleapis": "^19.0.0",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-jsx": "^1.0.0",
+    "request": "^2.81.0",
+    "static-asset": "^0.6.0"
   },
   "private": true
 }

@@ -1,4 +1,4 @@
-<div className="content-section-a" style={{backgroundColor: '#fff'}}>
+<div className="container content-section-a">
     <div className="container">
         <div className="row">
             <div className="clearfix"></div>

@@ -25,9 +25,8 @@
     </meta>
 </head>
 <body>
-    <nav className="navbar navbar-default navbar-fixed-top topnav" role="navigation"
-         style={{ backgroundColor: 'transparent' }}>
-        <div className="container topnav">
+    <nav className="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div className="container">
             <div className="navbar-header">
                 <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span className="sr-only">Toggle navigation</span>
@@ -35,7 +34,7 @@
                     <span className="icon-bar"></span>
                     <span className="icon-bar"></span>
                 </button>
-                <a id="logo" className="navbar-brand topnav" href="/">
+                <a id="logo" className="navbar-brand" href="/">
                    <span>LETS</span>
                    <span className="salmon">RESUME</span>
                 </a>
@@ -43,25 +42,7 @@
         </div>
     </nav>
 
-    <div className="intro-header">
-        <div className="container">
-            <div className="row">
-                <div className="col-lg-12">
-                    <div className="intro-message">
-                        <h1>
-                            Your resume, <span className="salmon">built by the crowd.</span>
-                        </h1>
-                        <h2 style={{marginTop: '50px'}}>
-                            Never write a résumé again!<br />
-                            Your network will do it for you.
-                        </h2>
-
-                        <Content />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <Content />
 
     <script src={asset("/public/js/jquery.js")}></script>
     <script src={asset("/public/js/bootstrap.min.js")}></script>

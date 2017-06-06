@@ -32,7 +32,7 @@ let templates = {}
 function loadTemplate(filePath) {
     let temp = templates[filePath];
     if (temp == undefined) {
-        let str = read(path.join(process.cwd(), 'app/templates', filePath), 'utf-8')
+        let str = read(path.join(__dirname, '../templates', filePath), 'utf-8')
         templates[filePath] = jsx.server(str, {raw: true})
     }
     return templates[filePath]

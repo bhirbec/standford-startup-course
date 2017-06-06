@@ -9,13 +9,13 @@ const options = cmdArgs([{
     name: 'config',
     alias: 'c',
     type: String,
-    defaultValue: 'app/secrets/config-prod.json'
+    defaultValue: 'secrets/config-prod.json'
 }])
 
-const config = require(path.join(process.cwd(), options.config))
+const config = require(path.join(__dirname, '..', options.config))
 
 // load firebase
-const fbCredsPath = path.join(process.cwd(), config.firebase.creds)
+const fbCredsPath = path.join(__dirname, '..', config.firebase.creds)
 const fbConfig = require(fbCredsPath)
 
 admin.initializeApp({

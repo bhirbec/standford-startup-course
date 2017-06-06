@@ -20,8 +20,8 @@ app.use(cookieParser(config.authCookie.secret));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // static asset
-app.use(staticAsset(path.join(process.cwd(),  "app/static/")));
-app.use('/public', express.static(path.join(process.cwd(), "app/static/public")));
+app.use(staticAsset(path.join(__dirname,  "../static/")));
+app.use('/public', express.static(path.join(__dirname, "../static/public")));
 
 // set auth endpoint
 app.get('/oauth/google', googleAuth.oauthCallback)

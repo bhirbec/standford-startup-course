@@ -5,9 +5,7 @@
   "hosting": {
     "public": "functions/app/static",
     "rewrites": [
-      {"source": "/", "function": "app"},
-      {"source": "/thanks", "function": "app"},
-      {"source": "/register", "function": "app"}
+      {"source": "/", "function": "app"}
     ]
   }
 }

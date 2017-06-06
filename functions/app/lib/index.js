@@ -32,25 +32,6 @@ app.get('/', function (req, res) {
     renderHTML(req, res, 'home.jsx', data)
 })
 
-app.get('/thanks', function (req, res) {
-    renderHTML(req, res, 'thanks.jsx', {})
-})
-
-app.post('/register', function (req, res) {
-    if (req.body.email == '') {
-        res.redirect(303, '/')
-        return
-    }
-
-    let data = {}
-    Object.assign(data, req.body)
-    Object.assign(data, req.params)
-
-    fb.ref('signup').push(data, function () {
-        res.redirect(303, '/thanks')
-    })
-})
-
 // TODO: handle 404 when @handle does not exist
 // TODO: merge with /me
 // app.get('/@*', function (req, res) {

@@ -22,6 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // static asset
 app.use(staticAsset(path.join(__dirname,  "../static/")));
 app.use('/public', express.static(path.join(__dirname, "../static/public")));
+app.use('/build', express.static(path.join(__dirname, "../static/build")));
 
 // set auth endpoint
 app.get('/oauth/google', googleAuth.oauthCallback)

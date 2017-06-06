@@ -14,6 +14,7 @@ function renderHTML(req, res, path, data) {
         }
     }
     Content.defaultProps = data
+    Content.defaultProps.asset = req.assetFingerprint
 
     let context = {}
     context.data = data
@@ -24,7 +25,11 @@ function renderHTML(req, res, path, data) {
     res.setHeader('Content-Type', 'text/html');
 
     let layout = loadTemplate('layout.jsx')
-    res.end('<!DOCTYPE html>\n' + layout(context, {html: true}));
+    try {
+        res.end('<!DOCTYPE html>\n' + layout(context, {html: true}));
+    } catch (err) {
+        console.log('===', err)
+    }
 }
 
 let templates = {}

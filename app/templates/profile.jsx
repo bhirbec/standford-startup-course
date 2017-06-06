@@ -6,11 +6,8 @@
                 {this.props['google-profile'].name}
             </h1>
         </div>
-
-        <p>
-            Thanks for signing up at LetsResume. We are currently finalizing the service while being
-            incubated at Stanford University, and will be launching really soon! We will let you
-            know when we launch.
-        </p>
+        <div id="app"></div>
     </div>
+    <script src={this.props.asset("/build/lib.js")}></script>
+    <script src={this.props.asset("/build/index.js")}></script>
 </div>

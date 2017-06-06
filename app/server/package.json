@@ -1,6 +1,6 @@
 {
-  "name": "functions",
-  "description": "Cloud Functions for Firebase",
+  "name": "server",
+  "description": "LetsResume webserver",
   "dependencies": {
     "body-parser": "^1.17.2",
     "command-line-args": "^4.0.4",

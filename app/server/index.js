@@ -4,6 +4,7 @@ const express = require('express')
 
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
+const jwt = require('jsonwebtoken')
 
 const fb = require('./init.js').fb
 const config = require('./init.js').config
@@ -14,7 +15,7 @@ const googleAuth = require('./google.js')
 let app = express()
 
 // cookie middleware (MUST be declared before the endpoints using it)
-app.use(cookieParser(config.authCookie.secret));
+app.use(cookieParser());
 
 // for parsing form
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -49,13 +50,17 @@ app.get('/', function (req, res) {
 // })
 
 app.get('/me', function (req, res) {
-    let id = req.signedCookies.auth.id
-    let p = fb.ref('profile').child(id).once('value')
+    let token = req.cookies.auth
 
-    p.then(function (snap) {
-        renderHTML(req, res, 'profile.jsx', snap.val())
-    }).catch(function (err) {
-        res.status(500).send(err)
+    jwt.verify(token, config.authCookie.secret, function (err, data) {
+        let id = data.id
+        let p = fb.ref('profile').child(id).once('value')
+
+        p.then(function (snap) {
+            renderHTML(req, res, 'profile.jsx', snap.val())
+        }).catch(function (err) {
+            res.status(500).send(err)
+        })
     })
 })
 

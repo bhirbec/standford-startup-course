@@ -5,6 +5,9 @@
     "react": "^15.5.4"
   },
   "private": true,
+  "scripts": {
+    "start": "make js && node local.js -c secrets/config-dev.json"
+  },
   "devDependencies": {
     "babel-preset-es2015": "^6.24.1",
     "babelify": "^7.3.0",

@@ -1,10 +1,10 @@
 const google = require('googleapis')
 const oauth2 = google.oauth2('v2')
+const jwt = require('jsonwebtoken')
 
 const authCookie = require('./init.js').config.authCookie
 const authConfig = require('./init.js').config.googleAuth
 const fb = require('./init.js').fb
-
 
 const scopes = [
     'https://www.googleapis.com/auth/userinfo.email',
@@ -50,10 +50,13 @@ function getProfile(tokens, res) {
             p.then(function () {
                 return fb.ref('profile/' + profile.id).child('google-profile').set(profile)
             }).then(function () {
-                res.cookie(authCookie.name, {id: profile.id}, {
+                let token = jwt.sign({id: profile.id}, authCookie.secret, {
+                    expiresIn: 1440 // expires in 24 hours
+                });
+
+                res.cookie(authCookie.name, token, {
                     maxAge: 1000 * 60 * authCookie.maxAgeMinute,
-                    httpOnly: true,
-                    signed: true
+                    httpOnly: true
                 })
 
                 res.redirect(303, '/me')

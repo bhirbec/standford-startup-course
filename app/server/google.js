@@ -10,6 +10,7 @@ const scopes = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
     'https://www.googleapis.com/auth/plus.me',
+    'https://www.googleapis.com/auth/contacts.readonly'
 ]
 
 function oauthCallback(req, res) {
@@ -51,7 +52,7 @@ function getProfile(tokens, res) {
                 return fb.ref('profile/' + profile.id).child('google-profile').set(profile)
             }).then(function () {
                 let token = jwt.sign({id: profile.id}, authCookie.secret, {
-                    expiresIn: 1440 // expires in 24 hours
+                    expiresIn: 60*60*24 // expires in 24 hours
                 });
 
                 res.cookie(authCookie.name, token, {

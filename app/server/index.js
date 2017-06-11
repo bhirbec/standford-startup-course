@@ -53,11 +53,19 @@ app.get('/me', function (req, res) {
     let token = req.cookies.auth
 
     jwt.verify(token, config.authCookie.secret, function (err, data) {
+        if (err != undefined) {
+            console.error(err)
+        }
+
         let id = data.id
-        let p = fb.ref('profile').child(id).once('value')
+        let p = fb.ref('oauth/google/' + id).child('access_token').once('value')
 
         p.then(function (snap) {
-            renderHTML(req, res, 'profile.jsx', snap.val())
+            renderHTML(req, res, 'profile.jsx', {
+                userId: data.id,
+                fbConfig: config.firebaseClient,
+                accessToken: snap.val()
+            })
         }).catch(function (err) {
             res.status(500).send(err)
         })

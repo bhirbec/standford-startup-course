@@ -15,12 +15,12 @@ const options = cmdArgs([{
 const config = require(path.join(__dirname, '..', options.config))
 
 // load firebase
-const fbCredsPath = path.join(__dirname, '..', config.firebase.creds)
+const fbCredsPath = path.join(__dirname, '..', config.firebaseAdmin.creds)
 const fbConfig = require(fbCredsPath)
 
 admin.initializeApp({
   credential: admin.credential.cert(fbConfig),
-  databaseURL: config.firebase.url
+  databaseURL: config.firebaseAdmin.url
 })
 
 module.exports = {

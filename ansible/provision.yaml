@@ -6,6 +6,7 @@
       apt: name={{item}} update_cache=true
       with_items:
         - curl
+        - build-essential # make
 
     - name: Setup APT for Nodejs
       shell: curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -

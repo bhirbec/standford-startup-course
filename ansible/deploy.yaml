@@ -2,8 +2,10 @@
   vars:
     project: letsresume
     project_dir: /home/bhirbec/{{ project }}
+    app_dir: "{{ project_dir }}/app"
 
   tasks:
+
     - name: Sync files
       synchronize:
         src: "../{{ item }}"
@@ -12,16 +14,22 @@
         delete: yes
       with_items:
         - app
-        - home
-        - package.json
-        - public
-        - secrets
-        - server
 
-    - name: Install packages based on package.json
+    - name: Install React App Packages
       npm:
-        path: "{{ project_dir }}"
+        path: "{{ app_dir }}"
         state: present
+
+    - name: Install React App Packages
+      npm:
+        path: "{{ app_dir }}/server"
+        state: present
+
+    - name: Running postinstall Script
+      shell: make postinstall chdir={{app_dir}}
+
+    - name: Build React App
+      shell: make js chdir={{app_dir}}
 
     - name: Copy upstart conf
       template: src=upstart.conf dest=/etc/init/letsresume.conf

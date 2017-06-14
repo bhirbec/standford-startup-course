@@ -1,9 +1,10 @@
 SHELL=/bin/bash
 
-.PHONY: install postinstall clear js
+.PHONY: postinstall clear js
 
-install: postinstall
-	npm install
+# install: postinstall
+# 	npm install
+# 	cd server && npm install
 
 # node_modules/.rebuild is touched by node_modules/.hooks/postinstall everytime
 # `npm install` runs. This improves performance of this rule since make only
@@ -30,7 +31,6 @@ static/build/index.js: $(shell find client -name "*.js")
 static/build/lib.js: node_modules/.rebuild
 	mkdir -p static/build
 	node_modules/browserify/bin/cmd.js \
-		-t browserify-css \
 		-r react \
 		-r react-dom \
 		-r react-select \

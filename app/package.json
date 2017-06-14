@@ -2,7 +2,8 @@
   "name": "client",
   "description": "LetsResume",
   "dependencies": {
-    "react": "^15.5.4"
+    "react": "^15.5.4",
+    "react-select": "^1.0.0-rc.5"
   },
   "private": true,
   "scripts": {

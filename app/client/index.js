@@ -1,8 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import Select from 'react-select'
+const Multiselect = require('./multiselect')
 
 const config = window.__config
-
 
 firebase.initializeApp(config.fbConfig)
 const fb = firebase.database()
@@ -64,7 +65,7 @@ class App extends React.Component {
                     return <button type="button"
                         className="btn btn-default"
                         data-toggle="modal"
-                        data-target="#myModal">+ Add experience</button>
+                        data-target="#myModal">+ Add work experience</button>
             }()}
 
             <div id="myModal" className="modal fade" role="dialog">
@@ -87,6 +88,10 @@ class App extends React.Component {
                                 <div className="form-group">
                                     <label htmlFor="job-title">Job Title</label>
                                     <input id="job-title" type="text" className="form-control" placeholder="ex: Software Engineer" />
+                                </div>
+                                <div className="form-group">
+                                    <label>Invite People to Comment your resume</label>
+                                    <Multiselect title="Search your Google contacts" />
                                 </div>
                             </div>
                             <div className="modal-footer">

@@ -16,6 +16,7 @@ class App extends React.Component {
 
     componentDidMount() {
         profileRef.on('value', (snap) => { this.setState(snap.val())})
+        // TODO: try to reduce bandwidth with more scoped ref
         profileRef.on('child_changed', (snap) => {this.setState(snap.val())})
     }
 

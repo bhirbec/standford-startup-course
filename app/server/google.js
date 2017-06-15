@@ -6,6 +6,9 @@ const authCookie = require('./init.js').config.authCookie
 const authConfig = require('./init.js').config.googleAuth
 const fb = require('./init.js').fb
 
+// TODO: implement incremental scope
+// https://developers.google.com/identity/protocols/OAuth2WebServer#incrementalAuth
+
 const scopes = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',

@@ -107,7 +107,7 @@ class NewExperienceButton extends React.Component {
     }
 }
 
-
+// TODO: set focus on first element
 class Modal extends React.Component {
 
     setValue(input) {

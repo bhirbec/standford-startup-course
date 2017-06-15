@@ -58,19 +58,6 @@ class Experience extends React.Component {
         this.forceUpdate()
     }
 
-    handleForm(e) {
-        let $node = $(ReactDOM.findDOMNode(this))
-        let $form = $node.find('form')
-
-        let data = {};
-        $.each($form.serializeArray(), function(_, kv) {
-            data[kv.name] = kv.value;
-        });
-
-        this.save(data)
-        e.preventDefault()
-    }
-
     save(data) {
         let $node = $(ReactDOM.findDOMNode(this))
         // TODO: merge this ref
@@ -87,7 +74,7 @@ class Experience extends React.Component {
                 className="btn btn-default"
                 onClick={this.onClick.bind(this)}>
                 Edit</button>
-            <Modal handleForm={this.handleForm.bind(this)}
+            <Modal save={this.save.bind(this)}
                 companyName={this.props.exp.companyName}
                 jobTitle={this.props.exp.jobTitle} />
         </div>
@@ -95,19 +82,6 @@ class Experience extends React.Component {
 }
 
 class NewExperienceButton extends React.Component {
-
-    handleForm(e) {
-        let $node = $(ReactDOM.findDOMNode(this))
-        let $form = $node.find('form')
-
-        let data = {};
-        $.each($form.serializeArray(), function(_, kv) {
-            data[kv.name] = kv.value;
-        });
-
-        this.save(data)
-        e.preventDefault()
-    }
 
     save(data) {
         // TODO: merge this
@@ -129,7 +103,7 @@ class NewExperienceButton extends React.Component {
                 className="btn btn-default"
                 onClick={this.onClick.bind(this)}>
                 + Add work experience</button>
-            <Modal handleForm={this.handleForm.bind(this)}
+            <Modal save={this.save.bind(this)}
                 companyName={''}
                 jobTitle={''} />
         </div>
@@ -145,6 +119,18 @@ class Modal extends React.Component {
         }
     }
 
+    handleForm(e) {
+        let $form = $(ReactDOM.findDOMNode(this)).find('form')
+
+        let data = {};
+        $.each($form.serializeArray(), function(_, kv) {
+            data[kv.name] = kv.value;
+        });
+
+        this.props.save(data)
+        e.preventDefault()
+    }
+
     render() {
         return <div className="modal fade" role="dialog">
             <div className="modal-dialog">
@@ -157,7 +143,7 @@ class Modal extends React.Component {
                             Add an experience and request feedback
                         </h4>
                     </div>
-                    <form onSubmit={this.props.handleForm}>
+                    <form onSubmit={this.handleForm.bind(this)}>
                         <div className="modal-body">
                             <div className="form-group">
                                 <label htmlFor="company-name">Company Name</label>

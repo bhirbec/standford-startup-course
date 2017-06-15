@@ -7,29 +7,20 @@ const config = window.__config
 
 firebase.initializeApp(config.fbConfig)
 const fb = firebase.database()
+const profileRef = fb.ref('profile').child(config.userId)
 
 // https://jedwatson.github.io/react-select/
 // https://labs.magnet.me/nerds/2015/05/11/importing-google-contacts-with-javascript.html
 
 class App extends React.Component {
-    constructor (props) {
-        super(props)
-        this.state = {}
-        this.ref = fb.ref('profile').child(config.userId)
-    }
 
     componentDidMount() {
-        this.ref.on('value', (snap) => {
-            this.setState(snap.val())
-        })
-
-        this.ref.on('child_changed', (snap) => {
-            this.setState(snap.val())
-        })
+        profileRef.on('value', (snap) => { this.setState(snap.val())})
+        profileRef.on('child_changed', (snap) => {this.setState(snap.val())})
     }
 
     render() {
-        if (this.state['google-profile'] == undefined) {
+        if (this.state == null) {
             return <div>Loading...</div>
         }
 
@@ -61,7 +52,7 @@ class Experience extends React.Component {
     save(data) {
         let $node = $(ReactDOM.findDOMNode(this))
         // TODO: merge this ref
-        let ref = fb.ref('profile/' + config.userId + '/experience/' + this.props.data.refId)
+        let ref = profileRef.child('experience/' + this.props.data.refId)
         ref.set(data, function() {
             $node.find('.modal').modal('hide')
         })
@@ -85,8 +76,7 @@ class NewExperienceButton extends React.Component {
     save(data) {
         // TODO: merge this
         let $node = $(ReactDOM.findDOMNode(this))
-        let ref = fb.ref('profile').child(config.userId)
-        ref.child('experience').push().set(data, function() {
+        profileRef.child('experience').push().set(data, function() {
             $node.find('.modal').modal('hide')
         })
     }

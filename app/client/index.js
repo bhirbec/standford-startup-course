@@ -35,6 +35,7 @@ class App extends React.Component {
 
         let experiences = []
         for (let e in this.state.experience) {
+            this.state.experience[e].refId = e
             experiences.push(this.state.experience[e])
         }
 
@@ -42,9 +43,7 @@ class App extends React.Component {
             <h1>{this.state['google-profile'].name}</h1>
 
             {experiences.map(function (exp, i) {
-                return <div key={"exp-" + i}>
-                    <h3>{exp.companyName} - {exp.jobTitle}</h3>
-                </div>
+                return <Experience key={"exp-" + exp.refId} exp={exp} />
             })}
 
             {experiences.length < 5 ? <NewExperienceButton /> : null}
@@ -52,6 +51,48 @@ class App extends React.Component {
     }
 };
 
+
+class Experience extends React.Component {
+    onClick() {
+        $(ReactDOM.findDOMNode(this)).find('.modal').modal('show')
+        this.forceUpdate()
+    }
+
+    handleForm(e) {
+        let $node = $(ReactDOM.findDOMNode(this))
+        let $form = $node.find('form')
+
+        let data = {};
+        $.each($form.serializeArray(), function(_, kv) {
+            data[kv.name] = kv.value;
+        });
+
+        this.save(data)
+        e.preventDefault()
+    }
+
+    save(data) {
+        let $node = $(ReactDOM.findDOMNode(this))
+        // TODO: merge this ref
+        let ref = fb.ref('profile/' + config.userId + '/experience/' + this.props.exp.refId)
+        ref.set(data, function() {
+            $node.find('.modal').modal('hide')
+        })
+    }
+
+    render() {
+        return <div>
+            <h3>{this.props.exp.companyName} - {this.props.exp.jobTitle}</h3>
+            <button type="button"
+                className="btn btn-default"
+                onClick={this.onClick.bind(this)}>
+                Edit</button>
+            <Modal handleForm={this.handleForm.bind(this)}
+                companyName={this.props.exp.companyName}
+                jobTitle={this.props.exp.jobTitle} />
+        </div>
+    }
+}
 
 class NewExperienceButton extends React.Component {
 
@@ -64,16 +105,22 @@ class NewExperienceButton extends React.Component {
             data[kv.name] = kv.value;
         });
 
-        let ref = fb.ref('profile').child(config.userId) // TODO: merge this
+        this.save(data)
+        e.preventDefault()
+    }
+
+    save(data) {
+        // TODO: merge this
+        let $node = $(ReactDOM.findDOMNode(this))
+        let ref = fb.ref('profile').child(config.userId)
         ref.child('experience').push().set(data, function() {
             $node.find('.modal').modal('hide')
         })
-
-        e.preventDefault()
     }
 
     onClick() {
         this.forceUpdate()
+        $(ReactDOM.findDOMNode(this)).find('.modal').modal('show')
     }
 
     render() {
@@ -91,10 +138,6 @@ class NewExperienceButton extends React.Component {
 
 
 class Modal extends React.Component {
-
-    componentWillReceiveProps(nextProps) {
-        $(ReactDOM.findDOMNode(this)).modal('show')
-    }
 
     setValue(input) {
         if (input) {

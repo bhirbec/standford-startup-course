@@ -28,19 +28,6 @@ class App extends React.Component {
         })
     }
 
-    handleForm(e) {
-        let node = $(ReactDOM.findDOMNode(this))
-
-        this.ref.child('experience').push().set({
-            jobTitle: node.find('#job-title').val(),
-            companyName: node.find('#company-name').val()
-        }, function() {
-            $(node).find('#myModal').modal('hide')
-        })
-
-        e.preventDefault()
-    }
-
     render() {
         if (this.state['google-profile'] == undefined) {
             return <div>Loading...</div>
@@ -60,50 +47,105 @@ class App extends React.Component {
                 </div>
             })}
 
-            {function() {
-                if (experiences.length < 5)
-                    return <button type="button"
-                        className="btn btn-default"
-                        data-toggle="modal"
-                        data-target="#myModal">+ Add work experience</button>
-            }()}
+            {experiences.length < 5 ? <NewExperienceButton /> : null}
+        </div>
+    }
+};
 
-            <div id="myModal" className="modal fade" role="dialog">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal">
-                                &times;
-                            </button>
-                            <h4 className="modal-title">
-                                Add an experience and request feedback
-                            </h4>
-                        </div>
-                        <form onSubmit={this.handleForm.bind(this)}>
-                            <div className="modal-body">
-                                <div className="form-group">
-                                    <label htmlFor="company-name">Company Name</label>
-                                    <input id="company-name" type="text" className="form-control" placeholder="ex: Google" />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="job-title">Job Title</label>
-                                    <input id="job-title" type="text" className="form-control" placeholder="ex: Software Engineer" />
-                                </div>
-                                <div className="form-group">
-                                    <label>Invite People to Comment your resume</label>
-                                    <Multiselect title="Search your Google contacts" />
-                                </div>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="submit" className="btn btn-success">Save</button>
-                                <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                            </div>
-                        </form>
+
+class NewExperienceButton extends React.Component {
+
+    handleForm(e) {
+        let $node = $(ReactDOM.findDOMNode(this))
+        let $form = $node.find('form')
+
+        let data = {};
+        $.each($form.serializeArray(), function(_, kv) {
+            data[kv.name] = kv.value;
+        });
+
+        let ref = fb.ref('profile').child(config.userId) // TODO: merge this
+        ref.child('experience').push().set(data, function() {
+            $node.find('.modal').modal('hide')
+        })
+
+        e.preventDefault()
+    }
+
+    onClick() {
+        this.forceUpdate()
+    }
+
+    render() {
+        return <div>
+            <button type="button"
+                className="btn btn-default"
+                onClick={this.onClick.bind(this)}>
+                + Add work experience</button>
+            <Modal handleForm={this.handleForm.bind(this)}
+                companyName={''}
+                jobTitle={''} />
+        </div>
+    }
+}
+
+
+class Modal extends React.Component {
+
+    componentWillReceiveProps(nextProps) {
+        $(ReactDOM.findDOMNode(this)).modal('show')
+    }
+
+    setValue(input) {
+        if (input) {
+            input.value = this.props[input.name]
+        }
+    }
+
+    render() {
+        return <div className="modal fade" role="dialog">
+            <div className="modal-dialog">
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <button type="button" className="close" data-dismiss="modal">
+                            &times;
+                        </button>
+                        <h4 className="modal-title">
+                            Add an experience and request feedback
+                        </h4>
                     </div>
+                    <form onSubmit={this.props.handleForm}>
+                        <div className="modal-body">
+                            <div className="form-group">
+                                <label htmlFor="company-name">Company Name</label>
+                                <input name="companyName"
+                                       type="text"
+                                       ref={this.setValue.bind(this)}
+                                       className="form-control"
+                                       placeholder="ex: Google" />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="job-title">Job Title</label>
+                                <input name="jobTitle"
+                                       type="text"
+                                       ref={this.setValue.bind(this)}
+                                       className="form-control"
+                                       placeholder="ex: Software Engineer" />
+                            </div>
+                            <div className="form-group">
+                                <label>Invite People to Comment your resume</label>
+                                <Multiselect title="Search your Google contacts" />
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="submit" className="btn btn-success">Save</button>
+                            <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     }
-};
+}
 
 ReactDOM.render(<App />, document.getElementById('app'));

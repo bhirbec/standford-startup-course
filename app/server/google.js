@@ -13,7 +13,8 @@ const scopes = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
     'https://www.googleapis.com/auth/plus.me',
-    'https://www.googleapis.com/auth/contacts.readonly'
+    // TODO: verify the app (https://support.google.com/code/contact/oauth_app_verification)
+    // 'https://www.googleapis.com/auth/contacts.readonly'
 ]
 
 function oauthCallback(req, res) {

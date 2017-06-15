@@ -65,8 +65,9 @@ class Experience extends React.Component {
                 className="btn btn-default"
                 onClick={this.onClick.bind(this)}>
                 Edit</button>
-            <Modal save={this.save.bind(this)} data={this.props.data} />
-
+            <Modal title={'Edit work experience'}
+                save={this.save.bind(this)}
+                data={this.props.data} />
         </div>
     }
 }
@@ -92,7 +93,9 @@ class NewExperienceButton extends React.Component {
                 className="btn btn-default"
                 onClick={this.onClick.bind(this)}>
                 + Add work experience</button>
-            <Modal save={this.save.bind(this)} data={{}} />
+            <Modal title={'Add work experience'}
+                save={this.save.bind(this)}
+                data={{}} />
         </div>
     }
 }
@@ -126,9 +129,7 @@ class Modal extends React.Component {
                         <button type="button" className="close" data-dismiss="modal">
                             &times;
                         </button>
-                        <h4 className="modal-title">
-                            Add an experience and request feedback
-                        </h4>
+                        <h4 className="modal-title">{this.props.title}</h4>
                     </div>
                     <form onSubmit={this.handleForm.bind(this)}>
                         <div className="modal-body">

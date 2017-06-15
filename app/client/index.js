@@ -25,7 +25,7 @@ class App extends React.Component {
             return <div>Loading...</div>
         }
 
-        let refIds = Object.keys(this.state.experience)
+        let refIds = Object.keys(this.state.experience || [])
 
         return <div>
             <h1>{this.state['google-profile'].name}</h1>
@@ -54,6 +54,13 @@ class Experience extends React.Component {
         })
     }
 
+    remove() {
+        let b = confirm('Do you want to remove this work experience?')
+        if (b == true) {
+            profileRef.child('experience/' + this.props.refId).remove()
+        }
+    }
+
     render() {
         return <div>
             <h3>{this.props.data.companyName} - {this.props.data.jobTitle}</h3>
@@ -61,6 +68,10 @@ class Experience extends React.Component {
                 className="btn btn-default"
                 onClick={this.onClick.bind(this)}>
                 Edit</button>
+            <button type="button"
+                className="btn btn-default"
+                onClick={this.remove.bind(this)}>
+                Remove</button>
             <Modal title={'Edit work experience'}
                 save={this.save.bind(this)}
                 data={this.props.data} />
@@ -84,7 +95,7 @@ class NewExperienceButton extends React.Component {
     }
 
     render() {
-        return <div>
+        return <div className="new-work-experience">
             <button type="button"
                 className="btn btn-default"
                 onClick={this.onClick.bind(this)}>

@@ -43,7 +43,7 @@ class App extends React.Component {
             <h1>{this.state['google-profile'].name}</h1>
 
             {experiences.map(function (exp, i) {
-                return <Experience key={"exp-" + exp.refId} exp={exp} />
+                return <Experience key={"exp-" + exp.refId} data={exp} />
             })}
 
             {experiences.length < 5 ? <NewExperienceButton /> : null}
@@ -61,7 +61,7 @@ class Experience extends React.Component {
     save(data) {
         let $node = $(ReactDOM.findDOMNode(this))
         // TODO: merge this ref
-        let ref = fb.ref('profile/' + config.userId + '/experience/' + this.props.exp.refId)
+        let ref = fb.ref('profile/' + config.userId + '/experience/' + this.props.data.refId)
         ref.set(data, function() {
             $node.find('.modal').modal('hide')
         })
@@ -69,14 +69,13 @@ class Experience extends React.Component {
 
     render() {
         return <div>
-            <h3>{this.props.exp.companyName} - {this.props.exp.jobTitle}</h3>
+            <h3>{this.props.data.companyName} - {this.props.data.jobTitle}</h3>
             <button type="button"
                 className="btn btn-default"
                 onClick={this.onClick.bind(this)}>
                 Edit</button>
-            <Modal save={this.save.bind(this)}
-                companyName={this.props.exp.companyName}
-                jobTitle={this.props.exp.jobTitle} />
+            <Modal save={this.save.bind(this)} data={this.props.data} />
+
         </div>
     }
 }
@@ -103,9 +102,7 @@ class NewExperienceButton extends React.Component {
                 className="btn btn-default"
                 onClick={this.onClick.bind(this)}>
                 + Add work experience</button>
-            <Modal save={this.save.bind(this)}
-                companyName={''}
-                jobTitle={''} />
+            <Modal save={this.save.bind(this)} data={{}} />
         </div>
     }
 }
@@ -115,7 +112,7 @@ class Modal extends React.Component {
 
     setValue(input) {
         if (input) {
-            input.value = this.props[input.name]
+            input.value = this.props.data[input.name] || ''
         }
     }
 

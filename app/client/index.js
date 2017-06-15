@@ -50,10 +50,9 @@ class Experience extends React.Component {
     }
 
     save(data) {
+        // TODO: can we return a promise?
         let $node = $(ReactDOM.findDOMNode(this))
-        // TODO: merge this ref
-        let ref = profileRef.child('experience/' + this.props.data.refId)
-        ref.set(data, function() {
+        profileRef.child('experience/' + this.props.data.refId).set(data, function() {
             $node.find('.modal').modal('hide')
         })
     }
@@ -75,7 +74,7 @@ class Experience extends React.Component {
 class NewExperienceButton extends React.Component {
 
     save(data) {
-        // TODO: merge this
+        // TODO: can we return a promise?
         let $node = $(ReactDOM.findDOMNode(this))
         profileRef.child('experience').push().set(data, function() {
             $node.find('.modal').modal('hide')

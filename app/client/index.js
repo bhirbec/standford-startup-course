@@ -24,20 +24,16 @@ class App extends React.Component {
             return <div>Loading...</div>
         }
 
-        let experiences = []
-        for (let e in this.state.experience) {
-            this.state.experience[e].refId = e
-            experiences.push(this.state.experience[e])
-        }
+        let refIds = Object.keys(this.state.experience)
 
         return <div>
             <h1>{this.state['google-profile'].name}</h1>
 
-            {experiences.map(function (exp, i) {
-                return <Experience key={"exp-" + exp.refId} data={exp} />
+            {refIds.map((refId) => {
+                return <Experience key={"exp-" + refId} refId={refId} data={this.state.experience[refId]} />
             })}
 
-            {experiences.length < 5 ? <NewExperienceButton /> : null}
+            {refIds.length < 5 ? <NewExperienceButton /> : null}
         </div>
     }
 };
@@ -52,7 +48,7 @@ class Experience extends React.Component {
     save(data) {
         // TODO: can we return a promise?
         let $node = $(ReactDOM.findDOMNode(this))
-        profileRef.child('experience/' + this.props.data.refId).set(data, function() {
+        profileRef.child('experience/' + this.props.refId).set(data, function() {
             $node.find('.modal').modal('hide')
         })
     }

@@ -87,6 +87,7 @@ class Experience extends React.Component {
     render() {
         return <div>
             <h3>{this.props.data.companyName} - {this.props.data.jobTitle}</h3>
+            <p>{this.props.data.jobDescription}</p>
             <button type="button"
                 className="btn btn-default"
                 onClick={this.onClick.bind(this)}>
@@ -135,7 +136,7 @@ class Modal extends React.Component {
 
     setValue(input) {
         if (input) {
-            input.value = this.props.data[input.name] || ''
+            $(input).val(this.props.data[input.name] || '')
         }
     }
 
@@ -165,19 +166,29 @@ class Modal extends React.Component {
                         <div className="modal-body">
                             <div className="form-group">
                                 <label htmlFor="company-name">Company Name</label>
-                                <input name="companyName"
-                                       type="text"
-                                       ref={this.setValue.bind(this)}
-                                       className="form-control"
-                                       placeholder="ex: Google" />
+                                <input id="company-name"
+                                        name="companyName"
+                                        type="text"
+                                        ref={this.setValue.bind(this)}
+                                        className="form-control"
+                                        placeholder="ex: Google" />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="job-title">Job Title</label>
-                                <input name="jobTitle"
-                                       type="text"
-                                       ref={this.setValue.bind(this)}
-                                       className="form-control"
-                                       placeholder="ex: Software Engineer" />
+                                <input id="job-title"
+                                        name="jobTitle"
+                                        type="text"
+                                        ref={this.setValue.bind(this)}
+                                        className="form-control"
+                                        placeholder="ex: Software Engineer" />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="job-description">Job Description</label>
+                                <textarea id="job-description"
+                                        name="jobDescription"
+                                        rows={'4'}
+                                        ref={this.setValue.bind(this)}
+                                        className="form-control"></textarea>
                             </div>
                             <div className="form-group">
                                 <label>Invite People to Comment your resume</label>

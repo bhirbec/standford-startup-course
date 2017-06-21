@@ -32,6 +32,12 @@ h6 {
     letter-spacing: 2px;
 }
 
+/* data-reactroot */
+#app,
+#app > div {
+    height: 100%
+}
+
 .salmon {
     color: #ec9fba;
 }
@@ -53,7 +59,7 @@ p {
 }
 
 #google-signin > div {
-    margin: auto;
+    margin: 30px auto;
 }
 
 #signout {

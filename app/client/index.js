@@ -69,7 +69,7 @@ function redirectToHome() {
 function init(resp) {
     // TODO: pass client_id via config
     gapi.auth2.init({
-        client_id: '1017354286324-ulgeerbtd7h71v17dcs26ggo3durupoo.apps.googleusercontent.com',
+        client_id: '1017354286324-oeh36r4lglt125tuarv18cdnisi2ljjv.apps.googleusercontent.com',
         fetch_basic_profile: false,
         scope: 'email profile'
     });

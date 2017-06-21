@@ -72,6 +72,22 @@ function getProfile(tokens, res) {
     })
 }
 
+function fbSignin() {
+    var credential = firebase.auth.GoogleAuthProvider.credential(id_token);
+
+    // Sign in with credential from the Google user.
+    firebase.auth().signInWithCredential(credential).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // ...
+    });
+}
+
 module.exports = {
     oauthUrl: generateUrl(),
     oauthCallback: oauthCallback

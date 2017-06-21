@@ -4,6 +4,8 @@ const read = require('fs').readFileSync
 const jsx = require('react-jsx')
 const React = require('react')
 
+const config = require('./init.js').config
+
 
 function renderHTML(req, res, path, data) {
 
@@ -19,6 +21,7 @@ function renderHTML(req, res, path, data) {
     let context = {}
     context.data = data
     context.asset = req.assetFingerprint
+    context.fbConfig = config.firebaseClient
     context.Content = Content
 
     res.statusCode = 200;

@@ -52,6 +52,14 @@ p {
     font-size: 18px;
 }
 
+#google-signin > div {
+    margin: auto;
+}
+
+#signout {
+    display: none;
+}
+
 .navbar {
     border: 0;
     font-size: 14px;

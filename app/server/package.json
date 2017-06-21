@@ -7,7 +7,7 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.15.2",
     "expressjs": "^1.0.1",
-    "firebase-admin": "~4.2.1",
+    "firebase-admin": "^4.2.1",
     "googleapis": "^19.0.0",
     "jsonwebtoken": "^7.4.1",
     "react": "^15.5.4",

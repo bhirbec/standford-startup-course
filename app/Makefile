@@ -25,6 +25,8 @@ static/build/index.js: $(shell find client -name "*.js")
 		-t [ babelify --presets [ es2015 react ] ] \
 		-x react \
 		-x react-dom \
+		-x react-router \
+		-x react-router-dom \
 		-x react-select \
 		client/index.js > $@
 
@@ -33,5 +35,7 @@ static/build/lib.js: node_modules/.rebuild
 	node_modules/browserify/bin/cmd.js \
 		-r react \
 		-r react-dom \
+		-r react-router \
+		-r react-router-dom \
 		-r react-select \
 		-o $@

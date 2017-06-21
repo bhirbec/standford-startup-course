@@ -54,7 +54,10 @@
     <script dangerouslySetInnerHTML={{__html: "window.fbConfig = " + JSON.stringify(fbConfig)}}></script>
     <script src={asset("/build/lib.js")}></script>
     <script src={asset("/build/index.js")}></script>
-    <Content />
+
+    <div id="app"></div>
+    <link rel="stylesheet" href="https://unpkg.com/react-select/dist/react-select.css" />
+    <script src="https://apis.google.com/js/api.js"></script>
     <script dangerouslySetInnerHTML={{__html: "window.init()"}}></script>
 </body>
 </html>

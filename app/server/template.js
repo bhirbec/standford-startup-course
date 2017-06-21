@@ -7,22 +7,22 @@ const React = require('react')
 const config = require('./init.js').config
 
 
-function renderHTML(req, res, path, data) {
+function renderHTML(req, res, data) {
 
-    class Content extends React.Component {
-        render() {
-            let templ = loadTemplate(path)
-            return templ(this)
-        }
-    }
-    Content.defaultProps = data
-    Content.defaultProps.asset = req.assetFingerprint
+    // class Content extends React.Component {
+    //     render() {
+    //         let templ = loadTemplate(path)
+    //         return templ(this)
+    //     }
+    // }
+    // Content.defaultProps = data
+    // Content.defaultProps.asset = req.assetFingerprint
 
     let context = {}
     context.data = data
     context.asset = req.assetFingerprint
     context.fbConfig = config.firebaseClient
-    context.Content = Content
+    // context.Content = Content
 
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/html');

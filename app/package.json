@@ -10,14 +10,15 @@
     "firebase-admin": "^4.2.1",
     "googleapis": "^19.0.0",
     "jsonwebtoken": "^7.4.1",
-    "request": "^2.81.0",
-    "static-asset": "^0.6.0",
-    "react": "^15.5.4",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
     "react-jsx": "^1.0.0",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
-    "react-select": "^1.0.0-rc.5"
-  },
+    "react-select": "^1.0.0-rc.5",
+    "request": "^2.81.0",
+    "static-asset": "^0.6.0"
+   },
   "private": true,
   "scripts": {
     "start": "make js && node local.js -c secrets/config-dev.json"

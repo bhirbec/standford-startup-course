@@ -1,10 +1,9 @@
 SHELL=/bin/bash
 
-.PHONY: postinstall clear js
+.PHONY: install postinstall clear js
 
-# install: postinstall
-# 	npm install
-# 	cd server && npm install
+install: postinstall
+	npm install
 
 # node_modules/.rebuild is touched by node_modules/.hooks/postinstall everytime
 # `npm install` runs. This improves performance of this rule since make only

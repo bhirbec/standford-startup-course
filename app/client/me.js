@@ -11,7 +11,6 @@ class Me extends React.Component {
     }
 
     render() {
-
         return <div className="container content-section-a">
             <div className="container">
                 <div className="row">
@@ -27,16 +26,12 @@ class Profile extends React.Component {
 
     componentDidMount() {
         this.props.profileRef.on('value', (snap) => {
-            // TODO: understand whey snap.val() is null when the user sign in for the first time
+            // TODO: understand why snap.val() is null when the user signs in for the first time
             let val = snap.val()
             if (val != null) {
+                val.experience = val.experience || []
                 this.setState(val)
             }
-        })
-
-        // TODO: try to reduce bandwidth with more scoped ref
-        this.props.profileRef.on('child_changed', (snap) => {
-            this.setState(snap.val())
         })
     }
 

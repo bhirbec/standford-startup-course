@@ -47,10 +47,6 @@ h6 {
     color: #eee;
 }
 
-p {
-    margin: 25px 0;
-}
-
 #logo {
     color: white;
     font-weight: bold;
@@ -233,10 +229,20 @@ p.copyright {
 }
 
 /* profile */
-.btn {
+div.me .btn {
     margin-right: 5px;
 }
 
-.new-work-experience {
+div.me button.new-work-experience {
     margin-top: 10px;
+}
+
+div.me div.job-experience {
+    margin: 20px 0;
+    border-top: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+div.me p.job-description {
+    margin: 10px 0;
 }

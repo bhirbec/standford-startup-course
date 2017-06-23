@@ -47,7 +47,7 @@ class Profile extends React.Component {
 
         let refIds = Object.keys(this.state.experience || [])
 
-        return <div>
+        return <div className="me">
             <h1>{this.state['google-profile'].name}</h1>
 
             {refIds.map((refId) => {
@@ -85,9 +85,19 @@ class Experience extends React.Component {
     }
 
     render() {
-        return <div>
+        return <div className="job-experience">
             <h3>{this.props.data.companyName} - {this.props.data.jobTitle}</h3>
-            <p>{this.props.data.jobDescription}</p>
+
+            {this.props.data.jobStartDate || this.props.data.jobEndDate ?
+                <div className="job-dates">
+                    {this.props.data.jobStartDate} to {this.props.data.jobEndDate || 'present'}
+                </div>
+            :
+                null
+            }
+            <p className="job-description">
+                {this.props.data.jobDescription}
+            </p>
             <button type="button"
                 className="btn btn-default"
                 onClick={this.onClick.bind(this)}>
@@ -167,28 +177,44 @@ class Modal extends React.Component {
                             <div className="form-group">
                                 <label htmlFor="company-name">Company Name</label>
                                 <input id="company-name"
-                                        name="companyName"
-                                        type="text"
-                                        ref={this.setValue.bind(this)}
-                                        className="form-control"
-                                        placeholder="ex: Google" />
+                                    name="companyName"
+                                    type="text"
+                                    ref={this.setValue.bind(this)}
+                                    className="form-control"
+                                    placeholder="ex: Google" />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="job-title">Job Title</label>
                                 <input id="job-title"
-                                        name="jobTitle"
-                                        type="text"
-                                        ref={this.setValue.bind(this)}
-                                        className="form-control"
-                                        placeholder="ex: Software Engineer" />
+                                    name="jobTitle"
+                                    type="text"
+                                    ref={this.setValue.bind(this)}
+                                    className="form-control"
+                                    placeholder="ex: Software Engineer" />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="job-description">Job Description</label>
                                 <textarea id="job-description"
-                                        name="jobDescription"
-                                        rows={'4'}
-                                        ref={this.setValue.bind(this)}
-                                        className="form-control"></textarea>
+                                    name="jobDescription"
+                                    rows={'4'}
+                                    ref={this.setValue.bind(this)}
+                                    className="form-control"></textarea>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="job-start-date">Start Date</label>
+                                <input id="job-start-data"
+                                    name="jobStartDate"
+                                    ref={this.setValue.bind(this)}
+                                    className="form-control"
+                                    placeholder="mm/yyyy" />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="job-end-date">End Date (leave empty for current position)</label>
+                                <input id="job-end-data"
+                                    name="jobEndDate"
+                                    ref={this.setValue.bind(this)}
+                                    className="form-control"
+                                    placeholder="mm/yyyy" />
                             </div>
                             <div className="form-group">
                                 <label>Invite People to Comment your resume</label>

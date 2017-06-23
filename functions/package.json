@@ -9,6 +9,7 @@
     "express": "^4.15.2",
     "expressjs": "^1.0.1",
     "firebase-admin": "^4.2.1",
+    "firebase-functions": "^0.5.7",
     "googleapis": "^19.0.0",
     "jsonwebtoken": "^7.4.1",
     "react": "^15.6.1",
@@ -19,8 +20,7 @@
     "react-select": "^1.0.0-rc.5",
     "request": "^2.81.0",
     "static-asset": "^0.6.0"
-   },
-  "private": true,
+  },
   "scripts": {
     "start": "make js && node local.js -c secrets/config-dev.json"
   },

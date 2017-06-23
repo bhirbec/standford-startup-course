@@ -3,7 +3,9 @@
     "rules": "database.rules.json"
   },
   "hosting": {
-    "public": "functions/static",
-    "rewrites": []
+    "public": "app/static",
+    "rewrites": [
+      {"source": "/", "function": "app"}
+    ]
   }
 }

@@ -1,3 +1,4 @@
 **/node_modules/**
 app/secrets/
 app/static/build
+functions/app

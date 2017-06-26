@@ -1,6 +1,6 @@
 SHELL=/bin/bash
 
-.PHONY: install postinstall clear js
+.PHONY: install functions postinstall clear js
 
 install: postinstall
 	npm install
@@ -38,3 +38,6 @@ static/build/lib.js: node_modules/.rebuild
 		-r react-router-dom \
 		-r react-select \
 		-o $@
+
+app:
+	./node_modules/babel-cli/bin/babel.js app --presets=es2015,react --out-dir ../functions/app

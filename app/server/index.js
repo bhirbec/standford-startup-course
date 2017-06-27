@@ -4,8 +4,10 @@ const express = require('express')
 
 const renderHTML = require('./template.js').renderHTML
 const Home = require('../client/home')
+import {Profile} from '../client/publicprofile'
+import {fb} from './init.js'
 
-
+// TODO: remove flash when app is rendered server side
 let app = express()
 
 // static asset
@@ -17,9 +19,20 @@ app.get('/', function (req, res) {
     renderHTML(req, res, Home)
 })
 
-// TODO: remove flash when app is rendered server side
 app.get('/me', function (req, res) {
     renderHTML(req, res, Home)
+})
+
+app.get('/in/:id', function (req, res) {
+    let p = fb.ref('profile').child(req.params.id).once('value')
+
+    p.then((snap) => {
+        class Content extends Profile {}
+        Content.defaultProps = {profile: snap.val()}
+        renderHTML(req, res, Content)
+    }).catch(function (err) {
+        res.status(500).send(err)
+    })
 })
 
 module.exports = app

@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import Select from 'react-select'
 import Multiselect from './multiselect'
+import {Link} from 'react-router-dom'
 
 
 class Me extends React.Component {
@@ -15,6 +16,7 @@ class Me extends React.Component {
             <div className="container">
                 <div className="row">
                     <div className="clearfix"></div>
+                    <div>View your <Link to={'/in/' + this.props.user.uid}>public profile</Link></div>
                     <Profile profileRef={this.profileRef} />
                 </div>
             </div>

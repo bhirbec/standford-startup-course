@@ -7,18 +7,7 @@ const React = require('react')
 const config = require('./init.js').config
 
 
-// class Content extends React.Component {
-//     render() {
-//         let templ = loadTemplate(path)
-//         return templ(this)
-//     }
-// }
-
 function renderHTML(req, res, Content, data) {
-
-    // Content.defaultProps = data
-    // Content.defaultProps.asset = req.assetFingerprint
-
     let context = {}
     context.data = data || {}
     context.asset = req.assetFingerprint

@@ -5,6 +5,7 @@ import {BrowserRouter as Router, Route, Redirect, Link} from 'react-router-dom'
 
 import Me from './me'
 import Home from './home'
+import {PublicProfile} from './publicprofile'
 import {signin, signout} from './signin'
 
 
@@ -55,6 +56,9 @@ class App extends React.Component {
                         <Redirect to="/" />
                     )
                 )}/>
+                <Route exact path="/in/:id" render={(data) => {
+                    return <PublicProfile uid={data.match.params.id} />
+                }}/>
             </div>
         </Router>
     }

@@ -4,12 +4,46 @@ import {Route, Redirect, Link} from 'react-router-dom'
 import Me from './me'
 import Home from './home'
 import {PublicProfile} from './publicprofile'
-import {signout} from './signin'
+import {signin, signout} from './signin'
 
 
 class App extends React.Component {
 
+    componentDidMount() {
+        const fb = firebase.database()
+
+        let authInstance = gapi.auth2.getAuthInstance()
+
+        // Listen for changes to current user.
+        authInstance.currentUser.listen((googleUser) => {
+            console.log('GoogleUser loggin state: ', googleUser.isSignedIn())
+            if (googleUser.isSignedIn()) {
+                signin(googleUser)
+            }
+        });
+
+        firebase.auth().onAuthStateChanged((firebaseUser) => {
+            let isLogged = firebaseUser != null
+            console.log('Firebase loggin state: ', isLogged)
+
+            if (!isLogged && authInstance.isSignedIn.get()) {
+                gapi.auth2.getAuthInstance().signOut().then((error) => {
+                    console.log('Signed out from Google.')
+                    this.setState({isLogged: isLogged, user: firebaseUser})
+                })
+            } else {
+                this.setState({isLogged: isLogged, user: firebaseUser})
+            }
+        })
+    }
+
     render() {
+        // TODO: dirty hack to render from server
+        let state = this.state || this.props.serverData
+        if (!state) {
+            return <div>Loading app...</div>
+        }
+
         return <div>
             <nav className="navbar navbar-default navbar-fixed-top" role="navigation">
                 <div className="container">
@@ -29,7 +63,7 @@ class App extends React.Component {
                     </div>
                    <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul className="nav navbar-nav navbar-right">
-                            {this.props.isLogged && (
+                            {state.isLogged && (
                                 <li><a id="signout" href="#" onClick={signout}>Sign Out</a></li>
                             )}
                         </ul>
@@ -38,15 +72,15 @@ class App extends React.Component {
             </nav>
 
             <Route exact path="/" render={() => (
-                this.props.isLogged ? (
+                state.isLogged ? (
                     <Redirect to="/me" />
                 ) : (
                     <Home />
                 )
             )}/>
             <Route exact path="/me" render={() => (
-                this.props.isLogged ? (
-                    <Me user={this.props.user} />
+                state.isLogged ? (
+                    <Me user={state.user} />
                 ) : (
                     <Redirect to="/" />
                 )

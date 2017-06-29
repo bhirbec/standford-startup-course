@@ -11,7 +11,9 @@ class PublicProfile extends React.Component {
     }
 
     render() {
-        return <Profile profile={this.state} />
+        return <div>
+            <Profile profile={this.state || this.props.serverData} />
+        </div>
     }
 }
 

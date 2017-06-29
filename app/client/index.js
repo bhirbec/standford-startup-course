@@ -1,68 +1,16 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Select from 'react-select'
-import {BrowserRouter as Router, Route, Redirect, Link} from 'react-router-dom'
 
-import Me from './me'
-import Home from './home'
-import {PublicProfile} from './publicprofile'
-import {signin, signout} from './signin'
+import {App} from './app'
+import {signin} from './signin'
+import {BrowserRouter} from 'react-router-dom'
 
 
 firebase.initializeApp(window.fbConfig)
 const fb = firebase.database()
 
-
 // https://jedwatson.github.io/react-select/
 // https://labs.magnet.me/nerds/2015/05/11/importing-google-contacts-with-javascript.html
-let loggedIn = false
-
-class App extends React.Component {
-    componentDidMount() {
-        $('#signout').click(function(e) {
-            signout()
-            return false
-        })
-
-        this.updateSignoutLink()
-    }
-
-    componentDidUpdate() {
-        this.updateSignoutLink()
-    }
-
-    updateSignoutLink() {
-        if (this.props.isLogged) {
-            $('#signout').css({display: 'block'})
-        } else {
-            $('#signout').css({display: 'none'})
-        }
-    }
-
-    render() {
-        return <Router>
-            <div>
-                <Route exact path="/" render={() => (
-                    this.props.isLogged ? (
-                        <Redirect to="/me" />
-                    ) : (
-                        <Home />
-                    )
-                )}/>
-                <Route exact path="/me" render={() => (
-                    this.props.isLogged ? (
-                        <Me user={this.props.user} />
-                    ) : (
-                        <Redirect to="/" />
-                    )
-                )}/>
-                <Route exact path="/in/:id" render={(data) => {
-                    return <PublicProfile uid={data.match.params.id} />
-                }}/>
-            </div>
-        </Router>
-    }
-}
 
 function redirectToHome() {
     if (window.location.pathname != '/') {
@@ -103,7 +51,11 @@ function init(resp) {
             }
         }
 
-        ReactDOM.render(<App isLogged={isLogged} user={firebaseUser} />, document.getElementById('app'));
+        let el = document.getElementById('app')
+
+        ReactDOM.render(<BrowserRouter>
+            <App isLogged={isLogged} user={firebaseUser} />
+        </BrowserRouter>, el)
     })
 }
 

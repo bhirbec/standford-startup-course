@@ -21,11 +21,14 @@
     "request": "^2.81.0",
     "static-asset": "^0.6.0"
   },
+  "private": true,
   "scripts": {
-    "start": "make js && node local.js -c secrets/config-dev.json"
+    "start": "make js && babel-node local.js"
   },
   "devDependencies": {
+    "babel-cli": "^6.6.5",
     "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.5.0",
     "babelify": "^7.3.0",
     "browserify": "^14.4.0"
   }

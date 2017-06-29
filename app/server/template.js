@@ -7,9 +7,8 @@ const React = require('react')
 const config = require('./init.js').config
 
 
-function renderHTML(req, res, Content, data) {
+function renderHTML(req, res, Content) {
     let context = {}
-    context.data = data || {}
     context.asset = req.assetFingerprint
     context.fbConfig = config.firebaseClient
     context.Content = Content

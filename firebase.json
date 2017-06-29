@@ -6,7 +6,8 @@
     "public": "app/static",
     "rewrites": [
       {"source": "/", "function": "app"},
-      {"source": "/me", "function": "app"}
+      {"source": "/me", "function": "app"},
+      {"source": "/in/*", "function": "app"}
     ]
   }
 }

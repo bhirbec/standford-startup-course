@@ -11,23 +11,8 @@ class Me extends React.Component {
         this.profileRef = firebase.database().ref('profile').child(this.props.user.uid)
     }
 
-    render() {
-        return <div className="container content-section-a">
-            <div className="container">
-                <div className="row">
-                    <div className="clearfix"></div>
-                    <div>View your <Link to={'/in/' + this.props.user.uid}>public profile</Link></div>
-                    <Profile profileRef={this.profileRef} />
-                </div>
-            </div>
-        </div>
-    }
-}
-
-class Profile extends React.Component {
-
     componentDidMount() {
-        this.props.profileRef.on('value', (snap) => {
+        this.profileRef.on('value', (snap) => {
             // TODO: understand why snap.val() is null when the user signs in for the first time
             let val = snap.val()
             if (val != null) {
@@ -38,6 +23,18 @@ class Profile extends React.Component {
     }
 
     render() {
+        return <div className="container content-section-a">
+            <div className="container">
+                <div className="row">
+                    <div className="clearfix"></div>
+                    <div>View your <Link to={'/in/' + this.props.user.uid}>public profile</Link></div>
+                    {this.content()}
+                </div>
+            </div>
+        </div>
+    }
+
+    content() {
         if (this.state == null) {
             return <div>Loading...</div>
         }
@@ -50,11 +47,11 @@ class Profile extends React.Component {
             {refIds.map((refId) => {
                 return <Experience
                     key={"exp-" + refId}
-                    experienceRef={this.props.profileRef.child('experience/' + refId)}
+                    experienceRef={this.profileRef.child('experience/' + refId)}
                     data={this.state.experience[refId]} />
             })}
 
-            {refIds.length < 5 ? <NewExperienceButton profileRef={this.props.profileRef} /> : null}
+            {refIds.length < 5 ? <NewExperienceButton profileRef={this.profileRef} /> : null}
         </div>
     }
 };

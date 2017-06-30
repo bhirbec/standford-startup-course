@@ -11,15 +11,6 @@ class PublicProfile extends React.Component {
     }
 
     render() {
-        return <div>
-            <Profile profile={this.state || this.props.serverData} />
-        </div>
-    }
-}
-
-class Profile extends React.Component {
-
-    render() {
         // TODO: factorize layout
         return <div className="container content-section-a">
             <div className="container">
@@ -32,7 +23,7 @@ class Profile extends React.Component {
     }
 
     content() {
-        let profile = this.props.profile
+        let profile = this.state || this.props.serverData
 
         if (profile == null) {
             return <div>Loading...</div>
@@ -70,4 +61,4 @@ class Experience extends React.Component {
     }
 }
 
-export {PublicProfile, Profile}
+export {PublicProfile}

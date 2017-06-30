@@ -23,18 +23,6 @@ class Me extends React.Component {
     }
 
     render() {
-        return <div className="container content-section-a">
-            <div className="container">
-                <div className="row">
-                    <div className="clearfix"></div>
-                    <div>View your <Link to={'/in/' + this.props.user.uid}>public profile</Link></div>
-                    {this.content()}
-                </div>
-            </div>
-        </div>
-    }
-
-    content() {
         if (this.state == null) {
             return <div>Loading...</div>
         }
@@ -42,6 +30,8 @@ class Me extends React.Component {
         let refIds = Object.keys(this.state.experience || [])
 
         return <div className="me">
+            <div>View your <Link to={'/in/' + this.props.user.uid}>public profile</Link></div>
+
             <h1>{this.state['google-profile'].name}</h1>
 
             {refIds.map((refId) => {

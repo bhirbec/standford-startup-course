@@ -11,18 +11,6 @@ class PublicProfile extends React.Component {
     }
 
     render() {
-        // TODO: factorize layout
-        return <div className="container content-section-a">
-            <div className="container">
-                <div className="row">
-                    <div className="clearfix"></div>
-                    {this.content()}
-                </div>
-            </div>
-        </div>
-    }
-
-    content() {
         let profile = this.state || this.props.serverData
 
         if (profile == null) {
@@ -39,7 +27,7 @@ class PublicProfile extends React.Component {
             })}
         </div>
     }
-};
+}
 
 
 class Experience extends React.Component {

@@ -80,15 +80,30 @@ class App extends React.Component {
             )}/>
             <Route exact path="/me" render={() => (
                 state.isLogged ? (
-                    <Me user={state.user} />
+                    <InnerLayout><Me user={state.user} /></InnerLayout>
                 ) : (
                     <Redirect to="/" />
                 )
             )}/>
 
             <Route exact path="/in/:id" render={(data) => (
-                <PublicProfile uid={data.match.params.id} serverData={this.props.serverData} />
+                <InnerLayout>
+                    <PublicProfile uid={data.match.params.id} serverData={this.props.serverData} />
+                </InnerLayout>
             )}/>
+        </div>
+    }
+}
+
+class InnerLayout extends React.Component {
+    render() {
+        return <div className="container content-section-a">
+            <div className="container">
+                <div className="row">
+                    <div className="clearfix"></div>
+                    {this.props.children}
+                </div>
+            </div>
         </div>
     }
 }

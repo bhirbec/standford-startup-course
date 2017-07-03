@@ -2,6 +2,10 @@ import React from 'react'
 
 
 class PublicProfile extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = this.props.serverData
+    }
 
     componentDidMount() {
         let profileRef = firebase.database().ref('profile').child(this.props.uid)
@@ -11,19 +15,17 @@ class PublicProfile extends React.Component {
     }
 
     render() {
-        let profile = this.state || this.props.serverData
-
-        if (profile == null) {
+        if (!this.state) {
             return <div>Loading...</div>
         }
 
-        let refIds = Object.keys(profile.experience || [])
+        let refIds = Object.keys(this.state.experience || [])
 
         return <div className="me">
-            <h1>{profile['google-profile'].name}</h1>
+            <h1>{this.state['google-profile'].name}</h1>
 
             {refIds.map((refId) => {
-                return <Experience key={"exp-" + refId} data={profile.experience[refId]} />
+                return <Experience key={"exp-" + refId} data={this.state.experience[refId]} />
             })}
         </div>
     }

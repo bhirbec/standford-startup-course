@@ -8,6 +8,10 @@ import {signin, signout} from './signin'
 
 
 class App extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {isLogged: false, user: {}}
+    }
 
     componentDidMount() {
         const fb = firebase.database()
@@ -40,9 +44,6 @@ class App extends React.Component {
     render() {
         // TODO: dirty hack to render from server
         let state = this.state || this.props.serverData
-        if (!state) {
-            return <div>Loading app...</div>
-        }
 
         return <div>
             <nav className="navbar navbar-default navbar-fixed-top" role="navigation">

@@ -26,7 +26,7 @@ class Home extends React.Component {
 
                             <div style={{marginTop: '50px'}}>
                                 <h1>Sign up <span className="salmon">now</span>!</h1>
-                                <div id="google-signin" className="g-signin2"></div>
+                                <div id="google-signin"></div>
                             </div>
                         </div>
                     </div>

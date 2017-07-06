@@ -242,3 +242,17 @@ div.me div.job-experience {
 div.me p.job-description {
     margin: 10px 0;
 }
+
+div.review {
+    margin: 15px 0;
+    padding-left: 15px;
+    border-left: 2px solid #eee;
+}
+
+div.review-text {
+    font-style: italic;
+}
+
+div.review-info {
+    color: #ddd;
+}

@@ -10,7 +10,7 @@ import {signin, signout} from './signin'
 class App extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {isLogged: false, user: {}}
+        this.state = {isLogged: false, user: null}
     }
 
     componentDidMount() {
@@ -72,26 +72,31 @@ class App extends React.Component {
                 </div>
             </nav>
 
-            <Route exact path="/" render={() => (
-                state.isLogged ? (
-                    <Redirect to="/me" />
-                ) : (
-                    <Home />
-                )
-            )}/>
-            <Route exact path="/me" render={() => (
-                state.isLogged ? (
-                    <InnerLayout><Me user={state.user} /></InnerLayout>
-                ) : (
-                    <Redirect to="/" />
-                )
-            )}/>
+            {state != null && ([
+                <Route key='route-1' exact path="/" render={() => (
+                    state.isLogged ? (
+                        <Redirect to="/me" />
+                    ) : (
+                        <Home />
+                    )
+                )} />,
+                <Route key='route-2' exact path="/me" render={() => (
+                    state.isLogged ? (
+                        <InnerLayout><Me user={state.user} /></InnerLayout>
+                    ) : (
+                        <Redirect to="/" />
+                    )
+                )} />,
 
-            <Route exact path="/in/:id" render={(data) => (
-                <InnerLayout>
-                    <PublicProfile uid={data.match.params.id} serverData={this.props.serverData} />
-                </InnerLayout>
-            )}/>
+                <Route key='route-3' exact path="/in/:id" user={state.user} render={(data) => (
+                    <InnerLayout>
+                        <PublicProfile
+                            user={state.user}
+                            profileId={data.match.params.id}
+                            serverData={this.props.serverData} />
+                    </InnerLayout>
+                )} />
+            ])}
         </div>
     }
 }

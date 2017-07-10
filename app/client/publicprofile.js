@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+import {BaseForm} from './form'
+
 
 class PublicProfile extends React.Component {
     constructor(props) {
@@ -120,23 +122,10 @@ class NewReview extends React.Component {
     }
 }
 
-// TODO: set focus on first element
-class Modal extends React.Component {
-
-    setValue(input) {
-        if (input) {
-            $(input).val(this.props.data[input.name] || '')
-        }
-    }
+class Modal extends BaseForm {
 
     handleForm(e) {
-        let $form = $(ReactDOM.findDOMNode(this)).find('form')
-
-        let data = {};
-        $.each($form.serializeArray(), function(_, kv) {
-            data[kv.name] = kv.value;
-        });
-
+        let data = this.formData()
         this.props.save(data)
         e.preventDefault()
     }

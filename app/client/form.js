@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 
+// TODO: set focus on first element
 class BaseForm extends React.Component {
 
     setValue(input) {

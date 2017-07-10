@@ -1,8 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Select from 'react-select'
-import Multiselect from './multiselect'
 import {Link} from 'react-router-dom'
+
+import Multiselect from './multiselect'
+import {BaseForm} from './form'
 
 
 class Me extends React.Component {
@@ -125,23 +127,11 @@ class NewExperienceButton extends React.Component {
     }
 }
 
-// TODO: set focus on first element
-class Modal extends React.Component {
+class Modal extends BaseForm {
 
-    setValue(input) {
-        if (input) {
-            $(input).val(this.props.data[input.name] || '')
-        }
-    }
 
     handleForm(e) {
-        let $form = $(ReactDOM.findDOMNode(this)).find('form')
-
-        let data = {};
-        $.each($form.serializeArray(), function(_, kv) {
-            data[kv.name] = kv.value;
-        });
-
+        let data = this.formData();
         this.props.save(data)
         e.preventDefault()
     }

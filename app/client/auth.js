@@ -87,7 +87,7 @@ class SignoutLink extends React.Component {
     signout(e) {
         firebase.auth().signOut()
         .then(() => {
-            this.state.done = true
+            this.setState({done: true})
         })
         .catch((error) => {
             console.log("An error occured while signing out of Firebase", error)

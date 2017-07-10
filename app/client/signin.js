@@ -40,9 +40,13 @@ function signin(googleUser) {
             $.get("https://www.googleapis.com/oauth2/v1/userinfo", {
                 alt: 'json',
                 access_token: googleUser.Zi.access_token
-            }).then(function (info) {
-                info.uid = fbUser.uid
-                fb.ref('profile/' + fbUser.uid + '/google-profile').set(info)
+            }).then(function (data) {
+                fb.ref('profile/' + fbUser.uid + '/info').set({
+                    uid: fbUser.uid,
+                    firstname: data.given_name,
+                    lastname: data.family_name,
+                    email: data.email
+                })
             })
         })
     }).catch(function(error) {

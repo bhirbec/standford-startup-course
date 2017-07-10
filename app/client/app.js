@@ -4,7 +4,7 @@ import {Route, Redirect, Link} from 'react-router-dom'
 import Me from './me'
 import Home from './home'
 import {PublicProfile} from './publicprofile'
-import {signin, signout} from './signin'
+import {SignupForm, LoginForm, SignoutLink} from './auth'
 
 
 class App extends React.Component {
@@ -14,30 +14,10 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        const fb = firebase.database()
-
-        let authInstance = gapi.auth2.getAuthInstance()
-
-        // Listen for changes to current user.
-        authInstance.currentUser.listen((googleUser) => {
-            console.log('GoogleUser loggin state: ', googleUser.isSignedIn())
-            if (googleUser.isSignedIn()) {
-                signin(googleUser)
-            }
-        });
-
-        firebase.auth().onAuthStateChanged((firebaseUser) => {
-            let isLogged = firebaseUser != null
+        firebase.auth().onAuthStateChanged((fbUser) => {
+            let isLogged = fbUser != null
             console.log('Firebase loggin state: ', isLogged)
-
-            if (!isLogged && authInstance.isSignedIn.get()) {
-                gapi.auth2.getAuthInstance().signOut().then((error) => {
-                    console.log('Signed out from Google.')
-                    this.setState({isLogged: isLogged, user: firebaseUser})
-                })
-            } else {
-                this.setState({isLogged: isLogged, user: firebaseUser})
-            }
+            this.setState({isLogged: isLogged, user: fbUser})
         })
     }
 
@@ -65,30 +45,41 @@ class App extends React.Component {
                    <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul className="nav navbar-nav navbar-right">
                             {state.isLogged && (
-                                <li><a id="signout" href="#" onClick={signout}>Sign Out</a></li>
+                                <li><SignoutLink /></li>
                             )}
+                            {!state.isLogged && ([
+                                <li key="to-login"><Link to='/login'>Log in</Link></li>,
+                                <li key="to-signup"><Link to='/signup'>Sign Up</Link></li>
+                            ])}
                         </ul>
                     </div>
                 </div>
             </nav>
 
             {state != null && ([
-                <Route key='route-1' exact path="/" render={() => (
+                <Route key='/' exact path="/" render={() => (
                     state.isLogged ? (
                         <Redirect to="/me" />
                     ) : (
                         <Home />
                     )
                 )} />,
-                <Route key='route-2' exact path="/me" render={() => (
+                <Route key='/signup' exact path="/signup" render={() => (
+                    <InnerLayout><SignupForm /></InnerLayout>
+                )} />,
+
+                <Route key='/login' exact path="/login" render={() => (
+                    <InnerLayout><LoginForm /></InnerLayout>
+                )} />,
+
+                <Route key='/me' exact path="/me" render={() => (
                     state.isLogged ? (
                         <InnerLayout><Me user={state.user} /></InnerLayout>
                     ) : (
                         <Redirect to="/" />
                     )
                 )} />,
-
-                <Route key='route-3' exact path="/in/:id" user={state.user} render={(data) => (
+                <Route key='/in/:id' exact path="/in/:id" user={state.user} render={(data) => (
                     <InnerLayout>
                         <PublicProfile
                             user={state.user}

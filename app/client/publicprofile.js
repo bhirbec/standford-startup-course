@@ -21,7 +21,7 @@ class PublicProfile extends React.Component {
         }
 
         let refIds = Object.keys(this.state.experience || [])
-        let profileName = this.state['google-profile'].name
+        let profileName = `${this.state.info.firstname} ${this.state.info.lastname}`
 
         return <div className="me">
             <h1>{profileName}</h1>

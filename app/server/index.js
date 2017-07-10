@@ -17,6 +17,8 @@ app.use('/public', express.static(path.join(__dirname, "../static/public")));
 app.use('/build', express.static(path.join(__dirname, "../static/build")));
 
 
+
+
 // TODO: remove flash when app is rendered server side
 function MakeAppRoot(req, serverData) {
     class root extends React.Component {
@@ -29,16 +31,6 @@ function MakeAppRoot(req, serverData) {
     return root
 }
 
-app.get('/', function (req, res) {
-    let root = MakeAppRoot(req, {})
-    renderHTML(req, res, root)
-})
-
-app.get('/me', function (req, res) {
-    let root = MakeAppRoot(req, {})
-    renderHTML(req, res, root)
-})
-
 app.get('/in/:id', function (req, res) {
     // TODO: remove code duplication in componentDidMount
     let p = fb.ref('profile').child(req.params.id).once('value')
@@ -49,6 +41,11 @@ app.get('/in/:id', function (req, res) {
     }).catch(function (err) {
         res.status(500).send(err)
     })
+})
+
+app.get('*', function (req, res) {
+    let root = MakeAppRoot(req, {})
+    renderHTML(req, res, root)
 })
 
 module.exports = app

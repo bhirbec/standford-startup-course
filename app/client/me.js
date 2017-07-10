@@ -32,7 +32,7 @@ class Me extends React.Component {
         return <div className="me">
             <div>View your <Link to={'/in/' + this.props.user.uid}>public profile</Link></div>
 
-            <h1>{this.state['google-profile'].name}</h1>
+            <h1>{this.state['info'].firstname} {this.state['info'].lastname}</h1>
 
             {refIds.map((refId) => {
                 return <Experience

@@ -1,15 +1,8 @@
 import React from 'react'
+import {Link} from 'react-router-dom'
 
 
 class Home extends React.Component {
-    componentDidMount() {
-        gapi.signin2.render('google-signin', {
-            scope: 'profile email',
-            theme: 'dark',
-            width: 120
-        })
-    }
-
     render() {
         return <div className="intro-header">
             <div className="container">
@@ -26,7 +19,7 @@ class Home extends React.Component {
 
                             <div style={{marginTop: '50px'}}>
                                 <h1>Sign up <span className="salmon">now</span>!</h1>
-                                <div id="google-signin"></div>
+                                <Link to='/signup'>Sign up</Link>
                             </div>
                         </div>
                     </div>

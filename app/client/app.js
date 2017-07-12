@@ -4,6 +4,7 @@ import {Route, Redirect, Link} from 'react-router-dom'
 import Me from './me'
 import Home from './home'
 import {PublicProfile} from './publicprofile'
+import {Search} from './search'
 import {SignupComponent, LoginComponent, SignoutLink} from './auth'
 
 
@@ -44,9 +45,12 @@ class App extends React.Component {
                     </div>
                    <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul className="nav navbar-nav navbar-right">
-                            {state.isLogged && (
-                                <li><SignoutLink /></li>
-                            )}
+                            {state.isLogged && ([
+                                idAdmin(state.user.uid)?
+                                    <li key="to-search"><Link to='/search'>Search</Link></li> : null
+                                ,
+                                <li key="to-signout"><SignoutLink /></li>
+                            ])}
                             {!state.isLogged && ([
                                 <li key="to-login"><Link to='/login'>Log in</Link></li>,
                                 <li key="to-signup"><Link to='/signup'>Sign Up</Link></li>
@@ -79,6 +83,13 @@ class App extends React.Component {
                         <Redirect to="/" />
                     )
                 )} />,
+                <Route key='/search' exact path="/search" render={() => (
+                    state.isLogged ? (
+                        <InnerLayout><Search /></InnerLayout>
+                    ) : (
+                        <Redirect to="/search" />
+                    )
+                )} />,
                 <Route key='/in/:id' exact path="/in/:id" user={state.user} render={(data) => (
                     <InnerLayout>
                         <PublicProfile
@@ -103,6 +114,12 @@ class InnerLayout extends React.Component {
             </div>
         </div>
     }
+}
+
+function idAdmin(uid) {
+    return {
+        'lCxNpj5R0CMCrXZ9EnkSSUZwzYg2': true
+    }[uid] || false
 }
 
 export {App}

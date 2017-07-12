@@ -4,7 +4,7 @@ import {Route, Redirect, Link} from 'react-router-dom'
 import Me from './me'
 import Home from './home'
 import {PublicProfile} from './publicprofile'
-import {SignupForm, LoginForm, SignoutLink} from './auth'
+import {SignupComponent, LoginComponent, SignoutLink} from './auth'
 
 
 class App extends React.Component {
@@ -65,11 +65,11 @@ class App extends React.Component {
                     )
                 )} />,
                 <Route key='/signup' exact path="/signup" render={() => (
-                    <InnerLayout><SignupForm /></InnerLayout>
+                    <InnerLayout><SignupComponent /></InnerLayout>
                 )} />,
 
                 <Route key='/login' exact path="/login" render={() => (
-                    <InnerLayout><LoginForm /></InnerLayout>
+                    <InnerLayout><LoginComponent /></InnerLayout>
                 )} />,
 
                 <Route key='/me' exact path="/me" render={() => (

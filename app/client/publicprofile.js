@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import {BaseForm} from './form'
+import {SetValue, FormData} from './form'
+import {SignupForm, LoginForm} from './auth'
 
 
 class PublicProfile extends React.Component {
@@ -74,14 +75,12 @@ class Experience extends React.Component {
                 </div>
             })}
 
-            {this.props.user && (
-                <NewReview
-                    user={this.props.user}
-                    profileId={this.props.profileId}
-                    profileName={this.props.profileName}
-                    expId={this.props.expId}
-                    jobTitle={this.props.exp.jobTitle} />
-            )}
+            <NewReview
+                user={this.props.user}
+                profileId={this.props.profileId}
+                profileName={this.props.profileName}
+                expId={this.props.expId}
+                jobTitle={this.props.exp.jobTitle} />
         </div>
     }
 }
@@ -92,16 +91,10 @@ class NewReview extends React.Component {
         this.forceUpdate()
     }
 
-    save(formData) {
+    save(data) {
         let refStr = `profile/${this.props.profileId}/review/${this.props.expId}`
         let ref = firebase.database().ref(refStr)
         let $node = $(ReactDOM.findDOMNode(this))
-
-        let data = {
-            review: formData.review,
-            fromUserId: this.props.user.uid,
-            UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
-        }
 
         ref.push().set(data, function() {
             $node.find('.modal').modal('hide')
@@ -115,47 +108,109 @@ class NewReview extends React.Component {
                 onClick={this.onClick.bind(this)}>
                 Add a Review
             </button>
-            <Modal title={`Review ${this.props.profileName} for position "${this.props.jobTitle}"`}
+            <Modal profileName={this.props.profileName}
+                jobTitle={this.props.jobTitle}
+                user={this.props.user}
                 save={this.save.bind(this)}
                 data={{}} />
         </div>
     }
 }
 
-class Modal extends BaseForm {
+class Modal extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {mode: 'review'}
+    }
 
     handleForm(e) {
-        let data = this.formData()
+        if (this.props.user) {
+            this.postReview(this.props.user)
+        } else {
+            this.setState({mode: 'signup'})
+        }
+        e.preventDefault()
+    }
+
+    postReview(fbUser) {
+        let data = {}
+        data.review = this.state.review
+        data.fromUserId = fbUser.uid
+        data.UTCdate = new Date().toJSON().slice(0,10).replace(/-/g,'/')
         this.props.save(data)
+    }
+
+    handleChange(event) {
+        var state = {}
+        state[event.target.name] = event.target.value
+        this.setState(state);
+    }
+
+    changeMode(mode, e) {
+        this.setState({mode: mode})
         e.preventDefault()
     }
 
     render() {
+        let form = this[this.state.mode].bind(this)
         return <div className="modal fade" role="dialog">
-            <div className="modal-dialog">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <button type="button" className="close" data-dismiss="modal">
-                            &times;
-                        </button>
-                        <h4 className="modal-title">{this.props.title}</h4>
+            <div className="modal-dialog">{form()}</div>
+        </div>
+    }
+
+    header(title) {
+        return <div className="modal-header">
+            <button type="button" className="close" data-dismiss="modal">&times;</button>
+            <h3 className="modal-title">{title}</h3>
+        </div>
+    }
+
+    review() {
+        return <div className="modal-content">
+            {this.header(`Review ${this.props.profileName} for position "${this.props.jobTitle}"`)}
+            <form id='review-form' onSubmit={this.handleForm.bind(this)}>
+                <div className="modal-body">
+                    <div className="form-group">
+                        <label htmlFor="review">Enter your review</label>
+                        <textarea id="review"
+                            name="review"
+                            rows={'4'}
+                            value={this.state.review}
+                            onChange={this.handleChange.bind(this)}
+                            className="form-control"></textarea>
                     </div>
-                    <form onSubmit={this.handleForm.bind(this)}>
-                        <div className="modal-body">
-                            <div className="form-group">
-                                <label htmlFor="review">Enter your review</label>
-                                <textarea id="review"
-                                    name="review"
-                                    rows={'4'}
-                                    ref={this.setValue.bind(this)}
-                                    className="form-control"></textarea>
-                            </div>
-                        </div>
-                        <div className="modal-footer">
-                            <button type="submit" className="btn btn-success">Save</button>
-                            <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
+                </div>
+                <div className="modal-footer">
+                    <button type="submit" className="btn btn-success">
+                        {this.props.user == null  ? "Save & Sign Up" : "Save"}
+                    </button>
+                    <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    }
+
+    signup() {
+        return <div className="modal-content">
+            {this.header('Sign up to post your review')}
+            <div className="modal-body auth-form">
+                <SignupForm resolve={this.postReview.bind(this)} />
+                <div className="centered">
+                    <span>Already on letsResume? </span>
+                    <a href="#" onClick={this.changeMode.bind(this, 'login')}>Log in</a>
+                </div>
+            </div>
+        </div>
+    }
+
+    login() {
+        return <div className="modal-content">
+            {this.header('Log in to post your review')}
+            <div className="modal-body auth-form">
+                <LoginForm resolve={this.postReview.bind(this)} />
+                <div className="centered">
+                    <span>New to letsResume? </span>
+                    <a href="#" onClick={this.changeMode.bind(this, 'signup')}>Sign Up</a>
                 </div>
             </div>
         </div>

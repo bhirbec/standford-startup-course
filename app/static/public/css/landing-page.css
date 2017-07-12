@@ -242,12 +242,12 @@ p.copyright {
 }
 
 .auth-form h1,
-.auth-form .buttons {
+.auth-form .centered {
     text-align: center;
 }
 
 .auth-form button {
-    margin: 15px 0;
+    margin: 15px auto;
 }
 
 /* profile */

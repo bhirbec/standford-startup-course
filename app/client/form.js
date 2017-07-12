@@ -13,7 +13,10 @@ class BaseForm extends React.Component {
     }
 
     formData() {
-        let $form = $(ReactDOM.findDOMNode(this)).find('form')
+        let $form = $(ReactDOM.findDOMNode(this))
+        if (!$form.is('form')) {
+            $form = $form.find('form')
+        }
 
         let data = {};
         $.each($form.serializeArray(), function(_, kv) {
@@ -24,4 +27,20 @@ class BaseForm extends React.Component {
     }
 }
 
-export {BaseForm}
+function SetValue(input) {
+    let data = this.props.data || {}
+    if (input) {
+        $(input).val(data[input.name] || '')
+    }
+}
+
+function FormData(form) {
+    let data = {};
+    $.each($(form).serializeArray(), function(_, kv) {
+        data[kv.name] = kv.value;
+    });
+
+    return data
+}
+
+export {BaseForm, SetValue, FormData}

@@ -117,7 +117,8 @@ class InnerLayout extends React.Component {
 
 function idAdmin(uid) {
     return {
-        'lCxNpj5R0CMCrXZ9EnkSSUZwzYg2': true
+        'lCxNpj5R0CMCrXZ9EnkSSUZwzYg2': true,
+        'ujaAcjlu3gMPdtWrNq39x7HvzAT2': true,
     }[uid] || false
 }
 

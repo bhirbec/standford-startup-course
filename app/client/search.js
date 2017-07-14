@@ -13,8 +13,12 @@ class Search extends React.Component {
             this.setState({'benoit': snap.val()})
         })
 
+        db.ref('profile').child('ujaAcjlu3gMPdtWrNq39x7HvzAT2').child('info').once('value', (snap) => {
+            this.setState({'reagan': snap.val()})
+        })
+
         db.ref('profile').child('lCxNpj5R0CMCrXZ9EnkSSUZwzYg2').child('info').once('value', (snap) => {
-            this.setState({'benito': snap.val()})
+            this.setState({'someguy': snap.val()})
         })
     }
 
@@ -34,9 +38,15 @@ class Search extends React.Component {
                     <Link to='/in/5M7pXK3twXegXSaexip1ARA2qm02'>View profile</Link>
                 </div>
             )}
-            {this.state.benito && (
+            {this.state.reagan && (
                 <div>
-                    <h2>{this.state.benito.firstname} {this.state.benito.lastname}</h2>
+                    <h2>{this.state.reagan.firstname} {this.state.reagan.lastname}</h2>
+                    <Link to='/in/ujaAcjlu3gMPdtWrNq39x7HvzAT2'>View profile</Link>
+                </div>
+            )}
+            {this.state.someguy && (
+                <div>
+                    <h2>{this.state.someguy.firstname} {this.state.someguy.lastname}</h2>
                     <Link to='/in/lCxNpj5R0CMCrXZ9EnkSSUZwzYg2'>View profile</Link>
                 </div>
             )}

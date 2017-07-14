@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import {Link} from 'react-router-dom'
 
 import {SetValue, FormData} from './form'
 import {SignupForm, LoginForm, currentUser} from './auth'
@@ -12,9 +13,17 @@ class PublicProfile extends React.Component {
     }
 
     componentDidMount() {
-        // we put this here (and not in constructor) for server-side rendering
-        this.fbRef = firebase.database().ref('profile').child(this.props.profileId)
+        this.update(this.props.profileId)
+    }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.profileId != this.props.profileId) {
+            this.update(nextProps.profileId)
+        }
+    }
+
+    update(profileId) {
+        this.fbRef = firebase.database().ref('profile').child(profileId)
         this.fbRef.on('value', (snap) => {
             this.setState(snap.val())
         })
@@ -29,10 +38,15 @@ class PublicProfile extends React.Component {
             return <div>Loading...</div>
         }
 
+        let fbUser = currentUser()
         let refIds = Object.keys(this.state.experience || [])
         let profileName = `${this.state.info.firstname} ${this.state.info.lastname}`
 
         return <div className="me">
+            {fbUser && fbUser.uid == this.props.profileId && (
+                <div>Edit your <Link to={'/me'}>profile</Link></div>
+            )}
+
             <h1>{profileName}</h1>
 
             {refIds.map((expId) => {
@@ -58,6 +72,8 @@ class PublicProfile extends React.Component {
 
 class Experience extends React.Component {
     render() {
+        let fbUser = currentUser()
+
         return <div className="job-experience">
             <h3>{this.props.exp.companyName} - {this.props.exp.jobTitle}</h3>
 
@@ -76,15 +92,21 @@ class Experience extends React.Component {
                     <div className="review-text">
                         &ldquo;{rev.review}&rdquo;
                     </div>
-                    <div className="review-info">Someone - {rev.UTCdate}</div>
+                    <div className="review-info">
+                        <Link to={`/in/${rev.fromUser.uid}`}>
+                            {rev.fromUser.firstname} {rev.fromUser.lastname}
+                        </Link> - {rev.UTCdate}
+                    </div>
                 </div>
             })}
 
-            <NewReview
-                profileId={this.props.profileId}
-                profileName={this.props.profileName}
-                expId={this.props.expId}
-                jobTitle={this.props.exp.jobTitle} />
+            {fbUser && fbUser.uid != this.props.profileId && (
+                <NewReview
+                    profileId={this.props.profileId}
+                    profileName={this.props.profileName}
+                    expId={this.props.expId}
+                    jobTitle={this.props.exp.jobTitle} />
+            )}
         </div>
     }
 }
@@ -137,11 +159,20 @@ class Modal extends React.Component {
     }
 
     postReview(fbUser) {
-        let data = {}
-        data.review = this.state.review
-        data.fromUserId = fbUser.uid
-        data.UTCdate = new Date().toJSON().slice(0,10).replace(/-/g,'/')
-        this.props.save(data)
+        firebase.database().ref('profile').child(fbUser.uid + '/info').once('value', (snap) => {
+            let info = snap.val()
+
+            // TODO: do we have to denormalize the data for firstname and lastname?
+            this.props.save({
+                'fromUser': {
+                    uid: fbUser.uid,
+                    firstname: info.firstname,
+                    lastname: info.lastname
+                },
+                review: this.state.review,
+                UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
+            })
+        })
     }
 
     handleChange(event) {

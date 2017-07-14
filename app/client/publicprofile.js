@@ -12,10 +12,16 @@ class PublicProfile extends React.Component {
     }
 
     componentDidMount() {
-        let profileRef = firebase.database().ref('profile').child(this.props.profileId)
-        profileRef.on('value', (snap) => {
+        // we put this here (and not in constructor) for server-side rendering
+        this.fbRef = firebase.database().ref('profile').child(this.props.profileId)
+
+        this.fbRef.on('value', (snap) => {
             this.setState(snap.val())
         })
+    }
+
+    componentWillUnmount() {
+        this.fbRef.off()
     }
 
     render() {

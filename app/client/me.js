@@ -13,11 +13,13 @@ class Me extends React.Component {
     constructor(props) {
         super(props)
         this.fbUser = currentUser()
-        this.profileRef = firebase.database().ref('profile').child(this.fbUser.uid)
     }
 
     componentDidMount() {
-        this.profileRef.on('value', (snap) => {
+        // we put this here (and not in constructor) for server-side rendering
+        this.fbRef = firebase.database().ref('profile').child(this.fbUser.uid)
+
+        this.fbRef.on('value', (snap) => {
             // TODO: understand why snap.val() is null when the user signs in for the first time
             let val = snap.val()
             if (val != null) {
@@ -25,6 +27,10 @@ class Me extends React.Component {
                 this.setState(val)
             }
         })
+    }
+
+    componentWillUnmount() {
+        this.fbRef.off()
     }
 
     render() {
@@ -42,11 +48,11 @@ class Me extends React.Component {
             {refIds.map((refId) => {
                 return <Experience
                     key={"exp-" + refId}
-                    experienceRef={this.profileRef.child('experience/' + refId)}
+                    experienceRef={this.fbRef.child('experience/' + refId)}
                     data={this.state.experience[refId]} />
             })}
 
-            {refIds.length < 5 ? <NewExperienceButton profileRef={this.profileRef} /> : null}
+            {refIds.length < 5 ? <NewExperienceButton profileRef={this.fbRef} /> : null}
         </div>
     }
 };

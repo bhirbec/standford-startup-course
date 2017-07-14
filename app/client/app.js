@@ -78,7 +78,7 @@ class App extends React.Component {
 
                 <Route key='/me' exact path="/me" render={() => (
                     state.isLogged ? (
-                        <InnerLayout><Me user={state.user} /></InnerLayout>
+                        <InnerLayout><Me /></InnerLayout>
                     ) : (
                         <Redirect to="/" />
                     )
@@ -90,10 +90,9 @@ class App extends React.Component {
                         <Redirect to="/search" />
                     )
                 )} />,
-                <Route key='/in/:id' exact path="/in/:id" user={state.user} render={(data) => (
+                <Route key='/in/:id' exact path="/in/:id" render={(data) => (
                     <InnerLayout>
                         <PublicProfile
-                            user={state.user}
                             profileId={data.match.params.id}
                             serverData={this.props.serverData} />
                     </InnerLayout>

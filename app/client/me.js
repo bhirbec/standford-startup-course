@@ -4,13 +4,16 @@ import Select from 'react-select'
 import {Link} from 'react-router-dom'
 
 import Multiselect from './multiselect'
+import {currentUser} from './auth'
+// TODO: do we need BaseForm?
 import {BaseForm} from './form'
 
 
 class Me extends React.Component {
     constructor(props) {
         super(props)
-        this.profileRef = firebase.database().ref('profile').child(this.props.user.uid)
+        this.fbUser = currentUser()
+        this.profileRef = firebase.database().ref('profile').child(this.fbUser.uid)
     }
 
     componentDidMount() {
@@ -32,7 +35,7 @@ class Me extends React.Component {
         let refIds = Object.keys(this.state.experience || [])
 
         return <div className="me">
-            <div>View your <Link to={'/in/' + this.props.user.uid}>public profile</Link></div>
+            <div>View your <Link to={'/in/' + this.fbUser.uid}>public profile</Link></div>
 
             <h1>{this.state['info'].firstname} {this.state['info'].lastname}</h1>
 

@@ -197,4 +197,17 @@ class LoginForm extends BaseForm {
     }
 }
 
-export {SignupComponent, SignupForm, SignoutLink, LoginComponent, LoginForm}
+function currentUser() {
+    try {
+        firebase
+    } catch (e) {
+        if (e instanceof ReferenceError) {
+            return null
+        } else {
+            throw(e)
+        }
+    }
+    return firebase.auth().currentUser
+}
+
+export {SignupComponent, SignupForm, SignoutLink, LoginComponent, LoginForm, currentUser}

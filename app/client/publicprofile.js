@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 import {SetValue, FormData} from './form'
-import {SignupForm, LoginForm} from './auth'
+import {SignupForm, LoginForm, currentUser} from './auth'
 
 
 class PublicProfile extends React.Component {
@@ -39,7 +39,6 @@ class PublicProfile extends React.Component {
 
                 return <Experience
                     key={"exp-" + expId}
-                    user={this.props.user}
                     profileName={profileName}
                     profileId={this.props.profileId}
                     expId={expId}
@@ -76,7 +75,6 @@ class Experience extends React.Component {
             })}
 
             <NewReview
-                user={this.props.user}
                 profileId={this.props.profileId}
                 profileName={this.props.profileName}
                 expId={this.props.expId}
@@ -110,7 +108,6 @@ class NewReview extends React.Component {
             </button>
             <Modal profileName={this.props.profileName}
                 jobTitle={this.props.jobTitle}
-                user={this.props.user}
                 save={this.save.bind(this)}
                 data={{}} />
         </div>
@@ -121,11 +118,12 @@ class Modal extends React.Component {
     constructor(props) {
         super(props)
         this.state = {mode: 'review'}
+        this.fbUser = currentUser()
     }
 
     handleForm(e) {
-        if (this.props.user) {
-            this.postReview(this.props.user)
+        if (this.fbUser) {
+            this.postReview(this.fbUser)
         } else {
             this.setState({mode: 'signup'})
         }
@@ -182,7 +180,7 @@ class Modal extends React.Component {
                 </div>
                 <div className="modal-footer">
                     <button type="submit" className="btn btn-success">
-                        {this.props.user == null  ? "Save & Sign Up" : "Save"}
+                        {this.fbUser == null  ? "Save & Sign Up" : "Save"}
                     </button>
                     <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
                 </div>

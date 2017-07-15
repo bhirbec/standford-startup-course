@@ -18,6 +18,9 @@ class PublicProfile extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.profileId != this.props.profileId) {
+            if (this.ref) {
+                this.fbRef.off()
+            }
             this.update(nextProps.profileId)
         }
     }

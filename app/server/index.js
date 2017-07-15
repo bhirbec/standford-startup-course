@@ -17,8 +17,6 @@ app.use('/public', express.static(path.join(__dirname, "../static/public")));
 app.use('/build', express.static(path.join(__dirname, "../static/build")));
 
 
-
-
 // TODO: remove flash when app is rendered server side
 function MakeAppRoot(req, serverData) {
     class root extends React.Component {

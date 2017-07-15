@@ -282,3 +282,7 @@ div.review-text {
 div.review-info {
     color: #ddd;
 }
+
+div.review-buttons {
+    margin: 15px 0;
+}

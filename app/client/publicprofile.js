@@ -5,31 +5,27 @@ import {Link} from 'react-router-dom'
 import {SetValue, FormData} from './form'
 import {SignupForm, LoginForm, currentUser} from './auth'
 
+// TODO: I'm not a fan of importing this from me.js
+import {BaseProfile} from './me'
 
-class PublicProfile extends React.Component {
+
+class PublicProfile extends BaseProfile {
     constructor(props) {
         super(props)
         this.state = this.props.serverData
     }
 
     componentDidMount() {
-        this.update(this.props.profileId)
+        this.fetchProfileAndSetState(this.props.profileId)
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.profileId != this.props.profileId) {
-            if (this.ref) {
+            if (this.fbRef) {
                 this.fbRef.off()
             }
-            this.update(nextProps.profileId)
+            this.fetchProfileAndSetState(nextProps.profileId)
         }
-    }
-
-    update(profileId) {
-        this.fbRef = firebase.database().ref('profile').child(profileId)
-        this.fbRef.on('value', (snap) => {
-            this.setState(snap.val())
-        })
     }
 
     componentWillUnmount() {
@@ -42,7 +38,7 @@ class PublicProfile extends React.Component {
         }
 
         let fbUser = currentUser()
-        let refIds = Object.keys(this.state.experience || [])
+        let expIds = Object.keys(this.state.experience || [])
         let profileName = `${this.state.info.firstname} ${this.state.info.lastname}`
 
         return <div className="me">
@@ -52,7 +48,7 @@ class PublicProfile extends React.Component {
 
             <h1>{profileName}</h1>
 
-            {refIds.map((expId) => {
+            {expIds.map((expId) => {
                 let reviews = []
                 if (this.state.review) {
                     for (let revId in this.state.review[expId] || {}) {
@@ -65,8 +61,7 @@ class PublicProfile extends React.Component {
                     profileName={profileName}
                     profileId={this.props.profileId}
                     expId={expId}
-                    exp={this.state.experience[expId]}
-                    reviews={reviews} />
+                    exp={this.state.experience[expId]} />
             })}
         </div>
     }
@@ -76,31 +71,28 @@ class PublicProfile extends React.Component {
 class Experience extends React.Component {
     render() {
         let fbUser = currentUser()
+        let exp = this.props.exp
+
+        // TODO: sever side rendering fails with exp.reviews.map
+        exp.reviews = exp.reviews || []
 
         return <div className="job-experience">
-            <h3>{this.props.exp.companyName} - {this.props.exp.jobTitle}</h3>
+            <h3>{exp.companyName} - {exp.jobTitle}</h3>
 
-            {(this.props.exp.jobStartDate || this.props.exp.jobEndDate) && (
+            {(exp.jobStartDate || exp.jobEndDate) && (
                 <div className="job-dates">
-                    {this.props.exp.jobStartDate} to {this.props.exp.jobEndDate || 'present'}
+                    {exp.jobStartDate} to {exp.jobEndDate || 'present'}
                 </div>
             )}
 
             <p className="job-description">
-                {this.props.exp.jobDescription}
+                {exp.jobDescription}
             </p>
 
-            {this.props.reviews.map((rev, i) => {
-                return <div key={'review-' + this.props.expId + '-' + i} className="review">
-                    <div className="review-text">
-                        &ldquo;{rev.review}&rdquo;
-                    </div>
-                    <div className="review-info">
-                        <Link to={`/in/${rev.fromUser.uid}`}>
-                            {rev.fromUser.firstname} {rev.fromUser.lastname}
-                        </Link> - {rev.UTCdate}
-                    </div>
-                </div>
+            {exp.reviews.map((rev) => {
+                return <Review
+                    key={'review-' + rev.revId}
+                    rev={rev} />
             })}
 
             {fbUser && fbUser.uid != this.props.profileId && (
@@ -108,8 +100,29 @@ class Experience extends React.Component {
                     profileId={this.props.profileId}
                     profileName={this.props.profileName}
                     expId={this.props.expId}
-                    jobTitle={this.props.exp.jobTitle} />
+                    jobTitle={exp.jobTitle} />
             )}
+        </div>
+    }
+}
+
+class Review extends React.Component {
+    render() {
+        let rev = this.props.rev
+
+        if (rev.status != 'publish') {
+            return null
+        }
+
+        return <div className="review">
+            <div className="review-text">
+                &ldquo;{rev.review}&rdquo;
+            </div>
+            <div className="review-info">
+                <Link to={`/in/${rev.reviewer.uid}`}>
+                    {rev.reviewer.firstname} {rev.reviewer.lastname}
+                </Link> - {rev.UTCdate}
+            </div>
         </div>
     }
 }
@@ -120,14 +133,9 @@ class NewReview extends React.Component {
         this.forceUpdate()
     }
 
-    save(data) {
-        let refStr = `profile/${this.props.profileId}/review/${this.props.expId}`
-        let ref = firebase.database().ref(refStr)
+    save() {
         let $node = $(ReactDOM.findDOMNode(this))
-
-        ref.push().set(data, function() {
-            $node.find('.modal').modal('hide')
-        })
+        $node.find('.modal').modal('hide')
     }
 
     render() {
@@ -137,7 +145,10 @@ class NewReview extends React.Component {
                 onClick={this.onClick.bind(this)}>
                 Add a Review
             </button>
-            <Modal profileName={this.props.profileName}
+            <Modal
+                profileId={this.props.profileId}
+                expId={this.props.expId}
+                profileName={this.props.profileName}
                 jobTitle={this.props.jobTitle}
                 save={this.save.bind(this)}
                 data={{}} />
@@ -166,14 +177,20 @@ class Modal extends React.Component {
             let info = snap.val()
 
             // TODO: do we have to denormalize the data for firstname and lastname?
-            this.props.save({
-                'fromUser': {
+            let data = {
+                'reviewer': {
                     uid: fbUser.uid,
                     firstname: info.firstname,
                     lastname: info.lastname
                 },
+                expId: this.props.expId,
                 review: this.state.review,
                 UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
+            }
+
+            let ref = firebase.database().ref(`reviews/${this.props.profileId}`)
+            ref.push().set(data, () => {
+                this.props.save()
             })
         })
     }

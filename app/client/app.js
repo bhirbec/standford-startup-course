@@ -1,7 +1,7 @@
 import React from 'react'
 import {Route, Redirect, Link} from 'react-router-dom'
 
-import Me from './me'
+import {Me} from './me'
 import Home from './home'
 import {PublicProfile} from './publicprofile'
 import {Search} from './search'

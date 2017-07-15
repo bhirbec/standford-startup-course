@@ -9,24 +9,53 @@ import {currentUser} from './auth'
 import {BaseForm} from './form'
 
 
-class Me extends React.Component {
+class BaseProfile extends React.Component {
+    fetchProfileAndSetState(uid) {
+        // we put this here (and not in constructor) for server-side rendering
+        let fb = firebase.database()
+        this.fbRef = fb.ref('profile').child(uid)
+
+        this.fbRef.on('value', (snap) => {
+            // TODO: understand why snap.val() is null when the user signs in for the first time
+            let profile = snap.val()
+            if (profile == null) {
+                return
+            }
+
+            // TODO: add real-time update when there's a new pending review
+            fb.ref('reviews').child(uid).once('value', (snap) => {
+                let reviews = snap.val() || {}
+                profile.experience = profile.experience || {}
+
+                for (let expId in profile.experience ) {
+                    let exp = profile.experience[expId]
+                    let status = exp.reviewStatus || {}
+                    exp.reviews = []
+
+                    for (let revId in reviews) {
+                        if (reviews[revId].expId == expId) {
+                            let review = reviews[revId]
+                            review.revId = revId
+                            review.status = status[revId] || 'unpublish'
+                            exp.reviews.push(reviews[revId])
+                        }
+                    }
+                }
+
+                this.setState(profile)
+            })
+        })
+    }
+}
+
+class Me extends BaseProfile {
     constructor(props) {
         super(props)
         this.fbUser = currentUser()
     }
 
     componentDidMount() {
-        // we put this here (and not in constructor) for server-side rendering
-        this.fbRef = firebase.database().ref('profile').child(this.fbUser.uid)
-
-        this.fbRef.on('value', (snap) => {
-            // TODO: understand why snap.val() is null when the user signs in for the first time
-            let val = snap.val()
-            if (val != null) {
-                val.experience = val.experience || []
-                this.setState(val)
-            }
-        })
+        this.fetchProfileAndSetState(this.fbUser.uid)
     }
 
     componentWillUnmount() {
@@ -38,21 +67,26 @@ class Me extends React.Component {
             return <div>Loading...</div>
         }
 
-        let refIds = Object.keys(this.state.experience || [])
+        let expIds = Object.keys(this.state.experience)
+        let profileName = `${this.state.info.firstname} ${this.state.info.lastname}`
 
         return <div className="me">
-            <div>View your <Link to={'/in/' + this.fbUser.uid}>public profile</Link></div>
+            <div>
+                View your <Link to={'/in/' + this.fbUser.uid}>public profile</Link>
+            </div>
 
-            <h1>{this.state['info'].firstname} {this.state['info'].lastname}</h1>
+            <h1>{profileName}</h1>
 
-            {refIds.map((refId) => {
+            {expIds.map((expId) => {
                 return <Experience
-                    key={"exp-" + refId}
-                    experienceRef={this.fbRef.child('experience/' + refId)}
-                    data={this.state.experience[refId]} />
+                    key={"exp-" + expId}
+                    fbRef={this.fbRef.child('experience/' + expId)}
+                    profileId={this.props.profileId}
+                    expId={expId}
+                    exp={this.state.experience[expId]} />
             })}
 
-            {refIds.length < 5 ? <NewExperienceButton profileRef={this.fbRef} /> : null}
+            {expIds.length < 5 ? <NewExperienceButton profileRef={this.fbRef} /> : null}
         </div>
     }
 };
@@ -67,7 +101,7 @@ class Experience extends React.Component {
     save(data) {
         // TODO: can we return a promise?
         let $node = $(ReactDOM.findDOMNode(this))
-        this.props.experienceRef.set(data, function() {
+        this.props.fbRef.set(data, function() {
             $node.find('.modal').modal('hide')
         })
     }
@@ -75,35 +109,67 @@ class Experience extends React.Component {
     remove() {
         let b = confirm('Do you want to remove this work experience?')
         if (b == true) {
-            this.props.experienceRef.remove()
+            this.props.fbRef.remove()
         }
     }
 
     render() {
-        return <div className="job-experience">
-            <h3>{this.props.data.companyName} - {this.props.data.jobTitle}</h3>
+        let exp = this.props.exp
 
-            {this.props.data.jobStartDate || this.props.data.jobEndDate ?
+        return <div className="job-experience">
+            <h3>{exp.companyName} - {exp.jobTitle}</h3>
+
+            {(exp.jobStartDate || exp.jobEndDate) && (
                 <div className="job-dates">
-                    {this.props.data.jobStartDate} to {this.props.data.jobEndDate || 'present'}
+                    {exp.jobStartDate} to {exp.jobEndDate || 'present'}
                 </div>
-            :
-                null
-            }
+            )}
+
             <p className="job-description">
-                {this.props.data.jobDescription}
+                {exp.jobDescription}
             </p>
-            <button type="button"
-                className="btn btn-default"
-                onClick={this.onClick.bind(this)}>
-                Edit</button>
-            <button type="button"
-                className="btn btn-default"
-                onClick={this.remove.bind(this)}>
-                Remove</button>
-            <Modal title={'Edit work experience'}
-                save={this.save.bind(this)}
-                data={this.props.data} />
+
+            {exp.reviews.map((rev, i) => {
+                return <Review
+                    key={'review-' + this.props.expId + '-' + i}
+                    fbref={this.props.fbRef.child('reviewStatus').child(rev.revId)}
+                    rev={rev} />
+            })}
+        </div>
+    }
+}
+
+class Review extends React.Component {
+    onClick(status) {
+        this.props.fbref.set(status)
+    }
+
+    render() {
+        let rev = this.props.rev
+
+        return <div className="review">
+            <div className="review-text">
+                &ldquo;{rev.review}&rdquo;
+            </div>
+            <div className="review-info">
+                <Link to={`/in/${rev.reviewer.uid}`}>
+                    {rev.reviewer.firstname} {rev.reviewer.lastname}
+                </Link> - {rev.UTCdate}
+            </div>
+            <div className="review-buttons">
+                {rev.status == 'unpublish' && (
+                    <button type="button"
+                        className="btn btn-default"
+                        onClick={this.onClick.bind(this, 'publish')}>
+                        Show on public profile</button>
+                )}
+                {rev.status == 'publish' && (
+                    <button type="button"
+                        className="btn btn-default"
+                        onClick={this.onClick.bind(this, 'unpublish')}>
+                        Hide from public profile</button>
+                )}
+            </div>
         </div>
     }
 }
@@ -215,4 +281,4 @@ class Modal extends BaseForm {
     }
 }
 
-module.exports = Me
+export {BaseProfile, Me}

@@ -92,6 +92,10 @@ class Experience extends React.Component {
             {exp.reviews.map((rev) => {
                 return <Review
                     key={'review-' + rev.revId}
+                    profileId={this.props.profileId}
+                    profileName={this.props.profileName}
+                    expId={this.props.expId}
+                    jobTitle={exp.jobTitle}
                     rev={rev} />
             })}
 
@@ -109,6 +113,7 @@ class Experience extends React.Component {
 class Review extends React.Component {
     render() {
         let rev = this.props.rev
+        let fbUser = currentUser()
 
         if (rev.status != 'publish') {
             return null
@@ -123,6 +128,16 @@ class Review extends React.Component {
                     {rev.reviewer.firstname} {rev.reviewer.lastname}
                 </Link> - {rev.UTCdate}
             </div>
+            {fbUser && fbUser.uid == rev.reviewer.uid && (
+                <div className="review-buttons">
+                    <NewReview
+                        profileId={this.props.profileId}
+                        profileName={this.props.profileName}
+                        expId={this.props.expId}
+                        jobTitle={this.props.jobTitle}
+                        rev={rev} />
+                </div>
+            )}
         </div>
     }
 }
@@ -143,7 +158,7 @@ class NewReview extends React.Component {
             <button type="button"
                 className="btn btn-default"
                 onClick={this.onClick.bind(this)}>
-                Add a Review
+                {this.props.rev ? 'Edit Review' : 'Add a Review'}
             </button>
             <Modal
                 profileId={this.props.profileId}
@@ -151,7 +166,7 @@ class NewReview extends React.Component {
                 profileName={this.props.profileName}
                 jobTitle={this.props.jobTitle}
                 save={this.save.bind(this)}
-                data={{}} />
+                rev={this.props.rev || {}} />
         </div>
     }
 }
@@ -160,6 +175,7 @@ class Modal extends React.Component {
     constructor(props) {
         super(props)
         this.state = {mode: 'review'}
+        this.state.review = this.props.rev.review || ''
         this.fbUser = currentUser()
     }
 
@@ -173,6 +189,19 @@ class Modal extends React.Component {
     }
 
     postReview(fbUser) {
+        let fb = firebase.database()
+
+        if (this.props.rev) {
+            let ref = fb.ref(`reviews/${this.props.profileId}/${this.props.rev.revId}`)
+            ref.update({
+                review: this.state.review,
+                UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
+            }).then(() => {
+                this.props.save()
+            })
+            return
+        }
+
         firebase.database().ref('profile').child(fbUser.uid + '/info').once('value', (snap) => {
             let info = snap.val()
 

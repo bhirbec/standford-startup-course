@@ -131,7 +131,7 @@ class Experience extends React.Component {
 
             {exp.reviews.map((rev, i) => {
                 return <Review
-                    key={'review-' + this.props.expId + '-' + i}
+                    key={'review-' + rev.revId}
                     fbref={this.props.fbRef.child('reviewStatus').child(rev.revId)}
                     rev={rev} />
             })}

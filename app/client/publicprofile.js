@@ -5,11 +5,11 @@ import {Link} from 'react-router-dom'
 import {SetValue, FormData} from './form'
 import {SignupForm, LoginForm, currentUser} from './auth'
 
-// TODO: I'm not a fan of importing this from me.js
-import {BaseProfile} from './me'
+
+import {joinReviews, forceRefresh} from './me'
 
 
-class PublicProfile extends BaseProfile {
+class PublicProfile extends React.Component {
     constructor(props) {
         super(props)
         this.state = this.props.serverData
@@ -17,6 +17,55 @@ class PublicProfile extends BaseProfile {
 
     componentDidMount() {
         this.fetchProfileAndSetState(this.props.profileId)
+    }
+
+    fetchProfileAndSetState(uid) {
+        // we put this here (and not in constructor) for server-side rendering
+        let fb = firebase.database()
+        this.fbRef = fb.ref('profile').child(uid)
+
+        this.fbRef.on('value', (snap) => {
+            // TODO: understand why snap.val() is null when the user signs in for the first time
+            let profile = snap.val()
+            if (profile == null) {
+                return
+            }
+
+            let reviews = {}
+            let fbUser = currentUser()
+            let publicRef = fb.ref('publicReviews').orderByChild("toUid").equalTo(uid)
+
+            if (fbUser) {
+                let pendingRef = fb.ref('pendingReviews').child(uid).child(fbUser.uid)
+
+                pendingRef.once('value').then((snap) => {
+                    snap.forEach((snap1) => {
+                        reviews[snap1.key] = snap1.val()
+                        reviews[snap1.key].status = 'pending'
+                    })
+
+                    return publicRef.once('value')
+                }).then((snap) => {
+                    snap.forEach((snap1) => {
+                        reviews[snap1.key] = snap1.val()
+                        reviews[snap1.key].status = 'public'
+                    })
+
+                    joinReviews(profile, reviews)
+                    this.setState(profile)
+                })
+            } else {
+                publicRef.once('value').then((snap) => {
+                    snap.forEach((snap1) => {
+                        reviews[snap1.key] = snap1.val()
+                        reviews[snap1.key].status = 'public'
+                    })
+
+                    joinReviews(profile, reviews)
+                    this.setState(profile)
+                })
+            }
+        })
     }
 
     componentWillReceiveProps(nextProps) {
@@ -115,20 +164,18 @@ class Review extends React.Component {
         let rev = this.props.rev
         let fbUser = currentUser()
 
-        if (rev.status != 'publish') {
-            return null
-        }
-
         return <div className="review">
             <div className="review-text">
                 &ldquo;{rev.review}&rdquo;
             </div>
             <div className="review-info">
-                <Link to={`/in/${rev.reviewer.uid}`}>
+                <Link to={`/in/${rev.fromUid}`}>
                     {rev.reviewer.firstname} {rev.reviewer.lastname}
-                </Link> - {rev.UTCdate}
+                </Link>
+                <span> - {rev.UTCdate}</span>
+                <span> - {rev.status}</span>
             </div>
-            {fbUser && fbUser.uid == rev.reviewer.uid && (
+            {fbUser && fbUser.uid == rev.fromUid && rev.status == 'pending' && (
                 <div className="review-buttons">
                     <NewReview
                         profileId={this.props.profileId}
@@ -158,7 +205,7 @@ class NewReview extends React.Component {
             <button type="button"
                 className="btn btn-default"
                 onClick={this.onClick.bind(this)}>
-                {this.props.rev ? 'Edit Review' : 'Add a Review'}
+                {this.props.rev ? 'Edit' : 'Write a Review'}
             </button>
             <Modal
                 profileId={this.props.profileId}
@@ -166,7 +213,7 @@ class NewReview extends React.Component {
                 profileName={this.props.profileName}
                 jobTitle={this.props.jobTitle}
                 save={this.save.bind(this)}
-                rev={this.props.rev || {}} />
+                rev={this.props.rev} />
         </div>
     }
 }
@@ -175,7 +222,7 @@ class Modal extends React.Component {
     constructor(props) {
         super(props)
         this.state = {mode: 'review'}
-        this.state.review = this.props.rev.review || ''
+        this.state.review = this.props.rev ? this.props.rev.review : ''
         this.fbUser = currentUser()
     }
 
@@ -190,14 +237,15 @@ class Modal extends React.Component {
 
     postReview(fbUser) {
         let fb = firebase.database()
+        let ref = fb.ref(`pendingReviews/${this.props.profileId}/${fbUser.uid}`)
 
         if (this.props.rev) {
-            let ref = fb.ref(`reviews/${this.props.profileId}/${this.props.rev.revId}`)
-            ref.update({
+            ref.child(this.props.rev.revId).update({
                 review: this.state.review,
                 UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
             }).then(() => {
                 this.props.save()
+                forceRefresh(this.props.profileId)
             })
             return
         }
@@ -207,8 +255,9 @@ class Modal extends React.Component {
 
             // TODO: do we have to denormalize the data for firstname and lastname?
             let data = {
+                'toUid': this.props.profileId,
+                'fromUid': fbUser.uid,
                 'reviewer': {
-                    uid: fbUser.uid,
                     firstname: info.firstname,
                     lastname: info.lastname
                 },
@@ -217,9 +266,9 @@ class Modal extends React.Component {
                 UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
             }
 
-            let ref = firebase.database().ref(`reviews/${this.props.profileId}`)
             ref.push().set(data, () => {
                 this.props.save()
+                forceRefresh(this.props.profileId)
             })
         })
     }

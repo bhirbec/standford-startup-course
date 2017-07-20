@@ -9,7 +9,36 @@ import {currentUser} from './auth'
 import {BaseForm} from './form'
 
 
-class BaseProfile extends React.Component {
+function joinReviews(profile, reviews) {
+    profile.experience = profile.experience || {}
+
+    for (let expId in profile.experience ) {
+        let exp = profile.experience[expId]
+        exp.reviews = []
+
+        for (let revId in reviews) {
+            if (reviews[revId].expId == expId) {
+                let review = reviews[revId]
+                review.revId = revId
+                exp.reviews.push(reviews[revId])
+            }
+        }
+    }
+}
+
+/* we touch a 'ts' node under profile/$uid so we can force a refresh
+when someone write a review. Is there a better way to do this? */
+function forceRefresh(uid) {
+    let fb = firebase.database()
+    fb.ref('profile').child(uid).child('ts').set(Date.now())
+}
+
+class Me extends React.Component {
+    constructor(props) {
+        super(props)
+        this.fbUser = currentUser()
+    }
+
     fetchProfileAndSetState(uid) {
         // we put this here (and not in constructor) for server-side rendering
         let fb = firebase.database()
@@ -22,36 +51,28 @@ class BaseProfile extends React.Component {
                 return
             }
 
-            // TODO: add real-time update when there's a new pending review
-            fb.ref('reviews').child(uid).once('value', (snap) => {
-                let reviews = snap.val() || {}
-                profile.experience = profile.experience || {}
+            let reviews = {}
+            let pendingRef = fb.ref('pendingReviews').child(uid)
+            let publicRef = fb.ref('publicReviews').orderByChild("toUid").equalTo(uid)
 
-                for (let expId in profile.experience ) {
-                    let exp = profile.experience[expId]
-                    let status = exp.reviewStatus || {}
-                    exp.reviews = []
+            pendingRef.once('value').then((snap) => {
+                snap.forEach((snap1) => {
+                    snap1.forEach((snap2) => {
+                        reviews[snap2.key] = snap2.val()
+                        reviews[snap2.key].status = 'pending'
+                    })
+                })
+                return publicRef.once('value')
+            }).then((snap) => {
+                snap.forEach((snap1) => {
+                    reviews[snap1.key] = snap1.val()
+                    reviews[snap1.key].status = 'public'
+                })
 
-                    for (let revId in reviews) {
-                        if (reviews[revId].expId == expId) {
-                            let review = reviews[revId]
-                            review.revId = revId
-                            review.status = status[revId] || 'unpublish'
-                            exp.reviews.push(reviews[revId])
-                        }
-                    }
-                }
-
+                joinReviews(profile, reviews)
                 this.setState(profile)
             })
         })
-    }
-}
-
-class Me extends BaseProfile {
-    constructor(props) {
-        super(props)
-        this.fbUser = currentUser()
     }
 
     componentDidMount() {
@@ -139,9 +160,18 @@ class Experience extends React.Component {
     }
 }
 
+
 class Review extends React.Component {
-    onClick(status) {
-        this.props.fbref.set(status)
+    publish() {
+        let rev = this.props.rev
+        let fb = firebase.database()
+        fb.ref('publicReviews').child(rev.revId).set(rev).then((snap) => {forceRefresh(rev.toUid)})
+    }
+
+    unpublish() {
+        let rev = this.props.rev
+        let fb = firebase.database()
+        fb.ref('publicReviews').child(rev.revId).remove().then((snap) => {forceRefresh(rev.toUid)})
     }
 
     render() {
@@ -152,21 +182,23 @@ class Review extends React.Component {
                 &ldquo;{rev.review}&rdquo;
             </div>
             <div className="review-info">
-                <Link to={`/in/${rev.reviewer.uid}`}>
+                <Link to={`/in/${rev.fromUid}`}>
                     {rev.reviewer.firstname} {rev.reviewer.lastname}
-                </Link> - {rev.UTCdate}
+                </Link>
+                <span> - {rev.UTCdate}</span>
+                <span> - {rev.status}</span>
             </div>
             <div className="review-buttons">
-                {rev.status == 'unpublish' && (
+                {rev.status == 'pending' && (
                     <button type="button"
                         className="btn btn-default"
-                        onClick={this.onClick.bind(this, 'publish')}>
+                        onClick={this.publish.bind(this)}>
                         Show on public profile</button>
                 )}
-                {rev.status == 'publish' && (
+                {rev.status == 'public' && (
                     <button type="button"
                         className="btn btn-default"
-                        onClick={this.onClick.bind(this, 'unpublish')}>
+                        onClick={this.unpublish.bind(this)}>
                         Hide from public profile</button>
                 )}
             </div>
@@ -281,4 +313,4 @@ class Modal extends BaseForm {
     }
 }
 
-export {BaseProfile, Me}
+export {joinReviews, forceRefresh, Me}

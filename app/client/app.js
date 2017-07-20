@@ -119,6 +119,7 @@ function idAdmin(uid) {
     return {
         'lCxNpj5R0CMCrXZ9EnkSSUZwzYg2': true,
         'ujaAcjlu3gMPdtWrNq39x7HvzAT2': true,
+        '5M7pXK3twXegXSaexip1ARA2qm02': true,
     }[uid] || false
 }
 

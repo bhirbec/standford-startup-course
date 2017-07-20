@@ -1,6 +1,34 @@
 {
   "rules": {
-    ".read": true,
-    ".write": "auth != null"
+    "profile": {
+      ".read": true,
+      "$uid": {
+        "info": {
+          ".write": "auth.uid === $uid"
+        },
+        "experience": {
+          ".write": "auth.uid === $uid"
+        },
+        "ts": {
+          ".write": "auth.uid !== null"
+        }
+      }
+    },
+    "pendingReviews": {
+      "$toUid": {
+        ".read": "auth.uid === $toUid",
+        "$fromUid": {
+          ".read": "auth.uid === $fromUid",
+          ".write": "auth.uid === $fromUid"
+        }
+      }
+    },
+    "publicReviews": {
+      ".read": true,
+      ".indexOn": ["fromUid", "toUid"],
+      "$revId": {
+        ".write": "newData.child('toUid').val() === auth.uid || data.child('toUid').val() === auth.uid"
+      }
+    }
   }
 }

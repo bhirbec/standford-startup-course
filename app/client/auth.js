@@ -106,11 +106,7 @@ class SignoutLink extends React.Component {
     }
 
     signout(e) {
-        firebase.auth().signOut()
-        .then(() => {
-            this.setState({done: true})
-        })
-        .catch((error) => {
+        firebase.auth().signOut().catch((error) => {
             console.log("An error occured while signing out of Firebase", error)
         });
 
@@ -118,11 +114,7 @@ class SignoutLink extends React.Component {
     }
 
     render() {
-        if (this.state.done) {
-            return <Redirect to='/' />
-        } else {
-            return <a id="signout" href="#" onClick={this.signout.bind(this)}>Sign Out</a>
-        }
+        return <a id="signout" href="#" onClick={this.signout.bind(this)}>Sign Out</a>
     }
 }
 

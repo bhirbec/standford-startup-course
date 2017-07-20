@@ -87,7 +87,7 @@ class App extends React.Component {
                     state.isLogged ? (
                         <InnerLayout><Search /></InnerLayout>
                     ) : (
-                        <Redirect to="/search" />
+                        <Redirect to="/" />
                     )
                 )} />,
                 <Route key='/in/:id' exact path="/in/:id" render={(data) => (

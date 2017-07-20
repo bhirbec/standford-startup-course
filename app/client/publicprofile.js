@@ -148,7 +148,7 @@ class Experience extends React.Component {
                     rev={rev} />
             })}
 
-            {fbUser && fbUser.uid != this.props.profileId && (
+            {(fbUser === null || fbUser.uid != this.props.profileId) && (
                 <NewReview
                     profileId={this.props.profileId}
                     profileName={this.props.profileName}

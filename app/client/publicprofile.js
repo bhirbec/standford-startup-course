@@ -32,39 +32,30 @@ class PublicProfile extends React.Component {
             }
 
             let reviews = {}
+            let updateReviews = (snap1, status) => {
+                reviews[snap1.key] = snap1.val()
+                reviews[snap1.key].status = status
+            }
+
             let fbUser = currentUser()
             let publicRef = fb.ref('publicReviews').orderByChild("toUid").equalTo(uid)
+            let pr
 
             if (fbUser) {
                 let pendingRef = fb.ref('pendingReviews').child(uid).child(fbUser.uid)
-
-                pendingRef.once('value').then((snap) => {
-                    snap.forEach((snap1) => {
-                        reviews[snap1.key] = snap1.val()
-                        reviews[snap1.key].status = 'pending'
-                    })
-
+                pr = pendingRef.once('value').then((snap) => {
+                    snap.forEach((snap1) => { updateReviews(snap1, 'pending') })
                     return publicRef.once('value')
-                }).then((snap) => {
-                    snap.forEach((snap1) => {
-                        reviews[snap1.key] = snap1.val()
-                        reviews[snap1.key].status = 'public'
-                    })
-
-                    joinReviews(profile, reviews)
-                    this.setState(profile)
                 })
             } else {
-                publicRef.once('value').then((snap) => {
-                    snap.forEach((snap1) => {
-                        reviews[snap1.key] = snap1.val()
-                        reviews[snap1.key].status = 'public'
-                    })
-
-                    joinReviews(profile, reviews)
-                    this.setState(profile)
-                })
+                pr = publicRef.once('value')
             }
+
+            pr.then((snap) => {
+                snap.forEach((snap1) => { updateReviews(snap1, 'public') })
+                joinReviews(profile, reviews)
+                this.setState(profile)
+            })
         })
     }
 

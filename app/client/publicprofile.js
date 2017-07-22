@@ -115,6 +115,14 @@ class Experience extends React.Component {
         // TODO: sever side rendering fails with exp.reviews.map
         exp.reviews = exp.reviews || []
 
+        let context = {
+            fbUser: fbUser,
+            profileId: this.props.profileId,
+            profileName: this.props.profileName,
+            expId: this.props.expId,
+            jobTitle: exp.jobTitle,
+        }
+
         return <div className="job-experience">
             <h3>{exp.companyName} - {exp.jobTitle}</h3>
 
@@ -129,23 +137,11 @@ class Experience extends React.Component {
             </p>
 
             {exp.reviews.map((rev) => {
-                return <Review
-                    key={'review-' + rev.revId}
-                    fbUser={fbUser}
-                    profileId={this.props.profileId}
-                    profileName={this.props.profileName}
-                    expId={this.props.expId}
-                    jobTitle={exp.jobTitle}
-                    rev={rev} />
+                return <Review key={'review-' + rev.revId} rev={rev} {...context} />
             })}
 
             {(fbUser === null || fbUser.uid != this.props.profileId) && (
-                <NewReview
-                    fbUser={fbUser}
-                    profileId={this.props.profileId}
-                    profileName={this.props.profileName}
-                    expId={this.props.expId}
-                    jobTitle={exp.jobTitle} />
+                <NewReview {...context} />
             )}
         </div>
     }
@@ -169,13 +165,7 @@ class Review extends React.Component {
             </div>
             {fbUser && fbUser.uid == rev.fromUid && rev.status == 'pending' && (
                 <div className="review-buttons">
-                    <NewReview
-                        fbUser={fbUser}
-                        profileId={this.props.profileId}
-                        profileName={this.props.profileName}
-                        expId={this.props.expId}
-                        jobTitle={this.props.jobTitle}
-                        rev={rev} />
+                    <NewReview {...this.props} />
                 </div>
             )}
         </div>
@@ -200,14 +190,7 @@ class NewReview extends React.Component {
                 onClick={this.onClick.bind(this)}>
                 {this.props.rev ? 'Edit' : 'Write a Review'}
             </button>
-            <Modal
-                fbUser={this.props.fbUser}
-                profileId={this.props.profileId}
-                profileName={this.props.profileName}
-                expId={this.props.expId}
-                jobTitle={this.props.jobTitle}
-                save={this.save.bind(this)}
-                rev={this.props.rev} />
+            <Modal save={this.save.bind(this)} {...this.props} />
         </div>
     }
 }

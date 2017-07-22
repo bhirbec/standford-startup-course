@@ -19,7 +19,12 @@
         ".read": "auth.uid === $toUid",
         "$fromUid": {
           ".read": "auth.uid === $fromUid",
-          ".write": "auth.uid === $fromUid"
+          ".write": "auth.uid === $fromUid",
+          "$revId": {
+            "review": {
+              ".validate": "newData.isString() && newData.val() !== ''"
+            }
+          }
         }
       }
     },

@@ -203,10 +203,10 @@ class Modal extends React.Component {
     }
 
     postReview(fbUser) {
+        let pr
         let fb = firebase.database()
         let ref = fb.ref(`pendingReviews/${this.props.profileId}/${fbUser.uid}`)
 
-        let pr
         if (this.props.rev) {
             pr = this.updateReview(ref)
         } else {
@@ -249,10 +249,15 @@ class Modal extends React.Component {
 
     handleForm(e) {
         e.preventDefault()
-        if (this.props.fbUser) {
-            this.postReview(this.props.fbUser)
+        if (this.state.review == '') {
+            this.setState({error: 'Review can not be empty.', 'mode': 'review'})
         } else {
-            this.setState({mode: 'signup'})
+            this.setState({'error': null})
+            if (this.props.fbUser) {
+                this.postReview(this.props.fbUser)
+            } else {
+                this.setState({mode: 'signup'})
+            }
         }
     }
 
@@ -286,6 +291,9 @@ class Modal extends React.Component {
             {this.header(`Review ${this.props.profileName} for position "${this.props.jobTitle}"`)}
             <form id='review-form' onSubmit={this.handleForm.bind(this)}>
                 <div className="modal-body">
+                    {this.state.error && (
+                        <div className="form-error">{this.state.error}</div>
+                    )}
                     <div className="form-group">
                         <label htmlFor="review">Enter your review</label>
                         <textarea id="review"

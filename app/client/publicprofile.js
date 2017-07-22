@@ -193,34 +193,41 @@ class Modal extends React.Component {
         super(props)
         this.state = {mode: 'review'}
         this.state.review = this.props.rev ? this.props.rev.review : ''
-        this.fbUser = this.props.fbUser
     }
 
-    handleForm(e) {
-        if (this.fbUser) {
-            this.postReview(this.fbUser)
-        } else {
-            this.setState({mode: 'signup'})
+    componentWillReceiveProps(props) {
+        let hasLoggedIn = this.props.fbUser == null && props.fbUser != null
+        if (hasLoggedIn) {
+            this.postReview(props.fbUser)
         }
-        e.preventDefault()
     }
 
     postReview(fbUser) {
         let fb = firebase.database()
         let ref = fb.ref(`pendingReviews/${this.props.profileId}/${fbUser.uid}`)
 
+        let pr
         if (this.props.rev) {
-            ref.child(this.props.rev.revId).update({
-                review: this.state.review,
-                UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
-            }).then(() => {
-                this.props.save()
-                forceRefresh(this.props.profileId)
-            })
-            return
+            pr = this.updateReview(ref)
+        } else {
+            pr = this.createReview(ref, fbUser)
         }
 
-        firebase.database().ref('profile').child(fbUser.uid + '/info').once('value', (snap) => {
+        pr.then(() => {
+            this.props.save()
+            forceRefresh(this.props.profileId)
+        })
+    }
+
+    updateReview(ref) {
+        return ref.child(this.props.rev.revId).update({
+            review: this.state.review,
+            UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
+        })
+    }
+
+    createReview(ref, fbUser) {
+        return firebase.database().ref('profile').child(fbUser.uid + '/info').once('value', (snap) => {
             let info = snap.val()
 
             // TODO: do we have to denormalize the data for firstname and lastname?
@@ -236,11 +243,17 @@ class Modal extends React.Component {
                 UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
             }
 
-            ref.push().set(data, () => {
-                this.props.save()
-                forceRefresh(this.props.profileId)
-            })
+            return ref.push().set(data)
         })
+    }
+
+    handleForm(e) {
+        e.preventDefault()
+        if (this.props.fbUser) {
+            this.postReview(this.props.fbUser)
+        } else {
+            this.setState({mode: 'signup'})
+        }
     }
 
     handleChange(event) {
@@ -250,8 +263,8 @@ class Modal extends React.Component {
     }
 
     changeMode(mode, e) {
-        this.setState({mode: mode})
         e.preventDefault()
+        this.setState({mode: mode})
     }
 
     render() {
@@ -285,7 +298,7 @@ class Modal extends React.Component {
                 </div>
                 <div className="modal-footer">
                     <button type="submit" className="btn btn-success">
-                        {this.fbUser == null  ? "Save & Sign Up" : "Save"}
+                        {this.props.fbUser == null  ? "Save & Sign Up" : "Save"}
                     </button>
                     <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
@@ -297,7 +310,7 @@ class Modal extends React.Component {
         return <div className="modal-content">
             {this.header('Sign up to post your review')}
             <div className="modal-body auth-form">
-                <SignupForm resolve={this.postReview.bind(this)} />
+                <SignupForm />
                 <div className="centered">
                     <span>Already on letsResume? </span>
                     <a href="#" onClick={this.changeMode.bind(this, 'login')}>Log in</a>
@@ -310,7 +323,7 @@ class Modal extends React.Component {
         return <div className="modal-content">
             {this.header('Log in to post your review')}
             <div className="modal-body auth-form">
-                <LoginForm resolve={this.postReview.bind(this)} />
+                <LoginForm />
                 <div className="centered">
                     <span>New to letsResume? </span>
                     <a href="#" onClick={this.changeMode.bind(this, 'signup')}>Sign Up</a>

@@ -61,7 +61,9 @@ class SignupForm extends BaseForm {
             return fb.ref('profile/' + fbUser.uid + '/info').set(data)
         })
         .then((resp) => {
-            this.props.resolve(user)
+            if (this.props.resolve) {
+                this.props.resolve(user)
+            }
         })
         .catch((error) => {
             this.setState({error: error.message})
@@ -164,7 +166,9 @@ class LoginForm extends BaseForm {
 
         firebase.auth().signInWithEmailAndPassword(data.email, data.pwd)
         .then((fbUser) => {
-            this.props.resolve(fbUser)
+            if (this.props.resolve) {
+                this.props.resolve(fbUser)
+            }
         })
         .catch((error) => {
             this.setState({error: error.message})

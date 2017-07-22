@@ -22,7 +22,7 @@ function MakeAppRoot(req, serverData) {
     class root extends React.Component {
         render() {
             return <StaticRouter location={req.url} context={{}}>
-                <App isLogged={false} fbUser={null} serverData={serverData} />
+                <App fbUser={null} serverData={serverData} />
             </StaticRouter>
         }
     }

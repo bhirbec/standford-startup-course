@@ -11,8 +11,6 @@ import {SignupComponent, LoginComponent, SignoutLink} from './auth'
 class App extends React.Component {
 
     render() {
-        let state = this.props
-
         return <div>
             <nav className="navbar navbar-default navbar-fixed-top" role="navigation">
                 <div className="container">
@@ -32,13 +30,13 @@ class App extends React.Component {
                     </div>
                    <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul className="nav navbar-nav navbar-right">
-                            {state.isLogged && ([
-                                idAdmin(state.fbUser.uid)?
+                            {this.props.fbUser && ([
+                                idAdmin(this.props.fbUser.uid)?
                                     <li key="to-search"><Link to='/search'>Search</Link></li> : null
                                 ,
                                 <li key="to-signout"><SignoutLink /></li>
                             ])}
-                            {!state.isLogged && ([
+                            {!this.props.fbUser && ([
                                 <li key="to-login"><Link to='/login'>Log in</Link></li>,
                                 <li key="to-signup"><Link to='/signup'>Sign Up</Link></li>
                             ])}
@@ -47,45 +45,43 @@ class App extends React.Component {
                 </div>
             </nav>
 
-            {state != null && ([
-                <Route key='/' exact path="/" render={() => (
-                    state.isLogged ? (
-                        <Redirect to="/me" />
-                    ) : (
-                        <Home />
-                    )
-                )} />,
-                <Route key='/signup' exact path="/signup" render={() => (
-                    <InnerLayout><SignupComponent /></InnerLayout>
-                )} />,
+            <Route exact path="/" render={() => (
+                this.props.fbUser ? (
+                    <Redirect to="/me" />
+                ) : (
+                    <Home />
+                )
+            )} />
+            <Route exact path="/signup" render={() => (
+                <InnerLayout><SignupComponent /></InnerLayout>
+            )} />
 
-                <Route key='/login' exact path="/login" render={() => (
-                    <InnerLayout><LoginComponent /></InnerLayout>
-                )} />,
+            <Route exact path="/login" render={() => (
+                <InnerLayout><LoginComponent /></InnerLayout>
+            )} />
 
-                <Route key='/me' exact path="/me" render={() => (
-                    state.isLogged ? (
-                        <InnerLayout><Me /></InnerLayout>
-                    ) : (
-                        <Redirect to="/" />
-                    )
-                )} />,
-                <Route key='/search' exact path="/search" render={() => (
-                    state.isLogged ? (
-                        <InnerLayout><Search /></InnerLayout>
-                    ) : (
-                        <Redirect to="/" />
-                    )
-                )} />,
-                <Route key='/in/:id' exact path="/in/:id" render={(data) => (
-                    <InnerLayout>
-                        <PublicProfile
-                            fbUser={state.fbUser}
-                            profileId={data.match.params.id}
-                            serverData={this.props.serverData} />
-                    </InnerLayout>
-                )} />
-            ])}
+            <Route exact path="/me" render={() => (
+                this.props.fbUser ? (
+                    <InnerLayout><Me /></InnerLayout>
+                ) : (
+                    <Redirect to="/" />
+                )
+            )} />
+            <Route exact path="/search" render={() => (
+                this.props.fbUser ? (
+                    <InnerLayout><Search /></InnerLayout>
+                ) : (
+                    <Redirect to="/" />
+                )
+            )} />
+            <Route exact path="/in/:id" render={(data) => (
+                <InnerLayout>
+                    <PublicProfile
+                        fbUser={this.props.fbUser}
+                        profileId={data.match.params.id}
+                        serverData={this.props.serverData} />
+                </InnerLayout>
+            )} />
         </div>
     }
 }

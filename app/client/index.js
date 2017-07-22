@@ -23,6 +23,12 @@ function init() {
         scope: 'email profile'
     });
 
-    let el = document.getElementById('app')
-    ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, el)
+    firebase.auth().onAuthStateChanged((fbUser) => {
+        let isLogged = fbUser != null
+        console.log('Firebase loggin state: ', isLogged)
+        let el = document.getElementById('app')
+        ReactDOM.render(<BrowserRouter>
+            <App isLogged={isLogged} fbUser={fbUser} />
+        </BrowserRouter>, el)
+    })
 }

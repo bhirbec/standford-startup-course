@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import {Link} from 'react-router-dom'
 
 import {SetValue, FormData} from './form'
-import {SignupForm, LoginForm, currentUser} from './auth'
+import {SignupForm, LoginForm} from './auth'
 
 
 import {joinReviews, forceRefresh} from './me'
@@ -37,7 +37,7 @@ class PublicProfile extends React.Component {
                 reviews[snap1.key].status = status
             }
 
-            let fbUser = currentUser()
+            let fbUser = this.props.fbUser
             let publicRef = fb.ref('publicReviews').orderByChild("toUid").equalTo(uid)
             let pr
 
@@ -60,12 +60,10 @@ class PublicProfile extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.profileId != this.props.profileId) {
-            if (this.fbRef) {
-                this.fbRef.off()
-            }
-            this.fetchProfileAndSetState(nextProps.profileId)
+        if (this.fbRef) {
+            this.fbRef.off()
         }
+        this.fetchProfileAndSetState(nextProps.profileId)
     }
 
     componentWillUnmount() {
@@ -77,7 +75,7 @@ class PublicProfile extends React.Component {
             return <div>Loading...</div>
         }
 
-        let fbUser = currentUser()
+        let fbUser = this.props.fbUser
         let expIds = Object.keys(this.state.experience || [])
         let profileName = `${this.state.info.firstname} ${this.state.info.lastname}`
 
@@ -98,6 +96,7 @@ class PublicProfile extends React.Component {
 
                 return <Experience
                     key={"exp-" + expId}
+                    fbUser={fbUser}
                     profileName={profileName}
                     profileId={this.props.profileId}
                     expId={expId}
@@ -110,7 +109,7 @@ class PublicProfile extends React.Component {
 
 class Experience extends React.Component {
     render() {
-        let fbUser = currentUser()
+        let fbUser = this.props.fbUser
         let exp = this.props.exp
 
         // TODO: sever side rendering fails with exp.reviews.map
@@ -132,6 +131,7 @@ class Experience extends React.Component {
             {exp.reviews.map((rev) => {
                 return <Review
                     key={'review-' + rev.revId}
+                    fbUser={fbUser}
                     profileId={this.props.profileId}
                     profileName={this.props.profileName}
                     expId={this.props.expId}
@@ -141,6 +141,7 @@ class Experience extends React.Component {
 
             {(fbUser === null || fbUser.uid != this.props.profileId) && (
                 <NewReview
+                    fbUser={fbUser}
                     profileId={this.props.profileId}
                     profileName={this.props.profileName}
                     expId={this.props.expId}
@@ -153,7 +154,7 @@ class Experience extends React.Component {
 class Review extends React.Component {
     render() {
         let rev = this.props.rev
-        let fbUser = currentUser()
+        let fbUser = this.props.fbUser
 
         return <div className="review">
             <div className="review-text">
@@ -169,6 +170,7 @@ class Review extends React.Component {
             {fbUser && fbUser.uid == rev.fromUid && rev.status == 'pending' && (
                 <div className="review-buttons">
                     <NewReview
+                        fbUser={fbUser}
                         profileId={this.props.profileId}
                         profileName={this.props.profileName}
                         expId={this.props.expId}
@@ -199,9 +201,10 @@ class NewReview extends React.Component {
                 {this.props.rev ? 'Edit' : 'Write a Review'}
             </button>
             <Modal
+                fbUser={this.props.fbUser}
                 profileId={this.props.profileId}
-                expId={this.props.expId}
                 profileName={this.props.profileName}
+                expId={this.props.expId}
                 jobTitle={this.props.jobTitle}
                 save={this.save.bind(this)}
                 rev={this.props.rev} />
@@ -214,7 +217,7 @@ class Modal extends React.Component {
         super(props)
         this.state = {mode: 'review'}
         this.state.review = this.props.rev ? this.props.rev.review : ''
-        this.fbUser = currentUser()
+        this.fbUser = this.props.fbUser
     }
 
     handleForm(e) {

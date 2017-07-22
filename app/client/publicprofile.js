@@ -87,13 +87,6 @@ class PublicProfile extends React.Component {
             <h1>{profileName}</h1>
 
             {expIds.map((expId) => {
-                let reviews = []
-                if (this.state.review) {
-                    for (let revId in this.state.review[expId] || {}) {
-                        reviews.push(this.state.review[expId][revId])
-                    }
-                }
-
                 return <Experience
                     key={"exp-" + expId}
                     fbUser={fbUser}

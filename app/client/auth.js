@@ -37,9 +37,21 @@ class SignupForm extends BaseForm {
     }
 
     handleForm(e) {
+        e.preventDefault()
+
         let data = this.formData()
         let fb = firebase.database()
         let user;
+
+        if (data.firstname == "") {
+            this.setState({error: "First Name can not be empty"})
+            return
+        }
+
+        if (data.lastname == "") {
+            this.setState({error: "Last Name can not be empty"})
+            return
+        }
 
         firebase.auth().createUserWithEmailAndPassword(data.email, data.pwd)
         .then((fbUser) => {
@@ -52,17 +64,15 @@ class SignupForm extends BaseForm {
             this.props.resolve(user)
         })
         .catch((error) => {
-            console.log(error)
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-        });
-
-        e.preventDefault()
+            this.setState({error: error.message})
+        })
     }
 
     render() {
         return <form onSubmit={this.handleForm.bind(this)}>
+            {this.state.error && (
+                <div className="form-error">{this.state.error}</div>
+            )}
             <div className="form-group">
                 <label htmlFor="firstname">First Name</label>
                 <input id="firstname"
@@ -156,11 +166,8 @@ class LoginForm extends BaseForm {
         .then((fbUser) => {
             this.props.resolve(fbUser)
         })
-        .catch(function(error) {
-          // Handle Errors here.
-          console.log(error)
-          var errorCode = error.code;
-          var errorMessage = error.message;
+        .catch((error) => {
+            this.setState({error: error.message})
         })
 
         e.preventDefault()
@@ -168,6 +175,9 @@ class LoginForm extends BaseForm {
 
     render() {
         return <form onSubmit={this.handleForm.bind(this)}>
+            {this.state.error && (
+                <div className="form-error">{this.state.error}</div>
+            )}
             <div className="form-group">
                 <label htmlFor="email">Email</label>
                 <input id="email"

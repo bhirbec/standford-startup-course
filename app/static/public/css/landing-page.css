@@ -250,6 +250,13 @@ p.copyright {
     margin: 15px auto;
 }
 
+/* form errors */
+.form-error {
+    color: red;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
 /* profile */
 div.me .btn {
     margin-right: 5px;

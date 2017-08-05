@@ -299,3 +299,10 @@ div.me textarea,
 div.me input[type="text"] {
     width: 40em;
 }
+
+@media(max-width:767px) {
+    div.me textarea,
+    div.me input[type="text"] {
+        width: 100%;
+    }
+}

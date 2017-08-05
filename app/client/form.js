@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom'
 class BaseForm extends React.Component {
 
     setValue(input) {
-        let data = this.props.data || {}
+        let data = this.props.data || this.state || {}
         if (input) {
             $(input).val(data[input.name] || '')
         }

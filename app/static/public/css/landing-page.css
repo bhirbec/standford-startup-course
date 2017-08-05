@@ -258,7 +258,7 @@ p.copyright {
 }
 
 /* profile */
-div.me .btn {
+.btn {
     margin-right: 5px;
 }
 
@@ -292,4 +292,10 @@ div.review-info {
 
 div.review-buttons {
     margin: 15px 0;
+}
+
+/* experience form */
+div.me textarea,
+div.me input[type="text"] {
+    width: 40em;
 }

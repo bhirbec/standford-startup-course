@@ -60,7 +60,7 @@ class App extends React.Component {
                 <InnerLayout><LoginComponent /></InnerLayout>
             )} />
 
-            <Route exact path="/me" render={() => (
+            <Route path="/me" render={() => (
                 this.props.fbUser ? (
                     <InnerLayout><Me /></InnerLayout>
                 ) : (

@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Select from 'react-select'
-import {Link} from 'react-router-dom'
+import {Link, Redirect, Route} from 'react-router-dom'
 
 import Multiselect from './multiselect'
 import {currentUser} from './auth'
@@ -34,6 +34,19 @@ function forceRefresh(uid) {
 }
 
 class Me extends React.Component {
+    render() {
+        // TODO: move routes to app.js
+        return <div>
+            <Route exact path="/me" component={Profile} />
+            <Route exact path="/me/experience" component={ExperienceForm} />
+            <Route exact path="/me/experience/:id" render={(data) => (
+                <ExperienceForm expId={data.match.params.id} />
+            )} />
+        </div>
+    }
+}
+
+class Profile extends React.Component {
     constructor(props) {
         super(props)
         this.fbUser = currentUser()
@@ -109,11 +122,11 @@ class Me extends React.Component {
 
             {expIds.length < 5 && (
                 <div className="new-work-experience">
-                    <ExperienceModal
-                        button="+ Add work experience"
-                        title="New work experience"
-                        profileId={this.fbUser.uid}
-                        data={{}} />
+                    <Link to={'/me/experience'}>
+                        <button type="button" className="btn btn-default">
+                            + Add work experience
+                        </button>
+                    </Link>
                 </div>
             )}
         </div>
@@ -147,12 +160,12 @@ class Experience extends React.Component {
                 {exp.jobDescription}
             </p>
 
-            <ExperienceModal
-                title={'Edit work experience'}
-                button={'Edit'}
-                profileId={this.props.profileId}
-                expId={this.props.expId}
-                data={exp} />
+            <Link to={'/me/experience/' + this.props.expId}>
+                <button type="button" className="btn btn-default">
+                    Edit
+                </button>
+            </Link>
+
             <button type="button"
                 className="btn btn-default"
                 onClick={this.remove.bind(this)}>
@@ -214,24 +227,30 @@ class Review extends React.Component {
     }
 }
 
-class ExperienceModal extends BaseForm {
+class ExperienceForm extends BaseForm {
+    constructor(props) {
+        super(props)
+        this.state = {}
+        this.fbUser = currentUser()
+    }
 
-    onClick() {
-        this.forceUpdate()
-        $(ReactDOM.findDOMNode(this)).find('.modal').modal('show')
+    componentDidMount() {
+        if (this.props.expId) {
+            let fb = firebase.database()
+            let ref = fb.ref('profile/' + this.fbUser.uid + '/experience/' + this.props.expId)
+            ref.once('value').then((snap) => { this.setState(snap.val()) })
+        }
     }
 
     handleForm(e) {
-        let data = this.formData();
-        this.save(data)
         e.preventDefault()
-    }
 
-    save(data) {
         let fb = firebase.database()
-        let ref = fb.ref('profile').child(this.props.profileId).child('experience')
+        let ref = fb.ref('profile').child(this.fbUser.uid).child('experience')
 
         let p
+        let data = this.formData();
+
         if (this.props.expId) {
             p = ref.child(this.props.expId).set(data)
         } else {
@@ -239,85 +258,75 @@ class ExperienceModal extends BaseForm {
         }
 
         // TODO: can we return a promise?
-        let $node = $(ReactDOM.findDOMNode(this))
         p.then(() => {
-            $node.find('.modal').modal('hide')
+            this.setState({'redirect': '/me'})
         })
     }
 
     render() {
-        return <span>
-            <button type="button"
-                className="btn btn-default"
-                onClick={this.onClick.bind(this)}>
-                {this.props.button}</button>
-            <div className="modal fade" role="dialog">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal">
-                                &times;
-                            </button>
-                            <h4 className="modal-title">{this.props.title}</h4>
-                        </div>
-                        <form onSubmit={this.handleForm.bind(this)}>
-                            <div className="modal-body">
-                                <div className="form-group">
-                                    <label htmlFor="company-name">Company Name</label>
-                                    <input id="company-name"
-                                        name="companyName"
-                                        type="text"
-                                        ref={this.setValue.bind(this)}
-                                        className="form-control"
-                                        placeholder="ex: Google" />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="job-title">Job Title</label>
-                                    <input id="job-title"
-                                        name="jobTitle"
-                                        type="text"
-                                        ref={this.setValue.bind(this)}
-                                        className="form-control"
-                                        placeholder="ex: Software Engineer" />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="job-description">Job Description</label>
-                                    <textarea id="job-description"
-                                        name="jobDescription"
-                                        rows={'4'}
-                                        ref={this.setValue.bind(this)}
-                                        className="form-control"></textarea>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="job-start-date">Start Date</label>
-                                    <input id="job-start-data"
-                                        name="jobStartDate"
-                                        ref={this.setValue.bind(this)}
-                                        className="form-control"
-                                        placeholder="mm/yyyy" />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="job-end-date">End Date (leave empty for current position)</label>
-                                    <input id="job-end-data"
-                                        name="jobEndDate"
-                                        ref={this.setValue.bind(this)}
-                                        className="form-control"
-                                        placeholder="mm/yyyy" />
-                                </div>
-                                <div className="form-group">
-                                    <label>Invite People to Comment your resume</label>
-                                    <Multiselect title="Search your Google contacts" />
-                                </div>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="submit" className="btn btn-success">Save</button>
-                                <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                            </div>
-                        </form>
-                    </div>
+        if (this.state.redirect) {
+            return <Redirect to={this.state.redirect} />
+        }
+
+        return <div className="me">
+            {this.props.expId == undefined ?
+                <h1>New work Experience</h1>
+                :
+                <h1>{this.state.companyName} - {this.state.jobTitle}</h1>
+            }
+            <form onSubmit={this.handleForm.bind(this)}>
+                <div className="form-group">
+                    <label htmlFor="company-name">Company Name</label>
+                    <input id="company-name"
+                        name="companyName"
+                        type="text"
+                        ref={this.setValue.bind(this)}
+                        className="form-control"
+                        placeholder="ex: Google" />
                 </div>
-            </div>
-        </span>
+                <div className="form-group">
+                    <label htmlFor="job-title">Job Title</label>
+                    <input id="job-title"
+                        name="jobTitle"
+                        type="text"
+                        ref={this.setValue.bind(this)}
+                        className="form-control"
+                        placeholder="ex: Software Engineer" />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="job-description">Job Description</label>
+                    <textarea id="job-description"
+                        name="jobDescription"
+                        rows={'12'}
+                        ref={this.setValue.bind(this)}
+                        className="form-control"></textarea>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="job-start-date">Start Date</label>
+                    <input id="job-start-data"
+                        name="jobStartDate"
+                        type="text"
+                        ref={this.setValue.bind(this)}
+                        className="form-control"
+                        placeholder="mm/yyyy" />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="job-end-date">End Date (leave empty for current position)</label>
+                    <input id="job-end-data"
+                        name="jobEndDate"
+                        type="text"
+                        ref={this.setValue.bind(this)}
+                        className="form-control"
+                        placeholder="mm/yyyy" />
+                </div>
+                <div>
+                    <button type="submit" className="btn btn-success">Save</button>
+                    <Link to="/me">
+                        <button type="button" className="btn btn-default">Back</button>
+                    </Link>
+                </div>
+            </form>
+        </div>
     }
 }
 

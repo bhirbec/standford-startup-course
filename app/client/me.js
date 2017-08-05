@@ -236,7 +236,6 @@ class NewExperienceButton extends React.Component {
 
 class Modal extends BaseForm {
 
-
     handleForm(e) {
         let data = this.formData();
         this.props.save(data)

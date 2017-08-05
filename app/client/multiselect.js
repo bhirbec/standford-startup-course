@@ -1,6 +1,12 @@
 import React from 'react';
 import Select from 'react-select';
 
+// react-select documentation
+// https://jedwatson.github.io/react-select/
+
+// Here's an example with Google contact API
+// https://labs.magnet.me/nerds/2015/05/11/importing-google-contacts-with-javascript.html
+
 let timeoutid = undefined
 
 

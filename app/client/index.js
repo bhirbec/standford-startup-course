@@ -5,10 +5,6 @@ import {App} from './app'
 import {BrowserRouter} from 'react-router-dom'
 
 
-
-// https://jedwatson.github.io/react-select/
-// https://labs.magnet.me/nerds/2015/05/11/importing-google-contacts-with-javascript.html
-
 window.init = function () {
     gapi.load('auth2', init)
 }

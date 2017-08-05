@@ -128,6 +128,7 @@ class Experience extends React.Component {
     }
 
     remove() {
+        // TODO: remove reviews?
         let b = confirm('Do you want to remove this work experience?')
         if (b == true) {
             this.props.fbRef.remove()
@@ -149,6 +150,18 @@ class Experience extends React.Component {
             <p className="job-description">
                 {exp.jobDescription}
             </p>
+
+            <button type="button"
+                className="btn btn-default"
+                onClick={this.onClick.bind(this)}>
+                Edit</button>
+            <button type="button"
+                className="btn btn-default"
+                onClick={this.remove.bind(this)}>
+                Remove</button>
+            <Modal title={'Edit work experience'}
+                save={this.save.bind(this)}
+                data={exp} />
 
             {exp.reviews.map((rev, i) => {
                 return <Review

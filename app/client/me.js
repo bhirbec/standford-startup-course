@@ -102,30 +102,26 @@ class Me extends React.Component {
                 return <Experience
                     key={"exp-" + expId}
                     fbRef={this.fbRef.child('experience/' + expId)}
-                    profileId={this.props.profileId}
+                    profileId={this.fbUser.uid}
                     expId={expId}
                     exp={this.state.experience[expId]} />
             })}
 
-            {expIds.length < 5 ? <NewExperienceButton profileRef={this.fbRef} /> : null}
+            {expIds.length < 5 && (
+                <div className="new-work-experience">
+                    <ExperienceModal
+                        button="+ Add work experience"
+                        title="New work experience"
+                        profileId={this.fbUser.uid}
+                        data={{}} />
+                </div>
+            )}
         </div>
     }
 };
 
 
 class Experience extends React.Component {
-    onClick() {
-        $(ReactDOM.findDOMNode(this)).find('.modal').modal('show')
-        this.forceUpdate()
-    }
-
-    save(data) {
-        // TODO: can we return a promise?
-        let $node = $(ReactDOM.findDOMNode(this))
-        this.props.fbRef.set(data, function() {
-            $node.find('.modal').modal('hide')
-        })
-    }
 
     remove() {
         // TODO: remove reviews?
@@ -151,17 +147,16 @@ class Experience extends React.Component {
                 {exp.jobDescription}
             </p>
 
-            <button type="button"
-                className="btn btn-default"
-                onClick={this.onClick.bind(this)}>
-                Edit</button>
+            <ExperienceModal
+                title={'Edit work experience'}
+                button={'Edit'}
+                profileId={this.props.profileId}
+                expId={this.props.expId}
+                data={exp} />
             <button type="button"
                 className="btn btn-default"
                 onClick={this.remove.bind(this)}>
                 Remove</button>
-            <Modal title={'Edit work experience'}
-                save={this.save.bind(this)}
-                data={exp} />
 
             {exp.reviews.map((rev, i) => {
                 return <Review
@@ -219,109 +214,110 @@ class Review extends React.Component {
     }
 }
 
-class NewExperienceButton extends React.Component {
-
-    save(data) {
-        // TODO: can we return a promise?
-        let $node = $(ReactDOM.findDOMNode(this))
-        this.props.profileRef.child('experience').push().set(data, function() {
-            $node.find('.modal').modal('hide')
-        })
-    }
+class ExperienceModal extends BaseForm {
 
     onClick() {
         this.forceUpdate()
         $(ReactDOM.findDOMNode(this)).find('.modal').modal('show')
     }
 
-    render() {
-        return <div className="new-work-experience">
-            <button type="button"
-                className="btn btn-default"
-                onClick={this.onClick.bind(this)}>
-                + Add work experience</button>
-            <Modal title={'Add work experience'}
-                save={this.save.bind(this)}
-                data={{}} />
-        </div>
-    }
-}
-
-class Modal extends BaseForm {
-
     handleForm(e) {
         let data = this.formData();
-        this.props.save(data)
+        this.save(data)
         e.preventDefault()
     }
 
+    save(data) {
+        let fb = firebase.database()
+        let ref = fb.ref('profile').child(this.props.profileId).child('experience')
+
+        let p
+        if (this.props.expId) {
+            p = ref.child(this.props.expId).set(data)
+        } else {
+            p = ref.push().set(data)
+        }
+
+        // TODO: can we return a promise?
+        let $node = $(ReactDOM.findDOMNode(this))
+        p.then(() => {
+            $node.find('.modal').modal('hide')
+        })
+    }
+
     render() {
-        return <div className="modal fade" role="dialog">
-            <div className="modal-dialog">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <button type="button" className="close" data-dismiss="modal">
-                            &times;
-                        </button>
-                        <h4 className="modal-title">{this.props.title}</h4>
+        return <span>
+            <button type="button"
+                className="btn btn-default"
+                onClick={this.onClick.bind(this)}>
+                {this.props.button}</button>
+            <div className="modal fade" role="dialog">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <button type="button" className="close" data-dismiss="modal">
+                                &times;
+                            </button>
+                            <h4 className="modal-title">{this.props.title}</h4>
+                        </div>
+                        <form onSubmit={this.handleForm.bind(this)}>
+                            <div className="modal-body">
+                                <div className="form-group">
+                                    <label htmlFor="company-name">Company Name</label>
+                                    <input id="company-name"
+                                        name="companyName"
+                                        type="text"
+                                        ref={this.setValue.bind(this)}
+                                        className="form-control"
+                                        placeholder="ex: Google" />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="job-title">Job Title</label>
+                                    <input id="job-title"
+                                        name="jobTitle"
+                                        type="text"
+                                        ref={this.setValue.bind(this)}
+                                        className="form-control"
+                                        placeholder="ex: Software Engineer" />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="job-description">Job Description</label>
+                                    <textarea id="job-description"
+                                        name="jobDescription"
+                                        rows={'4'}
+                                        ref={this.setValue.bind(this)}
+                                        className="form-control"></textarea>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="job-start-date">Start Date</label>
+                                    <input id="job-start-data"
+                                        name="jobStartDate"
+                                        ref={this.setValue.bind(this)}
+                                        className="form-control"
+                                        placeholder="mm/yyyy" />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="job-end-date">End Date (leave empty for current position)</label>
+                                    <input id="job-end-data"
+                                        name="jobEndDate"
+                                        ref={this.setValue.bind(this)}
+                                        className="form-control"
+                                        placeholder="mm/yyyy" />
+                                </div>
+                                <div className="form-group">
+                                    <label>Invite People to Comment your resume</label>
+                                    <Multiselect title="Search your Google contacts" />
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="submit" className="btn btn-success">Save</button>
+                                <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </form>
                     </div>
-                    <form onSubmit={this.handleForm.bind(this)}>
-                        <div className="modal-body">
-                            <div className="form-group">
-                                <label htmlFor="company-name">Company Name</label>
-                                <input id="company-name"
-                                    name="companyName"
-                                    type="text"
-                                    ref={this.setValue.bind(this)}
-                                    className="form-control"
-                                    placeholder="ex: Google" />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="job-title">Job Title</label>
-                                <input id="job-title"
-                                    name="jobTitle"
-                                    type="text"
-                                    ref={this.setValue.bind(this)}
-                                    className="form-control"
-                                    placeholder="ex: Software Engineer" />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="job-description">Job Description</label>
-                                <textarea id="job-description"
-                                    name="jobDescription"
-                                    rows={'4'}
-                                    ref={this.setValue.bind(this)}
-                                    className="form-control"></textarea>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="job-start-date">Start Date</label>
-                                <input id="job-start-data"
-                                    name="jobStartDate"
-                                    ref={this.setValue.bind(this)}
-                                    className="form-control"
-                                    placeholder="mm/yyyy" />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="job-end-date">End Date (leave empty for current position)</label>
-                                <input id="job-end-data"
-                                    name="jobEndDate"
-                                    ref={this.setValue.bind(this)}
-                                    className="form-control"
-                                    placeholder="mm/yyyy" />
-                            </div>
-                            <div className="form-group">
-                                <label>Invite People to Comment your resume</label>
-                                <Multiselect title="Search your Google contacts" />
-                            </div>
-                        </div>
-                        <div className="modal-footer">
-                            <button type="submit" className="btn btn-success">Save</button>
-                            <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
                 </div>
             </div>
-        </div>
+        </span>
     }
 }
 

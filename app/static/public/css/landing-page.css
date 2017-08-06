@@ -295,14 +295,14 @@ div.review-buttons {
 }
 
 /* experience form */
-div.me textarea,
-div.me input[type="text"] {
+div.experience-form textarea,
+div.experience-form input[type="text"] {
     width: 40em;
 }
 
 @media(max-width:767px) {
-    div.me textarea,
-    div.me input[type="text"] {
+    div.experience-form textarea,
+    div.experience-form input[type="text"] {
         width: 100%;
     }
 }

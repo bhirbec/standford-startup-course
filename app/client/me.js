@@ -268,7 +268,7 @@ class ExperienceForm extends BaseForm {
             return <Redirect to={this.state.redirect} />
         }
 
-        return <div className="me">
+        return <div className="experience-form">
             {this.props.expId == undefined ?
                 <h1>New work Experience</h1>
                 :

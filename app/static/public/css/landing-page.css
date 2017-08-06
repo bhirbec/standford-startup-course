@@ -37,6 +37,11 @@ h1 {
     margin-bottom: 25px;
 }
 
+h3 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 /* data-reactroot */
 #app,
 #app > div {
@@ -305,4 +310,18 @@ div.experience-form input[type="text"] {
     div.experience-form input[type="text"] {
         width: 100%;
     }
+}
+
+/* dialog */
+.dialog h3 {
+    margin-top: 0;
+    margin-bottom: 24px;
+}
+
+.dialog label {
+    font-size: 14px;
+}
+
+.dialog .actions {
+    text-align: right;
 }

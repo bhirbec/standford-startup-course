@@ -22,21 +22,27 @@ static/build/index.js: $(shell find client -name "*.js")
 	mkdir -p static/build
 	node_modules/browserify/bin/cmd.js  \
 		-t [ babelify --presets [ es2015 react ] ] \
+		-x material-ui/Dialog \
+		-x material-ui/styles/MuiThemeProvider \
 		-x react \
 		-x react-dom \
 		-x react-router \
 		-x react-router-dom \
 		-x react-select \
+		-x react-tap-event-plugin \
 		client/index.js > $@
 
 static/build/lib.js: node_modules/.rebuild
 	mkdir -p static/build
 	node_modules/browserify/bin/cmd.js \
+		-r material-ui/Dialog \
+		-r material-ui/styles/MuiThemeProvider \
 		-r react \
 		-r react-dom \
 		-r react-router \
 		-r react-router-dom \
 		-r react-select \
+		-r react-tap-event-plugin \
 		-o $@
 
 app:

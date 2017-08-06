@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {Link} from 'react-router-dom'
+import Dialog from 'material-ui/Dialog';
 
 import {SetValue, FormData} from './form'
 import {SignupForm, LoginForm} from './auth'
@@ -134,7 +135,7 @@ class Experience extends React.Component {
             })}
 
             {(fbUser === null || fbUser.uid != this.props.profileId) && (
-                <NewReview {...context} />
+                <ReviewFrom {...context} />
             )}
         </div>
     }
@@ -158,44 +159,32 @@ class Review extends React.Component {
             </div>
             {fbUser && fbUser.uid == rev.fromUid && rev.status == 'pending' && (
                 <div className="review-buttons">
-                    <NewReview {...this.props} />
+                    <ReviewFrom {...this.props} />
                 </div>
             )}
         </div>
     }
 }
 
-class NewReview extends React.Component {
-    onClick() {
-        $(ReactDOM.findDOMNode(this)).find('.modal').modal('show')
-        this.forceUpdate()
-    }
-
-    save() {
-        let $node = $(ReactDOM.findDOMNode(this))
-        $node.find('.modal').modal('hide')
-    }
-
-    render() {
-        return <div>
-            <button type="button"
-                className="btn btn-default"
-                onClick={this.onClick.bind(this)}>
-                {this.props.rev ? 'Edit' : 'Write a Review'}
-            </button>
-            <Modal save={this.save.bind(this)} {...this.props} />
-        </div>
-    }
-}
-
-class Modal extends React.Component {
+class ReviewFrom extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {mode: 'review'}
+        this.state = {mode: 'review', open: false}
         this.state.review = this.props.rev ? this.props.rev.review : ''
     }
 
+    handleOpen() {
+        this.setState({open: true, mode: 'review'})
+    }
+
+    handleClose() {
+        this.setState({open: false})
+    }
+
+    /* This is called when the user signs up */
     componentWillReceiveProps(props) {
+        // TODO: this get triggers for all existing reviews... resulting
+        // in permissions denied.
         let hasLoggedIn = this.props.fbUser == null && props.fbUser != null
         if (hasLoggedIn) {
             this.postReview(props.fbUser)
@@ -214,7 +203,7 @@ class Modal extends React.Component {
         }
 
         pr.then(() => {
-            this.props.save()
+            this.setState({open: false})
             forceRefresh(this.props.profileId)
         })
     }
@@ -247,7 +236,7 @@ class Modal extends React.Component {
         })
     }
 
-    handleForm(e) {
+    handleSubmit(e) {
         e.preventDefault()
         if (this.state.review == '') {
             this.setState({error: 'Review can not be empty.', 'mode': 'review'})
@@ -274,68 +263,66 @@ class Modal extends React.Component {
 
     render() {
         let form = this[this.state.mode].bind(this)
-        return <div className="modal fade" role="dialog">
-            <div className="modal-dialog">{form()}</div>
-        </div>
-    }
 
-    header(title) {
-        return <div className="modal-header">
-            <button type="button" className="close" data-dismiss="modal">&times;</button>
-            <h3 className="modal-title">{title}</h3>
+        return <div>
+            <button type="button"
+                className="btn btn-default"
+                onClick={this.handleOpen.bind(this)}>
+                {this.props.rev ? 'Edit' : 'Write a Review'}
+            </button>
+            <Dialog
+                modal={false}
+                open={this.state.open}
+                onRequestClose={this.handleClose.bind(this)}>
+                {form()}
+            </Dialog>
         </div>
     }
 
     review() {
-        return <div className="modal-content">
-            {this.header(`Review ${this.props.profileName} for position "${this.props.jobTitle}"`)}
-            <form id='review-form' onSubmit={this.handleForm.bind(this)}>
-                <div className="modal-body">
-                    {this.state.error && (
-                        <div className="form-error">{this.state.error}</div>
-                    )}
-                    <div className="form-group">
-                        <label htmlFor="review">Enter your review</label>
-                        <textarea id="review"
-                            name="review"
-                            rows={'4'}
-                            value={this.state.review}
-                            onChange={this.handleChange.bind(this)}
-                            className="form-control"></textarea>
-                    </div>
-                </div>
-                <div className="modal-footer">
-                    <button type="submit" className="btn btn-success">
-                        {this.props.fbUser == null  ? "Save & Sign Up" : "Save"}
-                    </button>
-                    <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </form>
-        </div>
+        return <form onSubmit={this.handleSubmit.bind(this)} className="dialog">
+            <h3>{`Review ${this.props.profileName} for position "${this.props.jobTitle}"`}</h3>
+            {this.state.error && (
+                <div className="form-error">{this.state.error}</div>
+            )}
+            <div className="form-group">
+                <label htmlFor="review">Enter your review</label>
+                <textarea id="review"
+                    name="review"
+                    rows={'4'}
+                    value={this.state.review}
+                    onChange={this.handleChange.bind(this)}
+                    className="form-control"></textarea>
+            </div>
+            <div className="actions">
+                <button type="submit" className="btn btn-success">
+                    {this.props.fbUser == null  ? "Save & Sign Up" : "Save"}
+                </button>
+                <button type="button" className="btn btn-default" onClick={this.handleClose.bind(this)}>
+                    Close
+                </button>
+            </div>
+        </form>
     }
 
     signup() {
-        return <div className="modal-content">
-            {this.header('Sign up to post your review')}
-            <div className="modal-body auth-form">
-                <SignupForm />
-                <div className="centered">
-                    <span>Already on letsResume? </span>
-                    <a href="#" onClick={this.changeMode.bind(this, 'login')}>Log in</a>
-                </div>
+        return <div className="auth-form dialog">
+            <h3>Sign up to post your review</h3>
+            <SignupForm />
+            <div className="centered">
+                <span>Already on letsResume? </span>
+                <a href="#" onClick={this.changeMode.bind(this, 'login')}>Log in</a>
             </div>
         </div>
     }
 
     login() {
-        return <div className="modal-content">
-            {this.header('Log in to post your review')}
-            <div className="modal-body auth-form">
-                <LoginForm />
-                <div className="centered">
-                    <span>New to letsResume? </span>
-                    <a href="#" onClick={this.changeMode.bind(this, 'signup')}>Sign Up</a>
-                </div>
+        return <div className="auth-form dialog">
+            <h3>Log in to post your review</h3>
+            <LoginForm />
+            <div className="centered">
+                <span>New to letsResume? </span>
+                <a href="#" onClick={this.changeMode.bind(this, 'signup')}>Sign Up</a>
             </div>
         </div>
     }

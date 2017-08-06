@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import {Link} from 'react-router-dom'
 import Dialog from 'material-ui/Dialog';
 
-import {SetValue, FormData} from './form'
 import {SignupForm, LoginForm} from './auth'
 
 

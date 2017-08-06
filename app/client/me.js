@@ -5,8 +5,7 @@ import {Link, Redirect, Route} from 'react-router-dom'
 
 import Multiselect from './multiselect'
 import {currentUser} from './auth'
-// TODO: do we need BaseForm?
-import {BaseForm} from './form'
+import Form from './form'
 
 
 function joinReviews(profile, reviews) {
@@ -227,7 +226,7 @@ class Review extends React.Component {
     }
 }
 
-class ExperienceForm extends BaseForm {
+class ExperienceForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {}
@@ -242,15 +241,11 @@ class ExperienceForm extends BaseForm {
         }
     }
 
-    handleForm(e) {
-        e.preventDefault()
-
+    onClick(data) {
         let fb = firebase.database()
         let ref = fb.ref('profile').child(this.fbUser.uid).child('experience')
 
         let p
-        let data = this.formData();
-
         if (this.props.expId) {
             p = ref.child(this.props.expId).set(data)
         } else {
@@ -274,13 +269,12 @@ class ExperienceForm extends BaseForm {
                 :
                 <h1>{this.state.companyName} - {this.state.jobTitle}</h1>
             }
-            <form onSubmit={this.handleForm.bind(this)}>
+            <Form onSubmit={this.onClick.bind(this)} data={this.state}>
                 <div className="form-group">
                     <label htmlFor="company-name">Company Name</label>
                     <input id="company-name"
                         name="companyName"
                         type="text"
-                        ref={this.setValue.bind(this)}
                         className="form-control"
                         placeholder="ex: Google" />
                 </div>
@@ -289,7 +283,6 @@ class ExperienceForm extends BaseForm {
                     <input id="job-title"
                         name="jobTitle"
                         type="text"
-                        ref={this.setValue.bind(this)}
                         className="form-control"
                         placeholder="ex: Software Engineer" />
                 </div>
@@ -298,7 +291,6 @@ class ExperienceForm extends BaseForm {
                     <textarea id="job-description"
                         name="jobDescription"
                         rows={'12'}
-                        ref={this.setValue.bind(this)}
                         className="form-control"></textarea>
                 </div>
                 <div className="form-group">
@@ -306,7 +298,6 @@ class ExperienceForm extends BaseForm {
                     <input id="job-start-data"
                         name="jobStartDate"
                         type="text"
-                        ref={this.setValue.bind(this)}
                         className="form-control"
                         placeholder="mm/yyyy" />
                 </div>
@@ -315,7 +306,6 @@ class ExperienceForm extends BaseForm {
                     <input id="job-end-data"
                         name="jobEndDate"
                         type="text"
-                        ref={this.setValue.bind(this)}
                         className="form-control"
                         placeholder="mm/yyyy" />
                 </div>
@@ -325,7 +315,7 @@ class ExperienceForm extends BaseForm {
                         <button type="button" className="btn btn-default">Back</button>
                     </Link>
                 </div>
-            </form>
+            </Form>
         </div>
     }
 }

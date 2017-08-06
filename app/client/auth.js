@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import {Link, Redirect} from 'react-router-dom'
 
-import {BaseForm} from './form'
+import Form from './form'
 
 
 class SignupComponent extends React.Component {
@@ -30,16 +30,13 @@ class SignupComponent extends React.Component {
     }
 }
 
-class SignupForm extends BaseForm {
+class SignupForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {}
     }
 
-    handleForm(e) {
-        e.preventDefault()
-
-        let data = this.formData()
+    onSubmit(data) {
         let fb = firebase.database()
         let user;
 
@@ -71,7 +68,7 @@ class SignupForm extends BaseForm {
     }
 
     render() {
-        return <form onSubmit={this.handleForm.bind(this)}>
+        return <Form onSubmit={this.onSubmit.bind(this)}>
             {this.state.error && (
                 <div className="form-error">{this.state.error}</div>
             )}
@@ -106,7 +103,7 @@ class SignupForm extends BaseForm {
             <div className="centered">
                 <button type="submit" className="btn btn-success">Sign up</button>
             </div>
-        </form>
+        </Form>
     }
 }
 
@@ -155,15 +152,13 @@ class LoginComponent extends React.Component {
     }
 }
 
-class LoginForm extends BaseForm {
+class LoginForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {}
     }
 
-    handleForm(e) {
-        let data = this.formData()
-
+    onSubmit(data) {
         firebase.auth().signInWithEmailAndPassword(data.email, data.pwd)
         .then((fbUser) => {
             if (this.props.resolve) {
@@ -173,12 +168,10 @@ class LoginForm extends BaseForm {
         .catch((error) => {
             this.setState({error: error.message})
         })
-
-        e.preventDefault()
     }
 
     render() {
-        return <form onSubmit={this.handleForm.bind(this)}>
+        return <Form onSubmit={this.onSubmit.bind(this)}>
             {this.state.error && (
                 <div className="form-error">{this.state.error}</div>
             )}
@@ -199,7 +192,7 @@ class LoginForm extends BaseForm {
             <div className="centered">
                 <button type="submit" className="btn btn-success">Log In</button>
             </div>
-        </form>
+        </Form>
     }
 }
 

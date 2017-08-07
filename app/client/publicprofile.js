@@ -4,8 +4,7 @@ import {Link} from 'react-router-dom'
 import Dialog from 'material-ui/Dialog';
 
 import {SignupForm, LoginForm} from './auth'
-
-
+import Form from './form'
 import {joinReviews, forceRefresh} from './me'
 
 
@@ -235,8 +234,7 @@ class ReviewFrom extends React.Component {
         })
     }
 
-    handleSubmit(e) {
-        e.preventDefault()
+    onSubmit(data) {
         if (this.state.review == '') {
             this.setState({error: 'Review can not be empty.', 'mode': 'review'})
         } else {
@@ -279,8 +277,9 @@ class ReviewFrom extends React.Component {
     }
 
     review() {
-        return <form onSubmit={this.handleSubmit.bind(this)} className="dialog">
+        return <Form onSubmit={this.onSubmit.bind(this)} className="dialog">
             <h3>{`Review ${this.props.profileName} for position "${this.props.jobTitle}"`}</h3>
+
             {this.state.error && (
                 <div className="form-error">{this.state.error}</div>
             )}
@@ -301,7 +300,7 @@ class ReviewFrom extends React.Component {
                     Close
                 </button>
             </div>
-        </form>
+        </Form>
     }
 
     signup() {
@@ -328,3 +327,4 @@ class ReviewFrom extends React.Component {
 }
 
 export {PublicProfile}
+

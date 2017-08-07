@@ -13,12 +13,13 @@ export default class Form extends React.Component {
     }
 
     populate(data) {
-        // TODO: set focus on first element
         // TODO: handle radio button and checkbox
         let $form = $(ReactDOM.findDOMNode(this))
         for (let n in data) {
             $form.find('[name=' + n + ']').val(data[n])
         }
+
+        $form.find(':input').first().focus()
     }
 
     onSubmit(e) {
@@ -35,7 +36,9 @@ export default class Form extends React.Component {
     }
 
     render() {
-        return <form onSubmit={this.onSubmit.bind(this)}>
+        return <form
+            onSubmit={this.onSubmit.bind(this)}
+            className={this.props.className}>
             {this.props.children}
         </form>
     }

@@ -4,10 +4,6 @@ import ReactDOM from 'react-dom'
 
 export default class Form extends React.Component {
 
-    componentWillReceiveProps(nextProps) {
-        this.populate(nextProps.data || {})
-    }
-
     componentDidMount() {
         this.populate(this.props.data || {})
     }

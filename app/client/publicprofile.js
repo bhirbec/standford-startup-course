@@ -168,15 +168,7 @@ class ReviewFrom extends React.Component {
     constructor(props) {
         super(props)
         this.data = {}
-        this.state = {mode: 'review', open: false}
-    }
-
-    handleOpen() {
-        this.setState({open: true, mode: 'review'})
-    }
-
-    handleClose() {
-        this.setState({open: false})
+        this.state = {mode: 'closed'}
     }
 
     postReview(fbUser) {
@@ -191,7 +183,7 @@ class ReviewFrom extends React.Component {
         }
 
         pr.then(() => {
-            this.setState({open: false})
+            this.setState({mode: 'closed'})
             forceRefresh(this.props.profileId)
         })
     }
@@ -240,25 +232,24 @@ class ReviewFrom extends React.Component {
         }
     }
 
-    changeMode(mode, e) {
-        e.preventDefault()
+    changeMode(mode) {
         this.setState({mode: mode})
     }
 
     render() {
-        let form = this[this.state.mode].bind(this)
-
         return <div>
             <button type="button"
                 className="btn btn-default"
-                onClick={this.handleOpen.bind(this)}>
+                onClick={this.changeMode.bind(this, 'review')}>
                 {this.props.rev ? 'Edit' : 'Write a Review'}
             </button>
             <Dialog
                 modal={false}
-                open={this.state.open}
-                onRequestClose={this.handleClose.bind(this)}>
-                {form()}
+                open={this.state.mode != 'closed'}
+                onRequestClose={this.changeMode.bind(this, 'closed')}>
+                {this.state.mode != 'closed' && (
+                    this[this.state.mode].bind(this)()
+                )}
             </Dialog>
         </div>
     }
@@ -285,7 +276,10 @@ class ReviewFrom extends React.Component {
                 <button type="submit" className="btn btn-success">
                     {this.props.fbUser == null  ? "Save & Sign Up" : "Save"}
                 </button>
-                <button type="button" className="btn btn-default" onClick={this.handleClose.bind(this)}>
+                <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={this.changeMode.bind(this, 'closed')}>
                     Close
                 </button>
             </div>

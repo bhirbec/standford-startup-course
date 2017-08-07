@@ -229,8 +229,8 @@ class Review extends React.Component {
 class ExperienceForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {}
         this.fbUser = currentUser()
+        this.state = this.props.expId ? null : {}
     }
 
     componentDidMount() {
@@ -259,6 +259,10 @@ class ExperienceForm extends React.Component {
     }
 
     render() {
+        if (this.state == null) {
+            return null
+        }
+
         if (this.state.redirect) {
             return <Redirect to={this.state.redirect} />
         }

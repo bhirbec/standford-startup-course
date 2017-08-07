@@ -171,15 +171,15 @@ class ReviewFrom extends React.Component {
         this.state = {mode: 'closed'}
     }
 
-    postReview(fbUser) {
+    post(fbUser) {
         let fb = firebase.database()
         let ref = fb.ref(`pendingReviews/${this.props.profileId}/${fbUser.uid}`)
 
         let pr
         if (this.props.rev) {
-            pr = this.updateReview(ref)
+            pr = this.update(ref)
         } else {
-            pr = this.createReview(ref, fbUser)
+            pr = this.create(ref, fbUser)
         }
 
         pr.then(() => {
@@ -188,14 +188,7 @@ class ReviewFrom extends React.Component {
         })
     }
 
-    updateReview(ref) {
-        return ref.child(this.props.rev.revId).update({
-            review: this.data.review,
-            UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
-        })
-    }
-
-    createReview(ref, fbUser) {
+    create(ref, fbUser) {
         return firebase.database().ref('profile').child(fbUser.uid + '/info').once('value', (snap) => {
             let info = snap.val()
 
@@ -216,6 +209,23 @@ class ReviewFrom extends React.Component {
         })
     }
 
+    update(ref) {
+        return ref.child(this.props.rev.revId).update({
+            review: this.data.review,
+            UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
+        })
+    }
+
+    delete() {
+        let pr = this.props
+        let fb = firebase.database()
+        let ref = fb.ref(`pendingReviews/${pr.profileId}/${pr.fbUser.uid}/${pr.rev.revId}`)
+
+        ref.remove().then(() => {
+            forceRefresh(pr.profileId)
+        })
+    }
+
     onSubmit(data) {
         if (data.review == '') {
             this.setState({error: 'Review can not be empty.', 'mode': 'review'})
@@ -226,7 +236,7 @@ class ReviewFrom extends React.Component {
         this.setState({'error': null})
 
         if (this.props.fbUser) {
-            this.postReview(this.props.fbUser)
+            this.post(this.props.fbUser)
         } else {
             this.setState({mode: 'signup'})
         }
@@ -243,6 +253,13 @@ class ReviewFrom extends React.Component {
                 onClick={this.changeMode.bind(this, 'review')}>
                 {this.props.rev ? 'Edit' : 'Write a Review'}
             </button>
+            {this.props.rev && (
+                <button type="button"
+                    className="btn btn-default"
+                    onClick={this.delete.bind(this)}>
+                    Remove
+                </button>
+            )}
             <Dialog
                 modal={false}
                 open={this.state.mode != 'closed'}
@@ -289,7 +306,7 @@ class ReviewFrom extends React.Component {
     signup() {
         return <div className="auth-form dialog">
             <h3>Sign up to post your review</h3>
-            <SignupForm resolve={this.postReview.bind(this)} />
+            <SignupForm resolve={this.post.bind(this)} />
             <div className="centered">
                 <span>Already on letsResume? </span>
                 <a href="#" onClick={this.changeMode.bind(this, 'login')}>Log in</a>
@@ -300,7 +317,7 @@ class ReviewFrom extends React.Component {
     login() {
         return <div className="auth-form dialog">
             <h3>Log in to post your review</h3>
-            <LoginForm resolve={this.postReview.bind(this)} />
+            <LoginForm resolve={this.post.bind(this)} />
             <div className="centered">
                 <span>New to letsResume? </span>
                 <a href="#" onClick={this.changeMode.bind(this, 'signup')}>Sign Up</a>

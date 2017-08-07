@@ -167,8 +167,8 @@ class Review extends React.Component {
 class ReviewFrom extends React.Component {
     constructor(props) {
         super(props)
+        this.data = {}
         this.state = {mode: 'review', open: false}
-        this.state.review = this.props.rev ? this.props.rev.review : ''
     }
 
     handleOpen() {
@@ -179,21 +179,11 @@ class ReviewFrom extends React.Component {
         this.setState({open: false})
     }
 
-    /* This is called when the user signs up */
-    componentWillReceiveProps(props) {
-        // TODO: this get triggers for all existing reviews... resulting
-        // in permissions denied.
-        let hasLoggedIn = this.props.fbUser == null && props.fbUser != null
-        if (hasLoggedIn) {
-            this.postReview(props.fbUser)
-        }
-    }
-
     postReview(fbUser) {
-        let pr
         let fb = firebase.database()
         let ref = fb.ref(`pendingReviews/${this.props.profileId}/${fbUser.uid}`)
 
+        let pr
         if (this.props.rev) {
             pr = this.updateReview(ref)
         } else {
@@ -208,7 +198,7 @@ class ReviewFrom extends React.Component {
 
     updateReview(ref) {
         return ref.child(this.props.rev.revId).update({
-            review: this.state.review,
+            review: this.data.review,
             UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
         })
     }
@@ -226,7 +216,7 @@ class ReviewFrom extends React.Component {
                     lastname: info.lastname
                 },
                 expId: this.props.expId,
-                review: this.state.review,
+                review: this.data.review,
                 UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
             }
 
@@ -235,22 +225,19 @@ class ReviewFrom extends React.Component {
     }
 
     onSubmit(data) {
-        if (this.state.review == '') {
+        if (data.review == '') {
             this.setState({error: 'Review can not be empty.', 'mode': 'review'})
-        } else {
-            this.setState({'error': null})
-            if (this.props.fbUser) {
-                this.postReview(this.props.fbUser)
-            } else {
-                this.setState({mode: 'signup'})
-            }
+            return
         }
-    }
 
-    handleChange(event) {
-        var state = {}
-        state[event.target.name] = event.target.value
-        this.setState(state);
+        this.data = data
+        this.setState({'error': null})
+
+        if (this.props.fbUser) {
+            this.postReview(this.props.fbUser)
+        } else {
+            this.setState({mode: 'signup'})
+        }
     }
 
     changeMode(mode, e) {
@@ -277,7 +264,11 @@ class ReviewFrom extends React.Component {
     }
 
     review() {
-        return <Form onSubmit={this.onSubmit.bind(this)} className="dialog">
+        return <Form
+            onSubmit={this.onSubmit.bind(this)}
+            data={this.props.rev || {}}
+            className="dialog">
+
             <h3>{`Review ${this.props.profileName} for position "${this.props.jobTitle}"`}</h3>
 
             {this.state.error && (
@@ -288,8 +279,6 @@ class ReviewFrom extends React.Component {
                 <textarea id="review"
                     name="review"
                     rows={'4'}
-                    value={this.state.review}
-                    onChange={this.handleChange.bind(this)}
                     className="form-control"></textarea>
             </div>
             <div className="actions">
@@ -306,7 +295,7 @@ class ReviewFrom extends React.Component {
     signup() {
         return <div className="auth-form dialog">
             <h3>Sign up to post your review</h3>
-            <SignupForm />
+            <SignupForm resolve={this.postReview.bind(this)} />
             <div className="centered">
                 <span>Already on letsResume? </span>
                 <a href="#" onClick={this.changeMode.bind(this, 'login')}>Log in</a>
@@ -317,7 +306,7 @@ class ReviewFrom extends React.Component {
     login() {
         return <div className="auth-form dialog">
             <h3>Log in to post your review</h3>
-            <LoginForm />
+            <LoginForm resolve={this.postReview.bind(this)} />
             <div className="centered">
                 <span>New to letsResume? </span>
                 <a href="#" onClick={this.changeMode.bind(this, 'signup')}>Sign Up</a>

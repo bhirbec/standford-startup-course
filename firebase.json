@@ -7,7 +7,11 @@
     "rewrites": [
       {"source": "/", "function": "app"},
       {"source": "/me", "function": "app"},
-      {"source": "/in/*", "function": "app"}
+      {"source": "/in/*", "function": "app"},
+      {"source": "/me/experience", "function": "app"},
+      {"source": "/me/experience/*", "function": "app"},
+      {"source": "/login", "function": "app"},
+      {"source": "/signin", "function": "app"}
     ]
   }
 }

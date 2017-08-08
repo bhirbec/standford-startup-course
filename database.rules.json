@@ -14,25 +14,11 @@
         }
       }
     },
-    "pendingReviews": {
-      "$toUid": {
-        ".read": "auth.uid === $toUid",
-        "$fromUid": {
-          ".read": "auth.uid === $fromUid",
-          ".write": "auth.uid === $fromUid",
-          "$revId": {
-            "review": {
-              ".validate": "newData.isString() && newData.val() !== ''"
-            }
-          }
-        }
-      }
-    },
     "publicReviews": {
       ".read": true,
       ".indexOn": ["fromUid", "toUid"],
       "$revId": {
-        ".write": "newData.child('toUid').val() === auth.uid || data.child('toUid').val() === auth.uid"
+        ".write": "data.exists() ? newData.child('fromUid').val() === data.child('fromUid').val() : newData.child('fromUid').val() === auth.uid"
       }
     }
   }

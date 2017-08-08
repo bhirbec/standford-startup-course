@@ -31,27 +31,13 @@ class PublicProfile extends React.Component {
             }
 
             let reviews = {}
-            let updateReviews = (snap1, status) => {
-                reviews[snap1.key] = snap1.val()
-                reviews[snap1.key].status = status
-            }
+            let ref = fb.ref('publicReviews').orderByChild("toUid").equalTo(uid)
 
-            let fbUser = this.props.fbUser
-            let publicRef = fb.ref('publicReviews').orderByChild("toUid").equalTo(uid)
-            let pr
-
-            if (fbUser) {
-                let pendingRef = fb.ref('pendingReviews').child(uid).child(fbUser.uid)
-                pr = pendingRef.once('value').then((snap) => {
-                    snap.forEach((snap1) => { updateReviews(snap1, 'pending') })
-                    return publicRef.once('value')
+            ref.once('value').then((snap) => {
+                snap.forEach((snap1) => {
+                    reviews[snap1.key] = snap1.val()
                 })
-            } else {
-                pr = publicRef.once('value')
-            }
 
-            pr.then((snap) => {
-                snap.forEach((snap1) => { updateReviews(snap1, 'public') })
                 joinReviews(profile, reviews)
                 this.setState(profile)
             })
@@ -153,9 +139,8 @@ class Review extends React.Component {
                     {rev.reviewer.firstname} {rev.reviewer.lastname}
                 </Link>
                 <span> - {rev.UTCdate}</span>
-                <span> - {rev.status}</span>
             </div>
-            {fbUser && fbUser.uid == rev.fromUid && rev.status == 'pending' && (
+            {fbUser && fbUser.uid == rev.fromUid && (
                 <div className="review-buttons">
                     <ReviewFrom {...this.props} />
                 </div>
@@ -172,14 +157,11 @@ class ReviewFrom extends React.Component {
     }
 
     post(fbUser) {
-        let fb = firebase.database()
-        let ref = fb.ref(`pendingReviews/${this.props.profileId}/${fbUser.uid}`)
-
         let pr
         if (this.props.rev) {
-            pr = this.update(ref)
+            pr = this.update()
         } else {
-            pr = this.create(ref, fbUser)
+            pr = this.create(fbUser)
         }
 
         pr.then(() => {
@@ -188,7 +170,7 @@ class ReviewFrom extends React.Component {
         })
     }
 
-    create(ref, fbUser) {
+    create(fbUser) {
         return firebase.database().ref('profile').child(fbUser.uid + '/info').once('value', (snap) => {
             let info = snap.val()
 
@@ -205,11 +187,13 @@ class ReviewFrom extends React.Component {
                 UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
             }
 
+            let ref = firebase.database().ref('publicReviews')
             return ref.push().set(data)
         })
     }
 
-    update(ref) {
+    update() {
+        let ref = firebase.database().ref('publicReviews')
         return ref.child(this.props.rev.revId).update({
             review: this.data.review,
             UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
@@ -217,12 +201,9 @@ class ReviewFrom extends React.Component {
     }
 
     delete() {
-        let pr = this.props
-        let fb = firebase.database()
-        let ref = fb.ref(`pendingReviews/${pr.profileId}/${pr.fbUser.uid}/${pr.rev.revId}`)
-
-        ref.remove().then(() => {
-            forceRefresh(pr.profileId)
+        let ref = firebase.database().ref('publicReviews')
+        ref.child(this.props.rev.revId).child('review').remove().then(() => {
+            forceRefresh(this.props.profileId)
         })
     }
 

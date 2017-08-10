@@ -325,3 +325,17 @@ div.experience-form input[type="text"] {
 .dialog .actions {
     text-align: right;
 }
+
+/* tests */
+table.tests {
+    border: 1px solid #ccc;
+}
+
+table.tests th {
+    background-color: #ccc;
+}
+
+table.tests td,
+table.tests th {
+    padding: 5px 15px;
+}

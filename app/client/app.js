@@ -6,12 +6,15 @@ import {Me} from './me'
 import Home from './home'
 import {PublicProfile} from './publicprofile'
 import {Search} from './search'
+import Test from './test'
 import {SignupComponent, LoginComponent, SignoutLink} from './auth'
 
 
 class App extends React.Component {
 
     render() {
+        let isAdmin = this.props.fbUser && idAdmin(this.props.fbUser.uid)
+
         return <MuiThemeProvider>
             <div>
                 <nav className="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -32,12 +35,14 @@ class App extends React.Component {
                         </div>
                        <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul className="nav navbar-nav navbar-right">
-                                {this.props.fbUser && ([
-                                    idAdmin(this.props.fbUser.uid)?
-                                        <li key="to-search"><Link to='/search'>Search</Link></li> : null
-                                    ,
-                                    <li key="to-signout"><SignoutLink /></li>
+                                {isAdmin && ([
+                                    <li key="to-search"><Link to='/search'>Search</Link></li>,
+                                    <li key="to-test"><Link to='/test'>Test</Link></li>
                                 ])}
+
+                                {this.props.fbUser && (
+                                    <li key="to-signout"><SignoutLink /></li>
+                                )}
                                 {!this.props.fbUser && ([
                                     <li key="to-login"><Link to='/login'>Log in</Link></li>,
                                     <li key="to-signup"><Link to='/signup'>Sign Up</Link></li>
@@ -72,6 +77,13 @@ class App extends React.Component {
                 <Route exact path="/search" render={() => (
                     this.props.fbUser ? (
                         <InnerLayout><Search /></InnerLayout>
+                    ) : (
+                        <Redirect to="/" />
+                    )
+                )} />
+                <Route exact path="/test" render={() => (
+                    this.props.fbUser ? (
+                        <InnerLayout><Test /></InnerLayout>
                     ) : (
                         <Redirect to="/" />
                     )

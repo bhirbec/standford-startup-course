@@ -18,7 +18,7 @@
       ".read": true,
       ".indexOn": ["fromUid", "toUid"],
       "$revId": {
-        ".write": "data.exists() ? newData.child('fromUid').val() === data.child('fromUid').val() : newData.child('fromUid').val() === auth.uid"
+        ".write": "newData.child('fromUid').val() === auth.uid && (!data.exists() || (newData.child('fromUid').val() === data.child('fromUid').val() && newData.child('toUid').val() === data.child('toUid').val()))"
       }
     }
   }

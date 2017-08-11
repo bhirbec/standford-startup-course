@@ -16,9 +16,20 @@ window.init = function () {
     firebase.auth().onAuthStateChanged((fbUser) => {
         let isLogged = fbUser != null
         console.log('Firebase loggin state: ', isLogged)
-        let el = document.getElementById('app')
-        ReactDOM.render(<BrowserRouter>
-            <App isLogged={isLogged} fbUser={fbUser} />
-        </BrowserRouter>, el)
+
+        if (!isLogged) {
+            renderApp(fbUser, false)
+        } else {
+            firebase.database().ref('admin/' + fbUser.uid).once('value', (snap) => {
+                renderApp(fbUser, snap.exists())
+            })
+        }
     })
+}
+
+function renderApp(fbUser, isAdmin) {
+    let el = document.getElementById('app')
+    ReactDOM.render(<BrowserRouter>
+        <App fbUser={fbUser} isAdmin={isAdmin} />
+    </BrowserRouter>, el)
 }

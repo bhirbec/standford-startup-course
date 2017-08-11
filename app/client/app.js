@@ -13,8 +13,6 @@ import {SignupComponent, LoginComponent, SignoutLink} from './auth'
 class App extends React.Component {
 
     render() {
-        let isAdmin = this.props.fbUser && idAdmin(this.props.fbUser.uid)
-
         return <MuiThemeProvider>
             <div>
                 <nav className="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -35,7 +33,7 @@ class App extends React.Component {
                         </div>
                        <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul className="nav navbar-nav navbar-right">
-                                {isAdmin && ([
+                                {this.props.isAdmin && ([
                                     <li key="to-search"><Link to='/search'>Search</Link></li>,
                                     <li key="to-test"><Link to='/test'>Test</Link></li>
                                 ])}
@@ -112,14 +110,6 @@ class InnerLayout extends React.Component {
             </div>
         </div>
     }
-}
-
-function idAdmin(uid) {
-    return {
-        'lCxNpj5R0CMCrXZ9EnkSSUZwzYg2': true,
-        'ujaAcjlu3gMPdtWrNq39x7HvzAT2': true,
-        '5M7pXK3twXegXSaexip1ARA2qm02': true,
-    }[uid] || false
 }
 
 export {App}

@@ -212,7 +212,6 @@ class ExperienceForm extends React.Component {
             p = ref.push().set(data)
         }
 
-        // TODO: can we return a promise?
         p.then(() => {
             this.setState({'redirect': '/me'})
         })

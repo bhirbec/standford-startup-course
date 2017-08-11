@@ -24,8 +24,6 @@
     </meta>
 </head>
 <body>
-    <script src="https://apis.google.com/js/platform.js"></script>
-    <meta name="google-signin-client_id" content="1017354286324-ulgeerbtd7h71v17dcs26ggo3durupoo.apps.googleusercontent.com" />
     <script src={asset("/public/js/jquery.js")}></script>
     <script src={asset("/public/js/bootstrap.min.js")}></script>
     <script src="https://www.gstatic.com/firebasejs/4.1.2/firebase.js"></script>
@@ -35,7 +33,6 @@
 
     <div id="app"><Content /></div>
     <link rel="stylesheet" href="https://unpkg.com/react-select/dist/react-select.css" />
-    <script src="https://apis.google.com/js/api.js"></script>
     <script dangerouslySetInnerHTML={{__html: "window.init()"}}></script>
 </body>
 </html>

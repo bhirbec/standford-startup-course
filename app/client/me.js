@@ -201,7 +201,11 @@ class ExperienceForm extends React.Component {
         }
     }
 
-    onClick(data) {
+    onSubmit(data) {
+        if (!this.validate(data)) {
+            return
+        }
+
         let fb = firebase.database()
         let ref = fb.ref('profile').child(this.fbUser.uid).child('experience')
 
@@ -215,6 +219,29 @@ class ExperienceForm extends React.Component {
         p.then(() => {
             this.setState({'redirect': '/me'})
         })
+    }
+
+    validate(data) {
+        if (data.companyName == "") {
+            this.setState({error: "Company name can not be empty"})
+            return false
+        }
+
+        if (data.jobTitle == "") {
+            this.setState({error: "Job title can not be empty"})
+            return false
+        }
+
+        if (data.jobDescription == "") {
+            this.setState({error: "Job description can not be empty"})
+            return false
+        }
+
+        if (data.jobStartDate == "") {
+            this.setState({error: "Start date can not be empty"})
+            return false
+        }
+        return true
     }
 
     render() {
@@ -232,7 +259,10 @@ class ExperienceForm extends React.Component {
                 :
                 <h1>{this.state.companyName} - {this.state.jobTitle}</h1>
             }
-            <Form onSubmit={this.onClick.bind(this)} data={this.state}>
+            <Form onSubmit={this.onSubmit.bind(this)} data={this.state}>
+                {this.state.error && (
+                    <div className="form-error">{this.state.error}</div>
+                )}
                 <div className="form-group">
                     <label htmlFor="company-name">Company Name</label>
                     <input id="company-name"

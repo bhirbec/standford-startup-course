@@ -8,6 +8,7 @@ export default class Test extends React.Component {
     constructor(props) {
         super(props)
         this.state = {run: false}
+        this.fbUser = currentUser()
     }
 
     onClick() {
@@ -18,7 +19,6 @@ export default class Test extends React.Component {
         return <div>
             <div>Security Tests (only visible by Reagan & Ben)</div>
             <h1>Tests</h1>
-
 
             <button type="button"
                 className="btn btn-default"
@@ -41,20 +41,23 @@ export default class Test extends React.Component {
                         desc='Write a review with missing fields like "fromUid" or "toUid"'
                         expected='not allowed'
                         run={this.state.run} />
-                    <OverrideFromUid
+                    <ReviewImpersonation
                         name='Review impersonation'
                         desc='Override "fromUid" field in a review'
                         expected='not allowed'
+                        data={{'fromUid': this.fbUser.uid}}
                         run={this.state.run} />
-                    <OverrideReview
+                    <ReviewImpersonation
                         name='Review impersonation'
                         desc='Override "review" field in a review'
                         expected='not allowed'
+                        data={{'review': 'some text'}}
                         run={this.state.run} />
-                    <OverrideToUid
+                    <ReviewImpersonation
                         name='Review impersonation'
                         desc='Override "toUid" field in a review'
                         expected='not allowed'
+                        data={{'toUid': 'xxx'}}
                         run={this.state.run} />
                 </tbody>
             </table>
@@ -123,46 +126,16 @@ class WriteTest extends React.Component {
 
 
 class ReviewValidation extends WriteTest {
-    run(fb) {
+    run() {
         return this.fb.ref('publicReviews').push().set({'x': true})
     }
 }
 
 
 class ReviewImpersonation extends WriteTest {
-    run(fb) {
-        let uid = '5M7pXK3twXegXSaexip1ARA2qm02'
-        let ref = this.fb.ref('publicReviews').orderByChild("fromUid").equalTo(uid).limitToFirst(1)
-
-        return ref.once('value').then((snap) => {
-            let reviews = snap.val()
-            for (let key in reviews) {
-                return this.fb.ref('publicReviews').child(key).update(this.data)
-            }
-        })
-    }
-}
-
-
-class OverrideFromUid extends ReviewImpersonation {
-    constructor(props) {
-        super(props)
-        this.data = {'fromUid': this.fbUser.uid}
-    }
-}
-
-
-class OverrideReview extends ReviewImpersonation {
-    constructor(props) {
-        super(props)
-        this.data = {'review': 'some text'}
-    }
-}
-
-
-class OverrideToUid extends ReviewImpersonation {
-    constructor(props) {
-        super(props)
-        this.data = {'toUid': 'xxx'}
+    run() {
+        // TODO: would be nice to remove hard-coded value for testing.
+        const reviewPath = 'publicReviews/-KrEcDQ9EOJNsbrQqYOc'
+        return this.fb.ref(reviewPath).update(this.props.data)
     }
 }

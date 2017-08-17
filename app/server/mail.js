@@ -7,7 +7,7 @@ import {fb, config} from './init.js'
 
 
 let domain = config.mailgun.domain
-let fromEmail = `noreply@${config.mailgun.domain}`
+let fromEmail = `LetsResume <team@${config.mailgun.domain}>`
 let baseURL = `https://api:${config.mailgun.apiKey}@api.mailgun.net/v3/`
 
 

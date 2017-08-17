@@ -1,1 +1,4 @@
-module.exports = require('./server')
+module.exports = {
+    server: require('./server'),
+    mailer: require('./server/mail').mailer
+}

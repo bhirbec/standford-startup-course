@@ -13,6 +13,7 @@ let app = express()
 
 // static asset
 app.use(staticAsset(path.join(__dirname,  "../static/")));
+// TODO: move this to local.js?
 app.use('/public', express.static(path.join(__dirname, "../static/public")));
 app.use('/build', express.static(path.join(__dirname, "../static/build")));
 

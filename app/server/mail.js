@@ -61,13 +61,13 @@ function template(reviewer, profileId) {
                 <p style="margin:20px 0">
                     You've received a review request from ${reviewer.firstname} ${reviewer.lastname}!
                     Please check out
-                    <a href="http://localhost:8080/in/${profileId}" style="text-decoration:none; color: #15c" target="_blank">
+                    <a href="${config.web.url}/in/${profileId}" style="text-decoration:none; color: #15c" target="_blank">
                         <strong>${reviewer.firstname} on LetsResume.com</strong>
                     </a>
                     and add your review.
                 </p>
                 <p style="margin:20px 0">
-                    <a href="#" style="text-decoration:none; color: #15c" target="_blank">
+                    <a href="${config.web.url}" style="text-decoration:none; color: #15c" target="_blank">
                         <strong>LetsResume</strong>
                     </a>
                     is a crowd-sourced resume building platform that lets you create an

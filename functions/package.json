@@ -27,7 +27,7 @@
   },
   "private": true,
   "scripts": {
-    "start": "make js && babel-node local.js -c secrets/config-dev.json"
+    "start": "make js && babel-node run.js -c secrets/config-dev.json"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",

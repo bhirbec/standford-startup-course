@@ -253,7 +253,7 @@ class ExperienceForm extends React.Component {
 
         return <div className="experience-form">
             {this.props.expId == undefined ?
-                <h1>New work Experience</h1>
+                <h1>New Work Experience</h1>
                 :
                 <h1>{this.state.companyName} - {this.state.jobTitle}</h1>
             }

@@ -9,6 +9,7 @@ import {currentUser} from './auth'
 import Form from './form'
 
 
+// TODO: should we create a mode/profile.js?
 function joinReviews(profile, reviews) {
     profile.experience = profile.experience || {}
 

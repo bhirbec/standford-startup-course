@@ -196,6 +196,8 @@ class LoginForm extends React.Component {
     }
 }
 
+// TODO: evaluate if we should remove currentUser function and
+// pass user to each component
 function currentUser() {
     try {
         firebase

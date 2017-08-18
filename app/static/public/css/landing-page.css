@@ -262,6 +262,12 @@ p.copyright {
     margin-bottom: 15px;
 }
 
+/* nav link */
+a.invite {
+    color: orange !important;
+    font-weight: bold;
+}
+
 /* profile */
 .btn {
     margin-right: 5px;

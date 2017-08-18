@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import {Link, Redirect, Route} from 'react-router-dom'
 import Dialog from 'material-ui/Dialog';
 
-import InviteForm from './invite'
 import {currentUser} from './auth'
 import Form from './form'
 
@@ -149,8 +148,6 @@ class Experience extends React.Component {
             <p className="job-description">
                 {exp.jobDescription}
             </p>
-
-            <InviteForm profileId={this.props.profileId} />
 
             <Link to={'/me/experience/' + this.props.expId}>
                 <button type="button" className="btn btn-default">Edit</button>

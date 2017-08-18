@@ -12,8 +12,9 @@ export default class InviteForm extends React.Component {
         this.state = {mode: 'closed'}
     }
 
-    changeMode(mode) {
+    changeMode(mode, e) {
         this.setState({mode: mode})
+        e.preventDefault()
     }
 
     onSubmit(data) {
@@ -23,12 +24,8 @@ export default class InviteForm extends React.Component {
     }
 
     render() {
-        return <span>
-            <button type="button"
-                className="btn btn-success"
-                onClick={this.changeMode.bind(this, 'open')}>
-                + Invite Reviewer
-            </button>
+        return <a href="#" onClick={this.changeMode.bind(this, 'open')} className="invite">
+            + Invite Reviewer
             <Dialog
                 modal={false}
                 open={this.state.mode == 'open'}
@@ -62,6 +59,6 @@ export default class InviteForm extends React.Component {
                     </div>
                 </Form>
             </Dialog>
-        </span>
+        </a>
     }
 }

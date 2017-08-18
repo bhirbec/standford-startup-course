@@ -2,6 +2,7 @@ import React from 'react'
 import {Route, Redirect, Link} from 'react-router-dom'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
+import InviteForm from './invite'
 import {Me} from './me'
 import Home from './home'
 import {PublicProfile} from './publicprofile'
@@ -33,6 +34,10 @@ class App extends React.Component {
                         </div>
                        <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul className="nav navbar-nav navbar-right">
+                                {this.props.fbUser && (
+                                    <li><InviteForm profileId={this.props.fbUser.uid} /></li>
+                                )}
+
                                 {this.props.isAdmin && ([
                                     <li key="to-search"><Link to='/search'>Search</Link></li>,
                                     <li key="to-test"><Link to='/test'>Test</Link></li>

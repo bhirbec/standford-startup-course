@@ -9,4 +9,3 @@ server.listen(config.web.port, config.web.port.host, function () {
 // start email worker
 console.info('Starging email queue')
 fb.ref('queue/email/tasks').on('child_added', mailer)
-

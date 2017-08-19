@@ -196,19 +196,4 @@ class LoginForm extends React.Component {
     }
 }
 
-// TODO: evaluate if we should remove currentUser function and
-// pass user to each component
-function currentUser() {
-    try {
-        firebase
-    } catch (e) {
-        if (e instanceof ReferenceError) {
-            return null
-        } else {
-            throw(e)
-        }
-    }
-    return firebase.auth().currentUser
-}
-
-export {SignupComponent, SignupForm, SignoutLink, LoginComponent, LoginForm, currentUser}
+export {SignupComponent, SignupForm, SignoutLink, LoginComponent, LoginForm}

@@ -1,14 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import {currentUser} from './auth'
-
 
 export default class Test extends React.Component {
     constructor(props) {
         super(props)
         this.state = {run: false}
-        this.fbUser = currentUser()
     }
 
     onClick() {
@@ -45,7 +42,7 @@ export default class Test extends React.Component {
                         name='Review impersonation'
                         desc='Override "fromUid" field in a review'
                         expected='not allowed'
-                        data={{'fromUid': this.fbUser.uid}}
+                        data={{'fromUid': this.props.fbUser.uid}}
                         run={this.state.run} />
                     <ReviewImpersonation
                         name='Review impersonation'
@@ -69,7 +66,6 @@ export default class Test extends React.Component {
 class WriteTest extends React.Component {
     constructor(props) {
         super(props)
-        this.fbUser = currentUser()
         this.fb = firebase.database()
      }
 

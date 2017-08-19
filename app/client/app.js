@@ -72,7 +72,7 @@ class App extends React.Component {
 
                 <Route path="/me" render={() => (
                     this.props.fbUser ? (
-                        <InnerLayout><Me /></InnerLayout>
+                        <InnerLayout><Me fbUser={this.props.fbUser} /></InnerLayout>
                     ) : (
                         <Redirect to="/" />
                     )
@@ -86,7 +86,7 @@ class App extends React.Component {
                 )} />
                 <Route exact path="/test" render={() => (
                     this.props.fbUser ? (
-                        <InnerLayout><Test /></InnerLayout>
+                        <InnerLayout><Test fbUser={this.props.fbUser} /></InnerLayout>
                     ) : (
                         <Redirect to="/" />
                     )

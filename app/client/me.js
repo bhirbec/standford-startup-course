@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import {Link, Redirect, Route} from 'react-router-dom'
 import Dialog from 'material-ui/Dialog';
 
-import {currentUser} from './auth'
 import Form from './form'
 
 
@@ -36,20 +35,20 @@ class Me extends React.Component {
     render() {
         // TODO: move routes to app.js
         return <div>
-            <Route exact path="/me" component={Profile} />
-            <Route exact path="/me/experience" component={ExperienceForm} />
+            <Route exact path="/me" render={() => (
+                <Profile fbUser={this.props.fbUser} />
+            )} />
+            <Route exact path="/me/experience" render={() => (
+                <ExperienceForm fbUser={this.props.fbUser} />
+            )} />
             <Route exact path="/me/experience/:id" render={(data) => (
-                <ExperienceForm expId={data.match.params.id} />
+                <ExperienceForm expId={data.match.params.id} fbUser={this.props.fbUser} />
             )} />
         </div>
     }
 }
 
 class Profile extends React.Component {
-    constructor(props) {
-        super(props)
-        this.fbUser = currentUser()
-    }
 
     fetchProfileAndSetState(uid) {
         // we put this here (and not in constructor) for server-side rendering
@@ -78,7 +77,7 @@ class Profile extends React.Component {
     }
 
     componentDidMount() {
-        this.fetchProfileAndSetState(this.fbUser.uid)
+        this.fetchProfileAndSetState(this.props.fbUser.uid)
     }
 
     componentWillUnmount() {
@@ -95,7 +94,7 @@ class Profile extends React.Component {
 
         return <div className="me">
             <div>
-                View your <Link to={'/in/' + this.fbUser.uid}>public profile</Link>
+                View your <Link to={'/in/' + this.props.fbUser.uid}>public profile</Link>
             </div>
 
             <h1>{profileName}</h1>
@@ -104,7 +103,7 @@ class Profile extends React.Component {
                 return <Experience
                     key={"exp-" + expId}
                     fbRef={this.fbRef.child('experience/' + expId)}
-                    profileId={this.fbUser.uid}
+                    profileId={this.props.fbUser.uid}
                     expId={expId}
                     exp={this.state.experience[expId]} />
             })}
@@ -187,14 +186,13 @@ class Review extends React.Component {
 class ExperienceForm extends React.Component {
     constructor(props) {
         super(props)
-        this.fbUser = currentUser()
         this.state = this.props.expId ? null : {}
     }
 
     componentDidMount() {
         if (this.props.expId) {
             let fb = firebase.database()
-            let ref = fb.ref('profile/' + this.fbUser.uid + '/experience/' + this.props.expId)
+            let ref = fb.ref('profile/' + this.props.fbUser.uid + '/experience/' + this.props.expId)
             ref.once('value').then((snap) => { this.setState(snap.val()) })
         }
     }
@@ -205,7 +203,7 @@ class ExperienceForm extends React.Component {
         }
 
         let fb = firebase.database()
-        let ref = fb.ref('profile').child(this.fbUser.uid).child('experience')
+        let ref = fb.ref('profile').child(this.props.fbUser.uid).child('experience')
 
         let p
         if (this.props.expId) {

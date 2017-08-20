@@ -108,15 +108,13 @@ class Profile extends React.Component {
                     exp={this.state.experience[expId]} />
             })}
 
-            {expIds.length < 5 && (
-                <div className="new-work-experience">
-                    <Link to={'/me/experience'}>
-                        <button type="button" className="btn btn-default">
-                            + Add work experience
-                        </button>
-                    </Link>
-                </div>
-            )}
+            <div className="new-work-experience">
+                <Link to={'/me/experience'}>
+                    <button type="button" className="btn btn-default">
+                        + Add work experience
+                    </button>
+                </Link>
+            </div>
         </div>
     }
 };

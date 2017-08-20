@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom'
 import Dialog from 'material-ui/Dialog';
 
 import {SignupForm, LoginForm} from './auth'
+import NoMatch from './error'
 import Form from './form'
 import {joinReviews, forceRefresh} from './me'
 
@@ -24,6 +25,11 @@ class PublicProfile extends React.Component {
         this.fbRef = fb.ref('profile').child(uid)
 
         this.fbRef.on('value', (snap) => {
+            if (!snap.exists()) {
+                this.setState({'notfound': true})
+                return
+            }
+
             // TODO: understand why snap.val() is null when the user signs in for the first time
             let profile = snap.val()
             if (profile == null) {
@@ -58,6 +64,8 @@ class PublicProfile extends React.Component {
     render() {
         if (!this.state) {
             return <div>Loading...</div>
+        } else if (this.state.notfound) {
+            return <NoMatch />
         }
 
         let fbUser = this.props.fbUser

@@ -1,4 +1,5 @@
 import React from 'react'
+// TODO: try https://github.com/krasimir/navigo instead of react router
 import {Link, Redirect, Route, Switch} from 'react-router-dom'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 

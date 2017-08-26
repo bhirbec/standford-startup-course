@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Dialog from 'material-ui/Dialog';
+import Snackbar from 'material-ui/Snackbar';
 
 import Form from './form'
 
@@ -17,15 +18,34 @@ export default class InviteForm extends React.Component {
         e.preventDefault()
     }
 
+    handleSnackbarClose() {
+        this.setState({ack: null})
+    }
+
     onSubmit(data) {
+        if (data.toEmail == "") {
+            this.setState({error: "Email can not be empty"})
+            return false
+        }
+
         firebase.database().ref('queue/email/tasks').push().set(data).then(() => {
-            this.setState({mode: 'closed'})
+            let ack = `An invitation was sent to ${data.toEmail}!`
+            this.setState({mode: 'closed', 'ack': ack})
         })
     }
 
     render() {
         return <a href="#" onClick={this.changeMode.bind(this, 'open')} className="invite">
             + Invite Reviewer
+
+            <Snackbar
+                open={Boolean(this.state.ack)}
+                message={this.state.ack || ''}
+                autoHideDuration={5000}
+                className='snack'
+                onRequestClose={this.handleSnackbarClose.bind(this)}
+            />
+
             <Dialog
                 modal={false}
                 open={this.state.mode == 'open'}

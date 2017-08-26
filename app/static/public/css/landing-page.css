@@ -263,7 +263,7 @@ p.copyright {
 }
 
 /* nav link */
-a.invite {
+.invite {
     color: orange !important;
     font-weight: bold;
 }
@@ -330,6 +330,11 @@ div.experience-form input[type="text"] {
 
 .dialog .actions {
     text-align: right;
+}
+
+/* snack */
+.snack {
+    font-weight: normal;
 }
 
 /* tests */

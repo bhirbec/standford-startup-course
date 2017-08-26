@@ -23,6 +23,7 @@ static/build/index.js: $(shell find client -name "*.js")
 	node_modules/browserify/bin/cmd.js  \
 		-t [ babelify --presets [ es2015 react ] ] \
 		-x material-ui/Dialog \
+		-x material-ui/Snackbar \
 		-x material-ui/styles/MuiThemeProvider \
 		-x react \
 		-x react-dom \
@@ -36,6 +37,7 @@ static/build/lib.js: node_modules/.rebuild
 	mkdir -p static/build
 	node_modules/browserify/bin/cmd.js \
 		-r material-ui/Dialog \
+		-r material-ui/Snackbar \
 		-r material-ui/styles/MuiThemeProvider \
 		-r react \
 		-r react-dom \

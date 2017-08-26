@@ -27,18 +27,17 @@ class App extends React.Component {
                                 <span className="icon-bar"></span>
                                 <span className="icon-bar"></span>
                             </button>
-                            <Link to="/">
-                                <a id="logo" className="navbar-brand" href="/">
-                                   <span>LETS</span>
-                                   <span className="salmon">RESUME</span>
-                                </a>
+                            <Link id="logo" className="navbar-brand" to={this.props.fbUser ? '/me' : '/'}>
+                               <span>LETS</span>
+                               <span className="salmon">RESUME</span>
                             </Link>
                         </div>
                        <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul className="nav navbar-nav navbar-right">
                                 {this.props.fbUser && ([
                                     <li key="to-invit-form"><InviteForm profileId={this.props.fbUser.uid} /></li>,
-                                    <li key="to-me"><Link to='/me'>My Profile</Link></li>
+                                    <li key="to-home"><Link to='/'>Home</Link></li>,
+                                    <li key="to-me"><Link to='/me'>My Profile</Link></li>,
                                 ])}
 
                                 {this.props.isAdmin && ([
@@ -60,11 +59,7 @@ class App extends React.Component {
 
                 <Switch>
                     <Route exact path="/" render={() => (
-                        this.props.fbUser ? (
-                            <Redirect to="/me" />
-                        ) : (
-                            <Home />
-                        )
+                        <Home />
                     )} />
                     <Route exact path="/signup" render={() => (
                         <InnerLayout><SignupComponent /></InnerLayout>

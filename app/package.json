@@ -3,6 +3,7 @@
   "name": "app",
   "description": "LetsResume",
   "dependencies": {
+    "algoliasearch": "^3.24.3",
     "body-parser": "^1.17.2",
     "command-line-args": "^4.0.4",
     "cookie-parser": "^1.4.3",

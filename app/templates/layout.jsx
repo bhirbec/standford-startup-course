@@ -27,7 +27,7 @@
     <script src={asset("/public/js/jquery.js")}></script>
     <script src={asset("/public/js/bootstrap.min.js")}></script>
     <script src="https://www.gstatic.com/firebasejs/4.1.2/firebase.js"></script>
-    <script dangerouslySetInnerHTML={{__html: "window.fbConfig = " + JSON.stringify(fbConfig)}}></script>
+    <script dangerouslySetInnerHTML={{__html: "window.config = " + JSON.stringify(config)}}></script>
     <script src={asset("/build/lib.js")}></script>
     <script src={asset("/build/index.js")}></script>
 

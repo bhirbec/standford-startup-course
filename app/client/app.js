@@ -8,7 +8,7 @@ import InviteForm from './invite'
 import {Me} from './me'
 import Home from './home'
 import {PublicProfile} from './publicprofile'
-import {Search} from './search'
+import {SearchBox, SearchResult} from './search'
 import Test from './test'
 import {SignupComponent, LoginComponent, SignoutLink} from './auth'
 
@@ -34,6 +34,12 @@ class App extends React.Component {
                         </div>
                        <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul className="nav navbar-nav navbar-right">
+                                <li>
+                                    <Route path="/" render={(data) => (
+                                        <SearchBox query={data.location.state ? data.location.state.query : ''} />
+                                    )} />
+                                </li>
+
                                 {this.props.fbUser && ([
                                     <li key="to-invit-form"><InviteForm profileId={this.props.fbUser.uid} /></li>,
                                     <li key="to-home"><Link to='/'>Home</Link></li>,
@@ -41,7 +47,6 @@ class App extends React.Component {
                                 ])}
 
                                 {this.props.isAdmin && ([
-                                    <li key="to-search"><Link to='/search'>Search</Link></li>,
                                     <li key="to-test"><Link to='/test'>Test</Link></li>
                                 ])}
 
@@ -76,12 +81,8 @@ class App extends React.Component {
                             <Redirect to="/" />
                         )
                     )} />
-                    <Route exact path="/search" render={() => (
-                        this.props.fbUser ? (
-                            <InnerLayout><Search /></InnerLayout>
-                        ) : (
-                            <Redirect to="/" />
-                        )
+                    <Route exact path="/search" render={(data) => (
+                        <InnerLayout><SearchResult query={data.location.state ? data.location.state.query: ''} /></InnerLayout>
                     )} />
                     <Route exact path="/test" render={() => (
                         this.props.fbUser ? (

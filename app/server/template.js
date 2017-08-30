@@ -9,9 +9,15 @@ const config = require('./init.js').config
 
 function renderHTML(req, res, Content) {
     let context = {}
-    context.asset = req.assetFingerprint
-    context.fbConfig = config.firebaseClient
     context.Content = Content
+    context.asset = req.assetFingerprint
+    context.config = {
+        fb: config.firebaseClient,
+        algolia: {
+            applicationId: config.algolia.applicationId,
+            searchOnlyApiKey: config.algolia.searchOnlyApiKey
+        }
+    }
 
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/html');

@@ -11,7 +11,6 @@
     "expressjs": "^1.0.1",
     "firebase-admin": "^4.2.1",
     "firebase-functions": "^0.6.3",
-    "firebase-queue": "^1.6.1",
     "googleapis": "^19.0.0",
     "jsonwebtoken": "^7.4.1",
     "material-ui": "^0.18.7",

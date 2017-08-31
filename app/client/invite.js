@@ -28,7 +28,7 @@ export default class InviteForm extends React.Component {
             return false
         }
 
-        firebase.database().ref('queue/email/tasks').push().set(data).then(() => {
+        firebase.database().ref('invites').push().set(data).then(() => {
             let ack = `An invitation was sent to ${data.toEmail}!`
             this.setState({mode: 'closed', 'ack': ack})
         })
@@ -52,7 +52,7 @@ export default class InviteForm extends React.Component {
                 onRequestClose={this.changeMode.bind(this, 'closed')}>
 
                 <Form onSubmit={this.onSubmit.bind(this)}
-                    data={{profileId: this.props.profileId}}
+                    data={{fromUid: this.props.profileId}}
                     className="dialog">
 
                     <h3>Invite a Reviewer</h3>
@@ -61,7 +61,7 @@ export default class InviteForm extends React.Component {
                         <div className="form-error">{this.state.error}</div>
                     )}
 
-                    <input name="profileId" type="hidden" />
+                    <input name="fromUid" type="hidden" />
 
                     <div className="form-group">
                         <label htmlFor="toEmail">Enter email</label>

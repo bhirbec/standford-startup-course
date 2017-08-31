@@ -3,13 +3,8 @@
     "admin": {
       ".read": true
     },
-    "queue": {
-      "email": {
-        "tasks": {
-          ".write": "auth.uid !== null",
-          ".indexOn": "_state"
-        }
-      }
+    "invites": {
+      ".write": "auth.uid !== null"
     },
     "profile": {
       ".read": true,

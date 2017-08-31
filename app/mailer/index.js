@@ -1,8 +1,6 @@
 import {stringify} from 'querystring'
 import requestPromise from 'request-promise'
 
-import Queue from 'firebase-queue'
-
 import {fb, config} from '../server/init.js'
 
 
@@ -11,45 +9,9 @@ let fromEmail = `LetsResume <team@${config.mailgun.domain}>`
 let baseURL = `https://api:${config.mailgun.apiKey}@api.mailgun.net/v3/`
 
 
-function worker() {
-    let ref = fb.ref('queue/email')
-
-    var queue = new Queue(ref, (data, progress, resolve, reject) => {
-        invite(data, progress).then((resp) => {
-            console.info(`Email queued (${resp.id})`)
-            resolve()
-        }).catch((err) => {
-            console.error('ERROR:', err)
-            reject()
-        })
-    })
-}
-
-function mailer(snap) {
+function notifyInvite(snap) {
     let data = snap.val()
-
-    let funcs = {
-        'invite': invite,
-        'review': review,
-    }
-
-    let f = funcs[data.type] || invite
-    if (f === undefined) {
-        console.error('mailer: type is not supported', data.type)
-        return
-    }
-
-    return f(data).then((resp) => {
-        console.info(`Email queued (${resp.id})`)
-        snap.ref.remove()
-    }).catch((err) => {
-        console.error('ERROR:', err)
-    })
-}
-
-
-function invite(data) {
-    let ref = fb.ref('profile').child(data.profileId).child('info').once('value')
+    let ref = fb.ref('profile').child(data.fromUid).child('info').once('value')
 
     return ref.then((snap) => {
         return snap.val()
@@ -59,8 +21,14 @@ function invite(data) {
             from: fromEmail,
             to: data.toEmail,
             subject: `Please review ${reviewer.firstname} ${reviewer.lastname}`,
-            html: inviteTemplate(reviewer, data.profileId)
+            html: inviteTemplate(reviewer, data.fromUid)
         })
+    })
+    .then((resp) => {
+        console.info(`Email queued (${resp.id})`)
+    })
+    .catch((err) => {
+        console.error('ERROR:', err)
     })
 }
 
@@ -161,4 +129,4 @@ function send(data) {
 
 }
 
-export {worker, mailer, notifyReview}
+export {notifyInvite, notifyReview}

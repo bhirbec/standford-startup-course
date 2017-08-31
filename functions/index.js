@@ -6,8 +6,8 @@ const search = require('./app/search');
 
 exports.app = functions.https.onRequest(app.server);
 
-exports.mailer = functions.database.ref('queue/email/tasks/{taskid}').onCreate((event) => {
-    return mailer.mailer(event.data)
+exports.newInvite = functions.database.ref('invites/{inviteId}').onCreate((event) => {
+    return mailer.notifyInvite(event.data)
 });
 
 // TODO: delete profile
@@ -22,9 +22,9 @@ exports.indexUpdatedProfile = functions.database.ref('profile/{profileId}').onUp
 
 // notify review
 exports.newReview = functions.database.ref('publicReviews/{revId}').onCreate((event) => {
-    mailer.notifyReview(event.data)
+    return mailer.notifyReview(event.data)
 });
 
 exports.updateReview = functions.database.ref('publicReviews/{revId}').onUpdate((event) => {
-    mailer.notifyReview(event.data)
+    return mailer.notifyReview(event.data)
 });

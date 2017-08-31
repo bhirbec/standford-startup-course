@@ -6,7 +6,7 @@ const search = require('./app/search')
 exports.app = functions.https.onRequest(app.server);
 
 exports.mailer = functions.database.ref('queue/email/tasks/{taskid}').onCreate((event) => {
-    return mailer(event.data)
+    return mailer.mailer(event.data)
 });
 
 // TODO: delete profile

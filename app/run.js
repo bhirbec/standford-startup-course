@@ -1,5 +1,6 @@
 import {fb, config} from './server/init.js'
-import {server, mailer} from './index.js'
+import {server} from './index.js'
+import {mailer} from './mailer'
 import {index} from './search'
 
  // start web server

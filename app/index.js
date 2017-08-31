@@ -1,4 +1,4 @@
+// TODO: do we need this file?
 module.exports = {
-    server: require('./server'),
-    mailer: require('./server/mail').mailer
+    server: require('./server')
 }

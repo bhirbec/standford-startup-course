@@ -1,10 +1,9 @@
-// TODO: should we move the mailer into a separate package (at the same level than server?)
 import {stringify} from 'querystring'
 import requestPromise from 'request-promise'
 
 import Queue from 'firebase-queue'
 
-import {fb, config} from './init.js'
+import {fb, config} from '../server/init.js'
 
 
 let domain = config.mailgun.domain

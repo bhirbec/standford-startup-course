@@ -11,7 +11,8 @@ deploy:
 	cp -r app/package.json functions/package.json
 	cd functions && npm install
 	cd functions && npm install --save firebase-functions
-	./app/node_modules/babel-cli/bin/babel.js app/search --presets=es2015,react --out-dir functions/app/search
 	./app/node_modules/babel-cli/bin/babel.js app/client --presets=es2015,react --out-dir functions/app/client
+	./app/node_modules/babel-cli/bin/babel.js app/mailer --presets=es2015,react --out-dir functions/app/mailer
+	./app/node_modules/babel-cli/bin/babel.js app/search --presets=es2015,react --out-dir functions/app/search
 	./app/node_modules/babel-cli/bin/babel.js app/server --presets=es2015,react --out-dir functions/app/server
 	firebase deploy

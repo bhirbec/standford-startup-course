@@ -47,4 +47,5 @@ app.get('*', function (req, res) {
     renderHTML(req, res, root)
 })
 
+// TODO: use ES6 syntax
 module.exports = app

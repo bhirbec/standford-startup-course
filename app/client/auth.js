@@ -6,23 +6,10 @@ import Form from './form'
 
 
 class SignupComponent extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {}
-    }
-
-    resolve() {
-        this.setState({done: true})
-    }
-
     render() {
-        if (this.state.done) {
-            return <Redirect to="/me" />
-        }
-
         return <div className="auth-form">
             <h1>Sign Up for LetsResume</h1>
-            <SignupForm resolve={this.resolve.bind(this)} />
+            <SignupForm />
             <div className="centered">
                 Already on letsResume? <Link to="/login">Log in</Link>
             </div>
@@ -128,23 +115,10 @@ class SignoutLink extends React.Component {
 }
 
 class LoginComponent extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {}
-    }
-
-    resolve() {
-        this.setState({done: true})
-    }
-
     render() {
-        if (this.state.done) {
-            return <Redirect to="/me" />
-        }
-
         return <div className="auth-form">
             <h1>Log In to LetsResume</h1>
-            <LoginForm resolve={this.resolve.bind(this)} />
+            <LoginForm />
             <div className="centered">
                 New to letsResume? <Link to="/signup">Sign Up</Link>
             </div>

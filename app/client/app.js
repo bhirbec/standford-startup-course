@@ -67,13 +67,19 @@ class App extends React.Component {
                         <Home />
                     )} />
                     <Route exact path="/signup" render={() => (
-                        <InnerLayout><SignupComponent /></InnerLayout>
+                        this.props.fbUser ? (
+                            <Redirect to="/me" />
+                        ) : (
+                            <InnerLayout><SignupComponent /></InnerLayout>
+                        )
                     )} />
-
                     <Route exact path="/login" render={() => (
-                        <InnerLayout><LoginComponent /></InnerLayout>
+                        this.props.fbUser ? (
+                            <Redirect to="/me" />
+                        ) : (
+                            <InnerLayout><LoginComponent /></InnerLayout>
+                        )
                     )} />
-
                     <Route path="/me" render={() => (
                         this.props.fbUser ? (
                             <InnerLayout><Me fbUser={this.props.fbUser} /></InnerLayout>

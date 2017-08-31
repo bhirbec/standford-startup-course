@@ -26,13 +26,27 @@ function worker() {
 }
 
 function mailer(snap) {
-    return invite(snap.val()).then((resp) => {
+    let data = snap.val()
+
+    let funcs = {
+        'invite': invite,
+        'review': review,
+    }
+
+    let f = funcs[data.type] || invite
+    if (f === undefined) {
+        console.error('mailer: type is not supported', data.type)
+        return
+    }
+
+    return f(data).then((resp) => {
         console.info(`Email queued (${resp.id})`)
         snap.ref.remove()
     }).catch((err) => {
         console.error('ERROR:', err)
     })
 }
+
 
 function invite(data) {
     let ref = fb.ref('profile').child(data.profileId).child('info').once('value')
@@ -45,27 +59,80 @@ function invite(data) {
             from: fromEmail,
             to: data.toEmail,
             subject: `Please review ${reviewer.firstname} ${reviewer.lastname}`,
-            html: template(reviewer, data.profileId)
+            html: inviteTemplate(reviewer, data.profileId)
         })
     })
 }
 
-function template(reviewer, profileId) {
+
+function notifyReview(snap) {
+    let review = snap.val()
+    let reviewerRef = fb.ref('profile').child(review.fromUid).child('info').once('value')
+    let revieweeRef = fb.ref('profile').child(review.toUid).child('info').once('value')
+    let reviewee, reviewer
+
+    return reviewerRef.then((snap) => {
+        reviewer = snap.val()
+        return revieweeRef
+    })
+    .then((snap) => {
+        reviewee = snap.val()
+        return
+    })
+    .then(() => {
+        return send({
+            from: fromEmail,
+            to: reviewee.email,
+            subject: `You received a review from ${reviewer.firstname} ${reviewer.lastname}`,
+            html: reviewTemplate(reviewer, reviewee)
+        })
+    })
+    .then((resp) => {
+        console.info(`Email queued (${resp.id})`)
+    })
+    .catch((err) => {
+        console.error('ERROR:', err)
+    })
+}
+
+
+function inviteTemplate(reviewer, profileId) {
+    return layout(`
+        Hi,
+
+        <p style="margin:20px 0">
+            You've received a review request from ${reviewer.firstname} ${reviewer.lastname}!
+            Please check out
+            <a href="${config.web.url}/in/${profileId}" style="text-decoration:none; color: #15c" target="_blank">
+                <strong>${reviewer.firstname} on LetsResume.com</strong>
+            </a>
+            and add your review.
+        </p>
+    `)
+}
+
+
+function reviewTemplate(reviewer, reviewee) {
+    return layout(`
+        Hey ${reviewee.firstname},
+
+        <p style="margin:20px 0">
+            You've received a review from ${reviewer.firstname} ${reviewer.lastname}!
+            Please check
+            out <a href="${config.web.url}/in/${reviewee.uid}" style="text-decoration:none; color: #15c" target="_blank"><strong>your profile on LetsResume.com</strong></a>.
+        </p>
+    `)
+}
+
+
+function layout(content) {
     return `
         <div marginwidth="0"
              marginheight="0"
              style="margin:0; padding:0; margin:0; font-family:&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif;font-size:14px;line-height:20px;color:#555">
             <div style="line-height:20.8px; margin-left:40px">
-                Hi,
+                ${content}
 
-                <p style="margin:20px 0">
-                    You've received a review request from ${reviewer.firstname} ${reviewer.lastname}!
-                    Please check out
-                    <a href="${config.web.url}/in/${profileId}" style="text-decoration:none; color: #15c" target="_blank">
-                        <strong>${reviewer.firstname} on LetsResume.com</strong>
-                    </a>
-                    and add your review.
-                </p>
                 <p style="margin:20px 0">
                     <a href="${config.web.url}" style="text-decoration:none; color: #15c" target="_blank">
                         <strong>LetsResume</strong>
@@ -82,6 +149,7 @@ function template(reviewer, profileId) {
     `
 }
 
+
 function send(data) {
     return requestPromise.post({
         url: baseURL + domain + '/messages?' + stringify(data),
@@ -93,4 +161,4 @@ function send(data) {
 
 }
 
-export {worker, mailer}
+export {worker, mailer, notifyReview}

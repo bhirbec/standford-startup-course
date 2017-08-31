@@ -1,6 +1,6 @@
 import {fb, config} from './server/init.js'
 import {server} from './index.js'
-import {mailer} from './mailer'
+import {mailer, notifyReview} from './mailer'
 import {index} from './search'
 
  // start web server
@@ -11,6 +11,9 @@ server.listen(config.web.port, config.web.port.host, function () {
 // start email worker
 console.info('Starging email queue')
 fb.ref('queue/email/tasks').on('child_added', mailer)
+
+// notify review
+fb.ref('publicReviews').limitToLast(1).on('child_added', notifyReview)
 
 // start indexer
 console.info('Starging Algolia indexer')

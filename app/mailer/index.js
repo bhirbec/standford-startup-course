@@ -89,6 +89,11 @@ function reviewTemplate(reviewer, reviewee) {
             Please check
             out <a href="${config.web.url}/in/${reviewee.uid}" style="text-decoration:none; color: #15c" target="_blank"><strong>your profile on LetsResume.com</strong></a>.
         </p>
+
+        <p style="margin:20px 0">
+            Return the favor! Give
+            <a href="${config.web.url}/in/${reviewee.uid}" style="text-decoration:none; color: #15c" target="_blank"><strong>${reviewer.firstname} ${reviewer.lastname}</strong></a> a review back!
+        </p>
     `)
 }
 

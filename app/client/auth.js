@@ -110,7 +110,10 @@ class SignoutLink extends React.Component {
     }
 
     render() {
-        return <a id="signout" href="#" onClick={this.signout.bind(this)}>Sign Out</a>
+        return <a id="signout" href="#" onClick={this.signout.bind(this)}>
+            {this.props.icon}
+            Sign Out
+        </a>
     }
 }
 

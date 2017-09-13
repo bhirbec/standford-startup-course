@@ -29,7 +29,6 @@ class SearchBox extends React.Component {
 
     render() {
         return <input
-            id="search-box"
             type="text"
             className="form-control"
             placeholder="Search people"

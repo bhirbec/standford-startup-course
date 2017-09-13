@@ -264,7 +264,6 @@ p.copyright {
 
 /* nav */
 i.material-icons {
-    margin-right: 5px;
     line-height: inherit;
     vertical-align: middle;
 }
@@ -280,12 +279,17 @@ i.material-icons {
     line-height: 20px;
 }
 
+/* invite link */
 .invite {
     color: orange !important;
     font-weight: bold;
 }
 
-/* search */
+.invite i {
+    margin-right: 5px;
+}
+
+/* search-box */
 #search-box {
     line-height: 50px;
 }
@@ -310,7 +314,21 @@ nav.mobile #search-box i {
 }
 
 nav.mobile #search-box input {
-    width: 250px;
+    width: 200px;
+}
+
+/* avatar */
+#user-avatar a {
+    color: #333;
+    text-decoration: none;
+}
+
+.avatar-icon {
+    cursor: pointer;
+}
+
+.mobile .avatar-icon {
+    float: right;
 }
 
 /* responsive */

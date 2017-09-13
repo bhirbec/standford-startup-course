@@ -23,9 +23,11 @@ static/build/index.js: $(shell find client -name "*.js")
 	node_modules/browserify/bin/cmd.js  \
 		-t [ babelify --presets [ es2015 react ] ] \
 		-x algoliasearch \
+		-x material-ui/Avatar \
 		-x material-ui/Dialog \
 		-x material-ui/Drawer \
 		-x material-ui/MenuItem \
+		-x material-ui/Popover \
 		-x material-ui/Snackbar \
 		-x material-ui/styles/MuiThemeProvider \
 		-x react \
@@ -40,9 +42,11 @@ static/build/lib.js: node_modules/.rebuild
 	mkdir -p static/build
 	node_modules/browserify/bin/cmd.js \
 		-r algoliasearch \
+		-r material-ui/Avatar \
 		-r material-ui/Dialog \
 		-r material-ui/Drawer \
 		-r material-ui/MenuItem \
+		-r material-ui/Popover \
 		-r material-ui/Snackbar \
 		-r material-ui/styles/MuiThemeProvider \
 		-r react \

@@ -1,9 +1,12 @@
 import React from 'react'
 // TODO: try https://github.com/krasimir/navigo instead of react router
 import {Link, Redirect, Route, Switch} from 'react-router-dom'
+import Avatar from 'material-ui/Avatar'
 import Drawer from 'material-ui/Drawer'
 import MenuItem from 'material-ui/MenuItem'
+import Popover from 'material-ui/Popover';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+
 
 import NoMatch from './error'
 import InviteForm from './invite'
@@ -13,6 +16,13 @@ import {PublicProfile} from './publicprofile'
 import {SearchBox, SearchResult} from './search'
 import Test from './test'
 import {SignupComponent, LoginComponent, SignoutLink} from './auth'
+
+
+let MenuItemStyle = {
+    fontSize: 'inherit',
+    fontFamily: 'inherit',
+    color: '#000',
+}
 
 
 class App extends React.Component {
@@ -127,14 +137,15 @@ class DesktopNavbar extends React.Component {
                 </div>
                 <div className="collapse navbar-collapse">
                     <ul className="nav navbar-nav navbar-right">
-                        {this.props.fbUser && (
+                        {this.props.fbUser && ([
                             <li key="to-invit-form">
                                 <InviteForm profileId={this.props.fbUser.uid} />
-                            </li>
-                        )}
-                        {this.props.fbUser && ([
-                            <li key="to-signout"><SignoutLink /></li>,
+                            </li>,
+                            <li key="to-avatar">
+                                <UserAvatar fbUser={this.props.fbUser} />
+                            </li>,
                         ])}
+
                         {!this.props.fbUser && ([
                             <li key="to-login"><Link to='/login'>Log in</Link></li>,
                             <li key="to-signup"><Link to='/signup'>Sign Up</Link></li>,
@@ -177,6 +188,8 @@ class MobileNavbar extends React.Component {
                            <span className="salmon">RESUME</span>
                         </Link>
                     )}
+                    <UserAvatar fbUser={this.props.fbUser} />
+
                     <Route path="/" render={(data) => (
                         <span id="search-box">
                             {!this.state.open && (
@@ -201,39 +214,93 @@ class MobileNavbar extends React.Component {
 }
 
 
-class DrawerMenu extends React.Component {
+class UserAvatar extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {open: false}
+    }
+
+    toggle(e) {
+        e.preventDefault();
+        this.setState({open: true, anchorEl: e.currentTarget})
+    }
+
+    componentWillReceiveProps() {
+        this.close()
+    }
+
+    close() {
+        this.setState({open: false})
+    }
+
     render() {
-        let resetItem = {
-            fontSize: 'inherit',
-            fontFamily: 'inherit',
-            color: 'inherit',
+        let style = {
+            backgroundColor: '#333',
+            margin: 8,
         }
 
+        if (this.props.fbUser) {
+            return <div>
+                <Avatar
+                    size={34}
+                    style={style}
+                    className="avatar-icon"
+                    onClick={this.toggle.bind(this)}>
+                    <i className="material-icons">settings</i>
+                </Avatar>
+
+                <Popover
+                    open={this.state.open}
+                    anchorEl={this.state.anchorEl}
+                    anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                    targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                    onRequestClose={this.close.bind(this)}>
+                    <div id="user-avatar">
+                        <MenuItem key="to-signout" style={MenuItemStyle} disabled={true}>
+                            {this.props.fbUser.email}
+                        </MenuItem>
+                        <MenuItem style={MenuItemStyle}>
+                            <SignoutLink icon={
+                                <i className="material-icons">eject</i>
+                            } />
+                        </MenuItem>
+                    </div>
+                </Popover>
+            </div>
+        } else {
+            return null
+        }
+    }
+}
+
+
+class DrawerMenu extends React.Component {
+    render() {
         return <Drawer open={this.props.open} containerClassName="drawer">
-            <MenuItem style={resetItem}>
+            <MenuItem style={MenuItemStyle}>
                 <a href="#" onClick={this.props.toggleDrawer}>
                     <i className="material-icons">menu</i>
                 </a>
             </MenuItem>
             <Link to='/'>
-                <MenuItem style={resetItem}>
+                <MenuItem style={MenuItemStyle}>
                     <i className="material-icons">home</i>Home
                 </MenuItem>
             </Link>
 
             {!this.props.fbUser && ([
                 <Link key="to-search" to='/search'>
-                    <MenuItem style={resetItem}>
+                    <MenuItem style={MenuItemStyle}>
                         <i className="material-icons">search</i>Search
                     </MenuItem>
                 </Link>,
                 <Link key="to-login" to='/login'>
-                    <MenuItem style={resetItem}>
+                    <MenuItem style={MenuItemStyle}>
                         <i className="material-icons">https</i>Log in
                     </MenuItem>
                 </Link>,
                 <Link key="to-signup" to='/signup'>
-                    <MenuItem style={resetItem}>
+                    <MenuItem style={MenuItemStyle}>
                         <i className="material-icons">exit_to_app</i>Sign Up
                     </MenuItem>
                 </Link>,
@@ -241,22 +308,17 @@ class DrawerMenu extends React.Component {
 
             {this.props.fbUser && ([
                 <Link key="to-me" to='/me'>
-                    <MenuItem style={resetItem}>
+                    <MenuItem style={MenuItemStyle}>
                         <i className="material-icons">person</i>My Profile
                     </MenuItem>
                 </Link>,
                 <Link key="to-search" to='/search'>
-                    <MenuItem style={resetItem}>
+                    <MenuItem style={MenuItemStyle}>
                         <i className="material-icons">search</i>Search
                     </MenuItem>
                 </Link>,
-                <MenuItem key="to-invit-form" style={resetItem}>
+                <MenuItem key="to-invit-form" style={MenuItemStyle}>
                     <InviteForm profileId={this.props.fbUser.uid} />
-                </MenuItem>,
-                <MenuItem key="to-signout" style={resetItem}>
-                    <SignoutLink icon={
-                        <i className="material-icons">eject</i>
-                    } />
                 </MenuItem>,
             ])}
 

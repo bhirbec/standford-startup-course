@@ -188,7 +188,10 @@ class MobileNavbar extends React.Component {
                            <span className="salmon">RESUME</span>
                         </Link>
                     )}
-                    <UserAvatar fbUser={this.props.fbUser} />
+
+                    {!this.state.open && (
+                        <UserAvatar fbUser={this.props.fbUser} />
+                    )}
 
                     <Route path="/" render={(data) => (
                         <span id="search-box">

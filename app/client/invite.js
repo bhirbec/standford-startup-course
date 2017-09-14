@@ -35,7 +35,7 @@ export default class InviteForm extends React.Component {
     }
 
     render() {
-        return <a href="#" onClick={this.changeMode.bind(this, 'open')} className="invite">
+        return <a href="#" onClick={this.changeMode.bind(this, 'open')} className="main-color invite">
             <i className="material-icons">person_add</i>
             Invite Reviewer
 

@@ -19,17 +19,7 @@ h4,
 h5,
 h6,
 p {
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-weight: 100;
-    letter-spacing: 2px;
+    font-family: "Helvetica Neue",Helvetica,Arial, sans-serif;
 }
 
 h1 {
@@ -48,18 +38,12 @@ h3 {
     height: 100%
 }
 
-.salmon {
-    color: #ec9fba;
-}
-
-.salmon-bg {
-    background-color: #fcbcb5;
-    color: #eee;
+.main-color {
+    color: #F15C25 !important;
 }
 
 #logo {
     color: white;
-    font-weight: bold;
     letter-spacing: 2px;
     font-size: 18px;
 }
@@ -80,47 +64,49 @@ h3 {
     font-weight: 400;
 }
 
-.intro-message {
-    text-align: center;
-}
-
+/* home */
 .intro-header {
-    height: 100%;
-    padding-top: 50px; /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
+    /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
+    padding-top: 50px;
     padding-bottom: 50px;
     text-align: center;
-    color: #f8f8f8;
-    background: url(/public/img/intro-bg.jpg?v=1) no-repeat center center;
-    background-size: cover;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-color: #444;
+    color: #666;
+    background-color: #eeeeee;
 }
 
-.intro-message {
-    position: relative;
-    padding-top: 10%;
+.intro-header h1,
+.intro-header h2 {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    font-weight: normal;
 }
 
 .intro-message > h1 {
-    margin: 0;
-    text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
-    font-size: 5em;
+    font-size: 4em;
 }
 
-.intro-divider {
-    width: 400px;
-    border-top: 1px solid #f8f8f8;
-    border-bottom: 1px solid rgba(0,0,0,0.2);
+.features {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    background-color: #fff;
 }
 
-.intro-message > h3 {
-    text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
+.features h4 {
+    padding-top: 20px;
+    padding-bottom: 10px;
+    font-weight: normal;
 }
 
-button#submit {
-    margin-left: 1em;
+.about-us {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    background-color: #f5f5f5;
+}
+
+.footer {
+    background-color: #333;
+    line-height: 50px;
+    color: #fff;
 }
 
 @media(max-width:767px) {
@@ -235,6 +221,10 @@ p.copyright {
 }
 
 /* signup */
+#signup {
+    font-size: 25px;
+}
+
 .auth-form {
     width: 400px;
     margin: 25px auto;
@@ -281,8 +271,6 @@ i.material-icons {
 
 /* invite link */
 .invite {
-    color: orange !important;
-    font-weight: bold;
 }
 
 .invite i {

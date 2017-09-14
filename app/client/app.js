@@ -126,7 +126,7 @@ class DesktopNavbar extends React.Component {
                     </a>
                     <Link id="logo" className="navbar-brand" to={this.props.fbUser ? '/me' : '/'}>
                        <span>LETS</span>
-                       <span className="salmon">RESUME</span>
+                       <span className="main-color">RESUME</span>
                     </Link>
                     <Route path="/" render={(data) => (
                         <span id="search-box">
@@ -185,7 +185,7 @@ class MobileNavbar extends React.Component {
                     {!this.state.open && (
                         <Link id="logo" className="navbar-brand" to={this.props.fbUser ? '/me' : '/'}>
                            <span>LETS</span>
-                           <span className="salmon">RESUME</span>
+                           <span className="main-color">RESUME</span>
                         </Link>
                     )}
 
@@ -339,7 +339,7 @@ class DrawerMenu extends React.Component {
 
 class InnerLayout extends React.Component {
     render() {
-        return <div className="container content-section-a">
+        return <div className="content-section-a">
             <div className="container">
                 <div className="row">
                     <div className="clearfix"></div>

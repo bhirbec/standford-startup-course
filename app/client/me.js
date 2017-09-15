@@ -93,11 +93,11 @@ class Profile extends React.Component {
         let profileName = `${this.state.info.firstname} ${this.state.info.lastname}`
 
         return <div className="me">
+            <h1>{profileName}</h1>
+
             <div>
                 View your <Link to={'/in/' + this.props.fbUser.uid}>public profile</Link>
             </div>
-
-            <h1>{profileName}</h1>
 
             {expIds.map((expId) => {
                 return <Experience

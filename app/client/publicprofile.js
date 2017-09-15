@@ -73,10 +73,6 @@ class PublicProfile extends React.Component {
         let profileName = `${this.state.info.firstname} ${this.state.info.lastname}`
 
         return <div className="me">
-            {fbUser && fbUser.uid == this.props.profileId && (
-                <div>Edit your <Link to={'/me'}>profile</Link></div>
-            )}
-
             <h1>{profileName}</h1>
 
             {expIds.map((expId) => {

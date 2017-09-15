@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom'
 
 class Home extends React.Component {
     render() {
-        return <div>
+        return <div className="content-section-a">
             <div className="intro-header">
                 <div className="container intro-message">
                     <h1>
@@ -90,7 +90,6 @@ class Home extends React.Component {
                     </div>
                 </div>
             </div>
-
         </div>
     }
 }

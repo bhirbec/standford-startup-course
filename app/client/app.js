@@ -341,10 +341,8 @@ class InnerLayout extends React.Component {
     render() {
         return <div className="content-section-a">
             <div className="container">
-                <div className="row">
-                    <div className="clearfix"></div>
-                    {this.props.children}
-                </div>
+                <div className="clearfix"></div>
+                {this.props.children}
             </div>
         </div>
     }

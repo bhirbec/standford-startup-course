@@ -23,6 +23,7 @@ static/build/index.js: $(shell find client -name "*.js")
 	node_modules/browserify/bin/cmd.js  \
 		-t [ babelify --presets [ es2015 react ] ] \
 		-x algoliasearch \
+		-x draft-js \
 		-x material-ui/Avatar \
 		-x material-ui/Dialog \
 		-x material-ui/Drawer \
@@ -42,6 +43,7 @@ static/build/lib.js: node_modules/.rebuild
 	mkdir -p static/build
 	node_modules/browserify/bin/cmd.js \
 		-r algoliasearch \
+		-r draft-js \
 		-r material-ui/Avatar \
 		-r material-ui/Dialog \
 		-r material-ui/Drawer \

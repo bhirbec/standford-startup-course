@@ -1,8 +1,10 @@
+import {convertToRaw, EditorState} from 'draft-js';
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {Link, Redirect, Route} from 'react-router-dom'
 import Dialog from 'material-ui/Dialog';
 
+import {Editor, ReadOnlyEditor, makeEditorState} from './editor'
 import Form from './form'
 
 
@@ -142,9 +144,9 @@ class Experience extends React.Component {
                 </div>
             )}
 
-            <p className="job-description">
-                {exp.jobDescription}
-            </p>
+            <div className="job-description">
+                <ReadOnlyEditor content={exp.jobDescription} />
+            </div>
 
             <Link to={'/me/experience/' + this.props.expId}>
                 <button type="button" className="btn btn-default">Edit</button>
@@ -184,14 +186,23 @@ class Review extends React.Component {
 class ExperienceForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = this.props.expId ? null : {}
+
+        if (this.props.expId) {
+            this.state = null
+        } else {
+            this.state = {editorState: EditorState.createEmpty()}
+        }
     }
 
     componentDidMount() {
         if (this.props.expId) {
             let fb = firebase.database()
             let ref = fb.ref('profile/' + this.props.fbUser.uid + '/experience/' + this.props.expId)
-            ref.once('value').then((snap) => { this.setState(snap.val()) })
+            ref.once('value').then((snap) => {
+                let data = snap.val()
+                data.editorState = makeEditorState(data.jobDescription)
+                this.setState(data)
+            })
         }
     }
 
@@ -226,9 +237,13 @@ class ExperienceForm extends React.Component {
             return false
         }
 
-        if (data.jobDescription == "") {
+        let content = this.state.editorState.getCurrentContent()
+
+        if (!content.hasText()) {
             this.setState({error: "Job description can not be empty"})
             return false
+        } else {
+            data.jobDescription = convertToRaw(content)
         }
 
         if (data.jobStartDate == "") {
@@ -236,6 +251,10 @@ class ExperienceForm extends React.Component {
             return false
         }
         return true
+    }
+
+    onChangeEditor(editorState) {
+        this.setState({editorState: editorState})
     }
 
     render() {
@@ -253,6 +272,7 @@ class ExperienceForm extends React.Component {
                 :
                 <h1>{this.state.companyName} - {this.state.jobTitle}</h1>
             }
+
             <Form onSubmit={this.onSubmit.bind(this)} data={this.state}>
                 {this.state.error && (
                     <div className="form-error">{this.state.error}</div>
@@ -275,10 +295,9 @@ class ExperienceForm extends React.Component {
                 </div>
                 <div className="form-group">
                     <label htmlFor="job-description">Job Description</label>
-                    <textarea id="job-description"
-                        name="jobDescription"
-                        rows={'12'}
-                        className="form-control"></textarea>
+                    <Editor
+                        editorState={this.state.editorState}
+                        onChange={this.onChangeEditor.bind(this)} />
                 </div>
                 <div className="form-group">
                     <label htmlFor="job-start-date">Start Date</label>

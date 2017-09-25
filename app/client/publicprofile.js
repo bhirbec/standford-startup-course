@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom'
 import Dialog from 'material-ui/Dialog';
 
 import {SignupForm, LoginForm} from './auth'
+import {ReadOnlyEditor} from './editor'
 import NoMatch from './error'
 import Form from './form'
 import {joinReviews, forceRefresh} from './me'
@@ -114,9 +115,9 @@ class Experience extends React.Component {
                 </div>
             )}
 
-            <p className="job-description">
-                {exp.jobDescription}
-            </p>
+            <div className="job-description">
+                <ReadOnlyEditor content={exp.jobDescription} />
+            </div>
 
             {exp.reviews.map((rev) => {
                 return <Review key={'review-' + rev.revId} rev={rev} {...context} />

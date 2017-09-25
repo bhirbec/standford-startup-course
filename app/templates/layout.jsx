@@ -1,5 +1,7 @@
 <html lang="en">
 <head>
+    <meta charset="utf-8" />
+
     <link rel="icon" href={asset("/public/img/favicon.jpg")} type="image/x-icon"/>
     <meta charSet="utf-8" />
     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -10,8 +12,9 @@
 
     <link href={asset("/public/css/bootstrap.min.css")} rel="stylesheet" />
     <link href={asset("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/5.1.1/bootstrap-social.min.css")} rel="stylesheet" />
-    <link href={asset("/public/css/landing-page.css")} rel="stylesheet" />
     <link href={asset("/public/font-awesome/css/font-awesome.min.css")} rel="stylesheet" type="text/css" />
+    <link href={asset("/public/css/landing-page.css")} rel="stylesheet" />
+    <link href={asset("/public/css/Draft.css")} rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
 

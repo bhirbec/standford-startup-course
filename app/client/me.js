@@ -8,31 +8,6 @@ import {Editor, ReadOnlyEditor, makeEditorState} from './editor'
 import Form from './form'
 
 
-// TODO: should we create a mode/profile.js?
-function joinReviews(profile, reviews) {
-    profile.experience = profile.experience || {}
-
-    for (let expId in profile.experience ) {
-        let exp = profile.experience[expId]
-        exp.reviews = []
-
-        for (let revId in reviews) {
-            if (reviews[revId].expId == expId && reviews[revId].review) {
-                let review = reviews[revId]
-                review.revId = revId
-                exp.reviews.push(reviews[revId])
-            }
-        }
-    }
-}
-
-/* we touch a 'ts' node under profile/$uid so we can force a refresh
-when someone write a review. Is there a better way to do this? */
-function forceRefresh(uid) {
-    let fb = firebase.database()
-    fb.ref('profile').child(uid).child('ts').set(Date.now())
-}
-
 class Me extends React.Component {
     render() {
         // TODO: move routes to app.js
@@ -51,11 +26,19 @@ class Me extends React.Component {
 }
 
 class Profile extends React.Component {
+    render() {
+        return <div>
+            <Resume {...this.props} />
+            <Reviews {...this.props} />
+        </div>
+    }
+}
 
-    fetchProfileAndSetState(uid) {
+class Resume extends React.Component {
+    componentDidMount() {
         // we put this here (and not in constructor) for server-side rendering
         let fb = firebase.database()
-        this.fbRef = fb.ref('profile').child(uid)
+        this.fbRef = fb.ref('profile').child(this.props.fbUser.uid)
 
         this.fbRef.on('value', (snap) => {
             // TODO: understand why snap.val() is null when the user signs in for the first time
@@ -64,22 +47,9 @@ class Profile extends React.Component {
                 return
             }
 
-            let reviews = {}
-            let ref = fb.ref('publicReviews').orderByChild("toUid").equalTo(uid)
-
-            ref.once('value').then((snap) => {
-                snap.forEach((snap1) => {
-                    reviews[snap1.key] = snap1.val()
-                })
-
-                joinReviews(profile, reviews)
-                this.setState(profile)
-            })
+            profile.experience = profile.experience || {}
+            this.setState(profile)
         })
-    }
-
-    componentDidMount() {
-        this.fetchProfileAndSetState(this.props.fbUser.uid)
     }
 
     componentWillUnmount() {
@@ -123,7 +93,6 @@ class Profile extends React.Component {
 
 
 class Experience extends React.Component {
-
     remove() {
         // TODO: remove reviews?
         let b = confirm('Do you want to remove this work experience?')
@@ -156,8 +125,39 @@ class Experience extends React.Component {
                 className="btn btn-default"
                 onClick={this.remove.bind(this)}>
                 Remove</button>
+        </div>
+    }
+}
 
-            {exp.reviews.map((rev, i) => {
+
+class Reviews extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {reviews: []}
+    }
+
+    componentDidMount() {
+        let fb = firebase.database()
+        let uid = this.props.fbUser.uid
+        let ref = fb.ref('publicReviews').orderByChild("toUid").equalTo(uid)
+
+        ref.once('value').then((snap) => {
+            let reviews = []
+            snap.forEach((snap) => {
+                let rev = snap.val()
+                if (rev.review) {
+                    rev.revId = snap.key
+                    reviews.push(rev)
+                }
+            })
+            this.setState({reviews: reviews})
+        })
+    }
+
+    render() {
+        return <div className="reviews">
+            <h1>Reviews</h1>
+            {this.state.reviews.map(rev => {
                 return <Review key={'review-' + rev.revId} rev={rev} />
             })}
         </div>
@@ -170,14 +170,14 @@ class Review extends React.Component {
         let rev = this.props.rev
 
         return <div className="review">
-            <div className="review-text">
-                &ldquo;{rev.review}&rdquo;
-            </div>
             <div className="review-info">
                 <Link to={`/in/${rev.fromUid}`}>
                     {rev.reviewer.firstname} {rev.reviewer.lastname}
                 </Link>
                 <span> - {rev.UTCdate}</span>
+            </div>
+            <div className="review-text">
+                &ldquo;{rev.review}&rdquo;
             </div>
         </div>
     }
@@ -326,4 +326,4 @@ class ExperienceForm extends React.Component {
     }
 }
 
-export {joinReviews, forceRefresh, Me}
+export {Me}

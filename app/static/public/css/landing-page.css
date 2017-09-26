@@ -266,10 +266,14 @@ div.me div.job-description {
     margin: 20px 0;
 }
 
+/* reviews */
+div.reviews {
+    margin-top: 50px;
+    border-top: 1px solid #ccc;
+}
+
 div.review {
     margin: 15px 0;
-    padding-left: 15px;
-    border-left: 2px solid #eee;
 }
 
 div.review-text {
@@ -281,7 +285,11 @@ div.review-info {
 }
 
 div.review-buttons {
-    margin: 15px 0;
+    margin: 5px 0;
+}
+
+.new-review-button {
+    margin-top: 40px;
 }
 
 /* experience form */

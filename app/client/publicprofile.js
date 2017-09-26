@@ -7,10 +7,18 @@ import {SignupForm, LoginForm} from './auth'
 import {ReadOnlyEditor} from './editor'
 import NoMatch from './error'
 import Form from './form'
-import {joinReviews, forceRefresh} from './me'
 
 
 class PublicProfile extends React.Component {
+    render() {
+        return <div>
+            <Resume {...this.props} />
+            <Reviews {...this.props} />
+        </div>
+    }
+}
+
+class Resume extends React.Component {
     constructor(props) {
         super(props)
         this.state = this.props.serverData
@@ -37,17 +45,8 @@ class PublicProfile extends React.Component {
                 return
             }
 
-            let reviews = {}
-            let ref = fb.ref('publicReviews').orderByChild("toUid").equalTo(uid)
-
-            ref.once('value').then((snap) => {
-                snap.forEach((snap1) => {
-                    reviews[snap1.key] = snap1.val()
-                })
-
-                joinReviews(profile, reviews)
-                this.setState(profile)
-            })
+            profile.experience = profile.experience || {}
+            this.setState(profile)
         })
     }
 
@@ -118,13 +117,44 @@ class Experience extends React.Component {
             <div className="job-description">
                 <ReadOnlyEditor content={exp.jobDescription} />
             </div>
+        </div>
+    }
+}
 
-            {exp.reviews.map((rev) => {
-                return <Review key={'review-' + rev.revId} rev={rev} {...context} />
+class Reviews extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {reviews: []}
+    }
+
+    componentDidMount() {
+        let fb = firebase.database()
+        let ref = fb.ref('publicReviews').orderByChild("toUid").equalTo(this.props.profileId)
+
+        ref.on('value', snap => {
+            let reviews = []
+            snap.forEach(snap => {
+                let rev = snap.val()
+                if (rev.review) {
+                    rev.revId = snap.key
+                    reviews.push(rev)
+                }
+            })
+            this.setState({reviews: reviews})
+        })
+    }
+
+    render() {
+        let fbUser = this.props.fbUser
+
+        return <div className="reviews">
+            <h1>Reviews</h1>
+            {this.state.reviews.map(rev => {
+                return <Review key={'review-' + rev.revId} rev={rev} {...this.props} />
             })}
 
             {(fbUser === null || fbUser.uid != this.props.profileId) && (
-                <ReviewFrom {...context} />
+                <ReviewFrom {...this.props} />
             )}
         </div>
     }
@@ -136,14 +166,14 @@ class Review extends React.Component {
         let fbUser = this.props.fbUser
 
         return <div className="review">
-            <div className="review-text">
-                &ldquo;{rev.review}&rdquo;
-            </div>
             <div className="review-info">
                 <Link to={`/in/${rev.fromUid}`}>
                     {rev.reviewer.firstname} {rev.reviewer.lastname}
                 </Link>
                 <span> - {rev.UTCdate}</span>
+            </div>
+            <div className="review-text">
+                &ldquo;{rev.review}&rdquo;
             </div>
             {fbUser && fbUser.uid == rev.fromUid && (
                 <div className="review-buttons">
@@ -154,6 +184,7 @@ class Review extends React.Component {
     }
 }
 
+// TODO: split this form into NewReviewForm and EditReviewForm
 class ReviewFrom extends React.Component {
     constructor(props) {
         super(props)
@@ -171,7 +202,6 @@ class ReviewFrom extends React.Component {
 
         pr.then(() => {
             this.setState({mode: 'closed'})
-            forceRefresh(this.props.profileId)
         })
     }
 
@@ -187,7 +217,6 @@ class ReviewFrom extends React.Component {
                     firstname: info.firstname,
                     lastname: info.lastname
                 },
-                expId: this.props.expId,
                 review: this.data.review,
                 UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
             }
@@ -207,9 +236,7 @@ class ReviewFrom extends React.Component {
 
     delete() {
         let ref = firebase.database().ref('publicReviews')
-        ref.child(this.props.rev.revId).child('review').remove().then(() => {
-            forceRefresh(this.props.profileId)
-        })
+        ref.child(this.props.rev.revId).child('review').remove()
     }
 
     onSubmit(data) {
@@ -234,11 +261,23 @@ class ReviewFrom extends React.Component {
 
     render() {
         return <div>
-            <button type="button"
-                className="btn btn-default"
-                onClick={this.changeMode.bind(this, 'review')}>
-                {this.props.rev ? 'Edit' : 'Write a Review'}
-            </button>
+
+            {!this.props.rev && (
+                <button type="button"
+                    className="btn btn-default new-review-button"
+                    onClick={this.changeMode.bind(this, 'review')}>
+                    Write a Review
+                </button>
+            )}
+
+            {this.props.rev && (
+                <button type="button"
+                    className="btn btn-default"
+                    onClick={this.changeMode.bind(this, 'review')}>
+                    Edit
+                </button>
+            )}
+
             {this.props.rev && (
                 <button type="button"
                     className="btn btn-default"
@@ -263,7 +302,7 @@ class ReviewFrom extends React.Component {
             data={this.props.rev || {}}
             className="dialog">
 
-            <h3>{`Review ${this.props.profileName} for position "${this.props.jobTitle}"`}</h3>
+            <h3>{`Write a Review`}</h3>
 
             {this.state.error && (
                 <div className="form-error">{this.state.error}</div>

@@ -10,15 +10,6 @@ import Form from './form'
 
 
 class PublicProfile extends React.Component {
-    render() {
-        return <div>
-            <Resume {...this.props} />
-            <Reviews {...this.props} />
-        </div>
-    }
-}
-
-class Resume extends React.Component {
     constructor(props) {
         super(props)
         this.state = this.props.serverData
@@ -84,6 +75,11 @@ class Resume extends React.Component {
                     expId={expId}
                     exp={this.state.experience[expId]} />
             })}
+
+            <Reviews
+                fbUser={fbUser}
+                profileName={profileName}
+                profileId={this.props.profileId} />
         </div>
     }
 }
@@ -93,17 +89,6 @@ class Experience extends React.Component {
     render() {
         let fbUser = this.props.fbUser
         let exp = this.props.exp
-
-        // TODO: sever side rendering fails with exp.reviews.map
-        exp.reviews = exp.reviews || []
-
-        let context = {
-            fbUser: fbUser,
-            profileId: this.props.profileId,
-            profileName: this.props.profileName,
-            expId: this.props.expId,
-            jobTitle: exp.jobTitle,
-        }
 
         return <div className="job-experience">
             <h3>{exp.companyName} - {exp.jobTitle}</h3>
@@ -302,7 +287,7 @@ class ReviewFrom extends React.Component {
             data={this.props.rev || {}}
             className="dialog">
 
-            <h3>{`Write a Review`}</h3>
+            <h3>{`Review ${this.props.profileName}`}</h3>
 
             {this.state.error && (
                 <div className="form-error">{this.state.error}</div>

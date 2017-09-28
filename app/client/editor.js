@@ -6,24 +6,6 @@ import ReactDOM from 'react-dom'
 // https://github.com/nikgraf/awesome-draft-js
 
 class Editor extends React.Component {
-    toggleBlockType(blockType) {
-        this.props.onChange(
-            RichUtils.toggleBlockType(
-                this.props.editorState,
-                blockType
-            )
-        )
-    }
-
-    toggleInlineStyle(inlineStyle) {
-        this.props.onChange(
-            RichUtils.toggleInlineStyle(
-                this.props.editorState,
-                inlineStyle
-            )
-        )
-    }
-
     handleKeyCommand(command, editorState) {
         const newState = RichUtils.handleKeyCommand(editorState, command);
         if (newState) {
@@ -37,8 +19,7 @@ class Editor extends React.Component {
         return <div className="RichEditor-root">
             <InlineStyleControls
                 editorState={this.props.editorState}
-                toggleInlineStyle={this.toggleInlineStyle.bind(this)}
-                toggleBlockType={this.toggleBlockType.bind(this)}
+                onChange={this.props.onChange}
             />
 
             <DraftEditor
@@ -96,38 +77,51 @@ var INLINE_STYLES = [
     // {label: 'Monospace', style: 'CODE'},
 ];
 
-const InlineStyleControls = (props) => {
-    var currentStyle = props.editorState.getCurrentInlineStyle()
+class InlineStyleControls extends React.Component {
+    toggleBlockType(blockType) {
+        let editorState = RichUtils.toggleBlockType(this.props.editorState, blockType)
+        this.props.onChange(editorState)
+    }
 
-    const {editorState} = props
-    const selection = editorState.getSelection()
-    const blockType = editorState
-        .getCurrentContent()
-        .getBlockForKey(selection.getStartKey())
-        .getType()
+    toggleInlineStyle(inlineStyle) {
+        let editorState = RichUtils.toggleInlineStyle(this.props.editorState, inlineStyle)
+        this.props.onChange(editorState)
+    }
 
-    return <div className="RichEditor-controls">
-        {INLINE_STYLES.map(type =>
-            <StyleButton
-                key={type.style}
-                active={currentStyle.has(type.style)}
-                label={type.label}
-                onToggle={props.toggleInlineStyle}
-                style={type.style}
-          />
-        )}
+    render() {
+        let currentStyle = this.props.editorState.getCurrentInlineStyle()
 
-        {BLOCK_TYPES.map((type) =>
-            <StyleButton
-                key={type.style}
-                active={type.style === blockType}
-                label={type.label}
-                onToggle={props.toggleBlockType}
-                style={type.style}
-            />
-        )}
-    </div>
+        const {editorState} = this.props
+        const selection = editorState.getSelection()
+        const blockType = editorState
+            .getCurrentContent()
+            .getBlockForKey(selection.getStartKey())
+            .getType()
+
+        return <div className="RichEditor-controls">
+            {INLINE_STYLES.map(type =>
+                <StyleButton
+                    key={type.style}
+                    active={currentStyle.has(type.style)}
+                    label={type.label}
+                    onToggle={this.toggleInlineStyle.bind(this)}
+                    style={type.style}
+              />
+            )}
+
+            {BLOCK_TYPES.map((type) =>
+                <StyleButton
+                    key={type.style}
+                    active={type.style === blockType}
+                    label={type.label}
+                    onToggle={this.toggleBlockType.bind(this)}
+                    style={type.style}
+                />
+            )}
+        </div>
+    }
 }
+
 
 class StyleButton extends React.Component {
     constructor(props) {

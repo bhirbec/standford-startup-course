@@ -10,9 +10,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 import NoMatch from './error'
 import InviteForm from './invite'
-import {Me} from './me'
 import Home from './home'
-import {PublicProfile} from './publicprofile'
+import {MyProfile, PublicProfile} from './profile'
 import {SearchBox, SearchResult} from './search'
 import Test from './test'
 import {SignupComponent, LoginComponent, SignoutLink} from './auth'
@@ -83,7 +82,7 @@ class App extends React.Component {
                     )} />
                     <Route path="/me" render={() => (
                         this.props.fbUser ? (
-                            <InnerLayout><Me fbUser={this.props.fbUser} /></InnerLayout>
+                            <InnerLayout><MyProfile fbUser={this.props.fbUser} /></InnerLayout>
                         ) : (
                             <Redirect to="/" />
                         )

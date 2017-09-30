@@ -15,9 +15,9 @@ class Reviews extends React.Component {
 
     componentDidMount() {
         let fb = firebase.database()
-        let ref = fb.ref('publicReviews').orderByChild("toUid").equalTo(this.props.profileId)
+        this.ref = fb.ref('publicReviews').orderByChild("toUid").equalTo(this.props.profileId)
 
-        ref.on('value', snap => {
+        this.ref.on('value', snap => {
             let reviews = []
             snap.forEach(snap => {
                 let rev = snap.val()
@@ -28,6 +28,10 @@ class Reviews extends React.Component {
             })
             this.setState({reviews: reviews})
         })
+    }
+
+    componentWillUnmount() {
+        this.ref.off()
     }
 
     render() {

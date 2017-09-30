@@ -25,6 +25,9 @@ class Me extends React.Component {
 class Profile extends React.Component {
     render() {
         return <div>
+            <div>
+                View your <Link to={'/in/' + this.props.fbUser.uid}>public profile</Link>
+            </div>
             <Resume {...this.props} />
             <Reviews {...this.props} />
         </div>
@@ -63,10 +66,6 @@ class Resume extends React.Component {
 
         return <div className="me">
             <h1>{profileName}</h1>
-
-            <div>
-                View your <Link to={'/in/' + this.props.fbUser.uid}>public profile</Link>
-            </div>
 
             {expIds.map((expId) => {
                 return <EditableExperience

@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import {Link, Route} from 'react-router-dom'
 
-import {Experience, ExperienceForm} from './experience'
+import {EditableExperience, ExperienceForm} from './experience'
 
 
 class Me extends React.Component {
@@ -69,9 +69,8 @@ class Resume extends React.Component {
             </div>
 
             {expIds.map((expId) => {
-                return <Experience
+                return <EditableExperience
                     key={"exp-" + expId}
-                    fbRef={this.fbRef.child('experience/' + expId)}
                     profileId={this.props.fbUser.uid}
                     expId={expId}
                     exp={this.state.experience[expId]} />

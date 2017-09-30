@@ -4,8 +4,8 @@ import {Link} from 'react-router-dom'
 import Dialog from 'material-ui/Dialog';
 
 import {SignupForm, LoginForm} from './auth'
-import {ReadOnlyEditor} from './editor'
 import NoMatch from './error'
+import {Experience} from './experience'
 import Form from './form'
 
 
@@ -80,28 +80,6 @@ class PublicProfile extends React.Component {
                 fbUser={fbUser}
                 profileName={profileName}
                 profileId={this.props.profileId} />
-        </div>
-    }
-}
-
-
-class Experience extends React.Component {
-    render() {
-        let fbUser = this.props.fbUser
-        let exp = this.props.exp
-
-        return <div className="job-experience">
-            <h3>{exp.companyName} - {exp.jobTitle}</h3>
-
-            {(exp.jobStartDate || exp.jobEndDate) && (
-                <div className="job-dates">
-                    {exp.jobStartDate} to {exp.jobEndDate || 'present'}
-                </div>
-            )}
-
-            <div className="job-description">
-                <ReadOnlyEditor content={exp.jobDescription} />
-            </div>
         </div>
     }
 }

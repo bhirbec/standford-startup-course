@@ -8,14 +8,6 @@ import Form from './form'
 
 
 class Experience extends React.Component {
-    remove() {
-        // TODO: remove reviews?
-        let b = confirm('Do you want to remove this work experience?')
-        if (b == true) {
-            this.props.fbRef.remove()
-        }
-    }
-
     render() {
         let exp = this.props.exp
 
@@ -32,6 +24,27 @@ class Experience extends React.Component {
                 <ReadOnlyEditor content={exp.jobDescription} />
             </div>
 
+            {this.props.children}
+        </div>
+    }
+}
+
+
+class EditableExperience extends React.Component {
+    remove() {
+        // TODO: remove reviews?
+        let b = confirm('Do you want to remove this work experience?')
+        if (b == true) {
+            firebase.database().ref('profile')
+                .child(this.props.profileId)
+                .child('experience')
+                .child(this.props.expId)
+                .remove()
+        }
+    }
+
+    render() {
+        return <Experience {...this.props}>
             <Link to={'/me/experience/' + this.props.expId}>
                 <button type="button" className="btn btn-default">Edit</button>
             </Link>
@@ -40,7 +53,7 @@ class Experience extends React.Component {
                 className="btn btn-default"
                 onClick={this.remove.bind(this)}>
                 Remove</button>
-        </div>
+        </Experience>
     }
 }
 
@@ -188,4 +201,4 @@ class ExperienceForm extends React.Component {
     }
 }
 
-export {Experience, ExperienceForm}
+export {Experience, EditableExperience, ExperienceForm}

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import {Link, Route} from 'react-router-dom'
 
 import {EditableExperience, ExperienceForm} from './experience'
+import {Reviews} from './review'
 
 
 class Me extends React.Component {
@@ -29,7 +30,7 @@ class Profile extends React.Component {
                 View your <Link to={'/in/' + this.props.fbUser.uid}>public profile</Link>
             </div>
             <Resume {...this.props} />
-            <Reviews {...this.props} />
+            <Reviews profileId={this.props.fbUser.uid} fbUser={this.props.fbUser} />
         </div>
     }
 }
@@ -85,60 +86,5 @@ class Resume extends React.Component {
         </div>
     }
 };
-
-
-class Reviews extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {reviews: []}
-    }
-
-    componentDidMount() {
-        let fb = firebase.database()
-        let uid = this.props.fbUser.uid
-        let ref = fb.ref('publicReviews').orderByChild("toUid").equalTo(uid)
-
-        ref.once('value').then((snap) => {
-            let reviews = []
-            snap.forEach((snap) => {
-                let rev = snap.val()
-                if (rev.review) {
-                    rev.revId = snap.key
-                    reviews.push(rev)
-                }
-            })
-            this.setState({reviews: reviews})
-        })
-    }
-
-    render() {
-        return <div className="reviews">
-            <h1>Reviews</h1>
-            {this.state.reviews.map(rev => {
-                return <Review key={'review-' + rev.revId} rev={rev} />
-            })}
-        </div>
-    }
-}
-
-
-class Review extends React.Component {
-    render() {
-        let rev = this.props.rev
-
-        return <div className="review">
-            <div className="review-info">
-                <Link to={`/in/${rev.fromUid}`}>
-                    {rev.reviewer.firstname} {rev.reviewer.lastname}
-                </Link>
-                <span> - {rev.UTCdate}</span>
-            </div>
-            <div className="review-text">
-                &ldquo;{rev.review}&rdquo;
-            </div>
-        </div>
-    }
-}
-
 
 export {Me}

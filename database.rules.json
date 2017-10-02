@@ -15,6 +15,9 @@
         "experience": {
           ".write": "auth.uid === $uid"
         },
+        "public": {
+          ".write": "auth.uid === $uid"
+        },
         "ts": {
           ".write": "auth.uid !== null"
         }

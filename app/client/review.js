@@ -38,7 +38,7 @@ class Reviews extends React.Component {
         let fbUser = this.props.fbUser
 
         return <div className="reviews">
-            <h1>Reviews</h1>
+            <h2>Reviews</h2>
             {this.state.reviews.map(rev => {
                 return <Review key={'review-' + rev.revId} rev={rev} {...this.props} />
             })}

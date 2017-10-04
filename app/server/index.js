@@ -35,7 +35,7 @@ app.get('/in/:id', function (req, res) {
     let p = fb.ref('profile').child(req.params.id).once('value')
 
     p.then((snap) => {
-        let root = MakeAppRoot(req, snap.val()  )
+        let root = MakeAppRoot(req, snap.val())
         renderHTML(req, res, root)
     }).catch(function (err) {
         res.status(500).send(err)

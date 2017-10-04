@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 const app = require('./app');
 const mailer = require('./app/mailer');
 const search = require('./app/search');
+const liker = require('./app/liker');
 
 
 exports.app = functions.https.onRequest(app.server);
@@ -27,4 +28,9 @@ exports.newReview = functions.database.ref('publicReviews/{revId}').onCreate((ev
 
 exports.updateReview = functions.database.ref('publicReviews/{revId}').onUpdate((event) => {
     return mailer.notifyReview(event.data)
+});
+
+// likes
+exports.hashtagLike = functions.database.ref('likeQueue/{likeId}').onCreate((event) => {
+    return liker.likeHasktag(event.data)
 });

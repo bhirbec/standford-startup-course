@@ -24,6 +24,7 @@ admin.initializeApp({
 })
 
 module.exports = {
+    admin: admin,
     fb: admin.database(),
     config: config
 }

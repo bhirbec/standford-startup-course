@@ -2,6 +2,7 @@ import {fb, config} from './server/init.js'
 import {server} from './index.js'
 import {notifyInvite, notifyReview} from './mailer'
 import {index} from './search'
+import {likeHasktag} from './liker'
 
  // start web server
 server.listen(config.web.port, config.web.port.host, function () {
@@ -13,6 +14,9 @@ server.listen(config.web.port, config.web.port.host, function () {
 
 // review notification (uncomment to test)
 // fb.ref('publicReviews').limitToLast(1).on('child_added', notifyReview)
+
+// likes (uncomment to test)
+// fb.ref('likeQueue').limitToLast(1).on('child_added', likeHasktag)
 
 // start indexer
 console.info('Starging Algolia indexer')

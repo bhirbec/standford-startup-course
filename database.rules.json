@@ -18,10 +18,14 @@
         "public": {
           ".write": "auth.uid === $uid"
         },
-        "ts": {
-          ".write": "auth.uid !== null"
+        "like": {
+          ".write": false
         }
       }
+    },
+    "likeQueue": {
+      ".read": false,
+      ".write": "auth.uid !== null"
     },
     "publicReviews": {
       ".read": true,

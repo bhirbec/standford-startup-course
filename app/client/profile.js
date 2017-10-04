@@ -49,21 +49,55 @@ class BaseProfile extends React.Component {
                 return
             }
 
-            profile.experience = profile.experience || {}
             this.setState(profile)
         })
     }
 
+    buildHashtags() {
+        let taglikes = this.state.like || {}
+        let hashtags = (this.state.public || {}).hashtags || ""
+
+        if (!hashtags) {
+            return []
+        }
+
+        hashtags = hashtags.split(/[\r\n]+/)
+        for (let i=0; i < hashtags.length; i++) {
+            let name = hashtags[i]
+            let likes = 0
+            let unlikes = 0
+
+            let hlikes = taglikes[name] || {}
+            for (let uid in hlikes) {
+                if (hlikes[uid] == -1) {
+                    unlikes += 1
+                } else {
+                    likes += 1
+                }
+            }
+
+            hashtags[i] = {name: name, likes: likes, unlikes: unlikes}
+        }
+        return hashtags
+    }
+
     renderProfile() {
         let pub = this.state.public || {}
+        let hashtags = this.buildHashtags()
         let profileName = `${this.state.info.firstname} ${this.state.info.lastname}`
 
         return <div className="me">
             <h1 className="main-color">{profileName}</h1>
-            {pub.hashtags && (
+            {hashtags && (
                 <div className="skills">
-                    {pub.hashtags.split(/[\r\n]+/).map((h) => {
-                        return <div className="hashtag" key={"h-" + h}>{h}</div>
+                    {hashtags.map((hashtag) => {
+                        return <div className="hashtag" key={"hashtag-" + hashtag.name}>
+                            {hashtag.name}
+                            <Hashlike
+                                profileId={this.props.profileId}
+                                fbUser={this.props.fbUser}
+                                hashtag={hashtag} />
+                        </div>
                     })}
                 </div>
             )}
@@ -84,9 +118,36 @@ class BaseProfile extends React.Component {
             </div>)}
         </div>
     }
-
 }
 
+class Hashlike extends React.Component {
+    onClick(value, e) {
+        this.props.fbUser.getIdToken().then(idToken => {
+            let fb = firebase.database()
+            fb.ref('likeQueue').push().set({
+                toUid: this.props.profileId,
+                fromUid: this.props.fbUser.uid,
+                idToken: idToken,
+                hashtag: this.props.hashtag.name,
+                value: value
+            })
+        })
+        e.preventDefault()
+    }
+
+    render() {
+        return <span>
+            <span onClick={this.onClick.bind(this, 1)} className="likes">
+                <i className="material-icons">thumb_up</i>
+                {this.props.hashtag.likes}
+            </span>
+            <span onClick={this.onClick.bind(this, -1)} className="unlikes">
+                <i className="material-icons">thumb_down</i>
+                {this.props.hashtag.unlikes}
+            </span>
+        </span>
+    }
+}
 
 class Profile extends BaseProfile {
     render() {

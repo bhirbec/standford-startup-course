@@ -278,30 +278,30 @@ div.me div.companies div:first-child {
 
 div.me div.hashtag {
     display: inline-block;
-    margin: 2px 5px 2px 0;
-    padding: 5px 8px;
+    font-size: 14px;
+    margin: 0 3px 3px 0;
+    padding: 3px 10px;
     border-radius: 16px;
     background-color: #eee;
 }
 
 div.me div.hashtag span {
-    font-size: 14px;
     color: #bbb;
 }
 
 div.me div.hashtag i {
-    font-size: 14px;
-    margin-left: 10px;
-    margin-right: 5px;
+    font-size: 13px;
+    margin-left: 5px;
+    margin-right: 2px;
 }
 
-div.me div.hashtag:hover span.likes {
-    color: green;
+div.me div.hashtag span.likes {
+    color: #76CC59;
     cursor: pointer;
 }
 
-div.me div.hashtag:hover span.unlikes {
-    color: red;
+div.me div.hashtag span.unlikes {
+    color: #F15C25;
     cursor: pointer;
 }
 

@@ -12,6 +12,7 @@ html {
     font-family: "Helvetica Neue",Helvetica,Arial, sans-serif;
 }
 
+
 h1 {
     margin-top: 25px;
     margin-bottom: 25px;
@@ -20,6 +21,11 @@ h1 {
 h3 {
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+h1,
+h2 {
+    font-weight: normal;
 }
 
 /* https://color.adobe.com/Show-7-color-theme-9923048/edit/?copy=true&base=2&rule=Custom&selected=3&name=Copy%20of%20Show%207&mode=rgb&rgbvalues=0.00392156862745098,0.2196078431372549,0.34901960784313724,0.09411764705882353,0.3686274509803922,0.396078431372549,0.9764705882352941,0.8,0.4980392156862745,0.9450980392156862,0.3607843137254902,0.1450980392156863,0.6196078431372549,0.08627450980392157,0.09019607843137255&swatchOrder=0,1,2,3,4 */
@@ -257,17 +263,12 @@ div.me {
     margin-top: 25px;
 }
 
-div.me h1,
-div.me h2 {
-    font-weight: normal;
-}
-
 div.me h1 {
     margin: 5px 0;
 }
 
 div.me > div {
-    margin: 25px 0;
+    margin: 30px 0;
 }
 
 @media(min-width:768px) {
@@ -300,7 +301,8 @@ div.me div.hashtag {
     margin: 0 3px 3px 0;
     padding: 3px 10px;
     border-radius: 16px;
-    background-color: #eee;
+    color: #666;
+    border: 1px solid #ddd;
 }
 
 div.me div.hashtag span {
@@ -321,6 +323,11 @@ div.me div.hashtag span.likes {
 div.me div.hashtag span.unlikes {
     color: #F15C25;
     cursor: pointer;
+}
+
+div.me .minor-stuff {
+    color: #aaa;
+    font-size: 12px;
 }
 
 div.me div.intro {

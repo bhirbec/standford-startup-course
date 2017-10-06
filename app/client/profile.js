@@ -87,26 +87,29 @@ class BaseProfile extends React.Component {
         let profileName = `${this.state.info.firstname} ${this.state.info.lastname}`
 
         return <div className="me">
-            <h1 className="main-color">{profileName}</h1>
-
-            {(pub.occupation || pub.location || pub.companies) && (
-                <div className="title clearfix">
-                    {pub.occupation && (
-                        <h2>{pub.occupation}</h2>
-                    )}
-                    {pub.companies && (
-                        <div className="companies clearfix">
-                            <span>worked @ </span>
-                            {pub.companies.split(/[\r\n]+/).map((c) => {
-                                return <div key={"c-" + c} className="hashtag">{c}</div>
-                            })}
-                        </div>
-                    )}
-                    {pub.location && (
-                        <div><i className="material-icons">location_on</i>{pub.location}</div>
-                    )}
-                </div>
-            )}
+            <div>
+                <h1 className="main-color">{profileName}</h1>
+                {(pub.occupation || pub.location || pub.companies) && (
+                    <div className="title clearfix">
+                        {pub.occupation && (
+                            <h2>{pub.occupation}</h2>
+                        )}
+                        {pub.companies && (
+                            <div className="companies clearfix">
+                                <span>worked @ </span>
+                                {pub.companies.split(/[\r\n]+/).map((c) => {
+                                    return <div key={"c-" + c} className="hashtag">{c}</div>
+                                })}
+                            </div>
+                        )}
+                        {pub.location && (
+                            <div className="minor-stuff">
+                                <i className="material-icons">location_on</i>{pub.location}
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
 
             {hashtags && (
                 <div className="skills">

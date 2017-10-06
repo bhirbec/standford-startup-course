@@ -102,9 +102,18 @@ class BaseProfile extends React.Component {
                                 })}
                             </div>
                         )}
-                        {pub.location && (
+                        {(pub.location || pub.degree) && (
                             <div className="minor-stuff">
-                                <i className="material-icons">location_on</i>{pub.location}
+                                {pub.location && (
+                                    <span>
+                                        <i className="material-icons">location_on</i>{pub.location}
+                                    </span>
+                                )}
+                                {pub.school && (
+                                    <span>
+                                        <i className="material-icons">school</i>{pub.school}
+                                    </span>
+                                )}
                             </div>
                         )}
                     </div>
@@ -285,6 +294,14 @@ class ProfileForm extends React.Component {
                         type="text"
                         className="form-control"
                         placeholder="Example: New York, San Diego, San Francisco..." />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="school">School & Degree:</label>
+                    <input id="school"
+                        name="school"
+                        type="text"
+                        className="form-control"
+                        placeholder="Example: UCSD" />
                 </div>
                 <div className="form-group">
                     <label htmlFor="occupation">Current/Last occupation:</label>

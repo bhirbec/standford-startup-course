@@ -88,6 +88,26 @@ class BaseProfile extends React.Component {
 
         return <div className="me">
             <h1 className="main-color">{profileName}</h1>
+
+            {(pub.occupation || pub.location || pub.companies) && (
+                <div className="title clearfix">
+                    {pub.occupation && (
+                        <h2>{pub.occupation}</h2>
+                    )}
+                    {pub.companies && (
+                        <div className="companies clearfix">
+                            <span>worked @ </span>
+                            {pub.companies.split(/[\r\n]+/).map((c) => {
+                                return <div key={"c-" + c} className="hashtag">{c}</div>
+                            })}
+                        </div>
+                    )}
+                    {pub.location && (
+                        <div><i className="material-icons">location_on</i>{pub.location}</div>
+                    )}
+                </div>
+            )}
+
             {hashtags && (
                 <div className="skills">
                     {hashtags.map((hashtag) => {
@@ -105,17 +125,6 @@ class BaseProfile extends React.Component {
             {pub.intro && (
                 <div className="intro">&ldquo;{pub.intro}&rdquo;</div>
             )}
-
-            {pub.occupation && (
-                <h2>{pub.occupation}</h2>
-            )}
-
-            {pub.companies && (<div className="companies clearfix">
-                <div>Worked at</div>
-                {pub.companies.split(/[\r\n]+/).map((c) => {
-                    return <div key={"c-" + c} className="hashtag">{c}</div>
-                })}
-            </div>)}
         </div>
     }
 }
@@ -265,6 +274,14 @@ class ProfileForm extends React.Component {
                             "for a permanent position as Software Engineer. I'm proeficient " +
                             "at C++, Python, and MySLQ."
                         } />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="location">Location:</label>
+                    <input id="location"
+                        name="location"
+                        type="text"
+                        className="form-control"
+                        placeholder="Example: New York, San Diego, San Francisco..." />
                 </div>
                 <div className="form-group">
                     <label htmlFor="occupation">Current/Last occupation:</label>

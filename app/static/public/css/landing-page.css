@@ -254,26 +254,44 @@ div.drawer i.material-icons {
 }
 
 div.me {
-    margin-top: 50px;
+    margin-top: 25px;
 }
 
 div.me h1,
 div.me h2 {
-    margin: 25px 0;
     font-weight: normal;
 }
 
+div.me h1 {
+    margin: 5px 0;
+}
+
 div.me > div {
-    margin: 15px 0;
+    margin: 25px 0;
 }
 
-div.me div.companies > div {
+@media(min-width:768px) {
+    div.me div.title h2 {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    div.me div.title > * {
+        float: left;
+        display: block;
+        margin-right: 25px;
+        line-height: 20px;
+        vertical-align: middle;
+    }
 }
 
-div.me div.companies div:first-child {
-    display: inline-block;
-    padding: 5px 10px 5px 0;
-    margin: 10px 0 10px 5px;
+@media(max-width:767px) {
+    div.me div.title h2 {
+        margin-top: 0;
+    }
+
+    div.me div.title i {
+        margin-left: -5px;
+    }
 }
 
 div.me div.hashtag {

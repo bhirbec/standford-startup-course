@@ -95,7 +95,7 @@ class BaseProfile extends React.Component {
                             <h2>{pub.occupation}</h2>
                         )}
                         {pub.companies && (
-                            <div className="companies clearfix">
+                            <div className="clearfix">
                                 <span>worked @ </span>
                                 {pub.companies.split(/[\r\n]+/).map((c) => {
                                     return <div key={"c-" + c} className="hashtag">{c}</div>
@@ -103,15 +103,15 @@ class BaseProfile extends React.Component {
                             </div>
                         )}
                         {(pub.location || pub.degree) && (
-                            <div className="minor-stuff">
-                                {pub.location && (
-                                    <span>
-                                        <i className="material-icons">location_on</i>{pub.location}
-                                    </span>
-                                )}
+                            <div className="minor-stuff clearfix">
                                 {pub.school && (
                                     <span>
                                         <i className="material-icons">school</i>{pub.school}
+                                    </span>
+                                )}
+                                {pub.location && (
+                                    <span>
+                                        <i className="material-icons">location_on</i>{pub.location}
                                     </span>
                                 )}
                             </div>
@@ -121,7 +121,7 @@ class BaseProfile extends React.Component {
             </div>
 
             {hashtags && (
-                <div className="skills">
+                <div>
                     {hashtags.map((hashtag) => {
                         return <div className="hashtag" key={"hashtag-" + hashtag.name}>
                             {hashtag.name}

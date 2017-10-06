@@ -66,8 +66,8 @@ h2 {
 }
 
 i.material-icons {
-    line-height: inherit;
     vertical-align: middle;
+    line-height: inherit;
 }
 
 .navbar i.material-icons {
@@ -272,23 +272,13 @@ div.me > div {
 }
 
 div.me div.title i {
-    display: inline-block;
-    margin-left: -5px;
-    margin-right: 5px;
+    margin-left: -3px;
+    margin-right: 3px;
 }
 
 @media(min-width:768px) {
-    div.me div.title h2 {
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-
     div.me div.title > * {
-        float: left;
-        display: block;
-        margin-right: 25px;
-        line-height: 20px;
-        vertical-align: middle;
+        margin-right: 5px;
     }
 }
 
@@ -342,6 +332,8 @@ div.me .minor-stuff {
 }
 
 div.me .minor-stuff span {
+    float: left;
+    display: block;
     margin-right: 25px;
 }
 

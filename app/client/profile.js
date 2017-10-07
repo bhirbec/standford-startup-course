@@ -141,35 +141,6 @@ class BaseProfile extends React.Component {
     }
 }
 
-class Hashlike extends React.Component {
-    onClick(value, e) {
-        this.props.fbUser.getIdToken().then(idToken => {
-            let fb = firebase.database()
-            fb.ref('likeQueue').push().set({
-                toUid: this.props.profileId,
-                fromUid: this.props.fbUser.uid,
-                idToken: idToken,
-                hashtag: this.props.hashtag.name,
-                value: value
-            })
-        })
-        e.preventDefault()
-    }
-
-    render() {
-        return <span>
-            <span onClick={this.onClick.bind(this, 1)} className="likes">
-                <i className="material-icons">thumb_up</i>
-                {this.props.hashtag.likes}
-            </span>
-            <span onClick={this.onClick.bind(this, -1)} className="unlikes">
-                <i className="material-icons">thumb_down</i>
-                {this.props.hashtag.unlikes}
-            </span>
-        </span>
-    }
-}
-
 class Profile extends BaseProfile {
     render() {
         if (!this.state) {
@@ -335,6 +306,36 @@ class ProfileForm extends React.Component {
                 </div>
             </Form>
         </div>
+    }
+}
+
+
+class Hashlike extends React.Component {
+    onClick(value, e) {
+        this.props.fbUser.getIdToken().then(idToken => {
+            let fb = firebase.database()
+            fb.ref('likeQueue').push().set({
+                toUid: this.props.profileId,
+                fromUid: this.props.fbUser.uid,
+                idToken: idToken,
+                hashtag: this.props.hashtag.name,
+                value: value
+            })
+        })
+        e.preventDefault()
+    }
+
+    render() {
+        return <span>
+            <span onClick={this.onClick.bind(this, 1)} className="likes">
+                <i className="material-icons">thumb_up</i>
+                {this.props.hashtag.likes}
+            </span>
+            <span onClick={this.onClick.bind(this, -1)} className="unlikes">
+                <i className="material-icons">thumb_down</i>
+                {this.props.hashtag.unlikes}
+            </span>
+        </span>
     }
 }
 

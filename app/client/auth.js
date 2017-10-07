@@ -9,7 +9,7 @@ class SignupComponent extends React.Component {
     render() {
         return <div className="auth-form">
             <h1>{this.props.title || 'Sign Up for LetsResume'}</h1>
-            <SignupForm resolve={this.props.resolve} />
+            <SignupForm />
             <div className="centered">
                 <span>Already on letsResume? </span>
                 {this.props.onClickLogin && (
@@ -31,7 +31,6 @@ class SignupForm extends React.Component {
 
     onSubmit(data) {
         let fb = firebase.database()
-        let user;
 
         if (data.firstname == "") {
             this.setState({error: "First Name can not be empty"})
@@ -47,15 +46,8 @@ class SignupForm extends React.Component {
         .then((fbUser) => {
             data.uid = fbUser.uid
             delete data['pwd']
-            user = fbUser
             return fb.ref('profile/' + fbUser.uid + '/info').set(data)
-        })
-        .then((resp) => {
-            if (this.props.resolve) {
-                this.props.resolve(user)
-            }
-        })
-        .catch((error) => {
+        }).catch((error) => {
             this.setState({error: error.message})
         })
     }
@@ -127,7 +119,7 @@ class LoginComponent extends React.Component {
     render() {
         return <div className="auth-form">
             <h1>{this.props.title || "Log In to LetsResume"}</h1>
-            <LoginForm resolve={this.props.resolve} />
+            <LoginForm />
             <div className="centered">
                 <span>New to letsResume? </span>
                 {this.props.onClickSignup && (
@@ -148,13 +140,7 @@ class LoginForm extends React.Component {
     }
 
     onSubmit(data) {
-        firebase.auth().signInWithEmailAndPassword(data.email, data.pwd)
-        .then((fbUser) => {
-            if (this.props.resolve) {
-                this.props.resolve(fbUser)
-            }
-        })
-        .catch((error) => {
+        firebase.auth().signInWithEmailAndPassword(data.email, data.pwd).catch((error) => {
             this.setState({error: error.message})
         })
     }

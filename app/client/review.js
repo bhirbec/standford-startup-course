@@ -89,7 +89,7 @@ class Review extends React.Component {
     }
 }
 
-// TODO: split this form into NewReviewForm and EditReviewForm
+// TODO: split this form into NewReviewForm and EditReviewForm?
 class ReviewFrom extends React.Component {
     constructor(props) {
         super(props)
@@ -119,6 +119,15 @@ class ReviewFrom extends React.Component {
             }
             this.setState(state)
         })
+    }
+
+    componentWillReceiveProps(nextProps) {
+        let hasLogedin = !this.props.fbUser && nextProps.fbUser
+
+        // now that the user has logged in we can finish
+        if (hasLogedin) {
+            this.post(nextProps.fbUser)
+        }
     }
 
     post(fbUser) {
@@ -226,15 +235,13 @@ class ReviewFrom extends React.Component {
     signup() {
         return <SignupComponent
             title="Sign up to post your review"
-            onClickLogin={this.changeMode.bind(this, 'login')}
-            resolve={this.post.bind(this)} />
+            onClickLogin={this.changeMode.bind(this, 'login')} />
     }
 
     login() {
         return <LoginComponent
             title="Log in to post your review"
-            onClickSignup={this.changeMode.bind(this, 'signup')}
-            resolve={this.post.bind(this)} />
+            onClickSignup={this.changeMode.bind(this, 'signup')} />
     }
 }
 

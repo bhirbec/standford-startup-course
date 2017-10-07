@@ -8,10 +8,16 @@ import Form from './form'
 class SignupComponent extends React.Component {
     render() {
         return <div className="auth-form">
-            <h1>Sign Up for LetsResume</h1>
-            <SignupForm />
+            <h1>{this.props.title || 'Sign Up for LetsResume'}</h1>
+            <SignupForm resolve={this.props.resolve} />
             <div className="centered">
-                Already on letsResume? <Link to="/login">Log in</Link>
+                <span>Already on letsResume? </span>
+                {this.props.onClickLogin && (
+                    <a href="#" onClick={this.props.onClickLogin}>Log in</a>
+                )}
+                {!this.props.onClickLogin && (
+                    <Link to="/login">Log in</Link>
+                )}
             </div>
         </div>
     }
@@ -120,10 +126,16 @@ class SignoutLink extends React.Component {
 class LoginComponent extends React.Component {
     render() {
         return <div className="auth-form">
-            <h1>Log In to LetsResume</h1>
-            <LoginForm />
+            <h1>{this.props.title || "Log In to LetsResume"}</h1>
+            <LoginForm resolve={this.props.resolve} />
             <div className="centered">
-                New to letsResume? <Link to="/signup">Sign Up</Link>
+                <span>New to letsResume? </span>
+                {this.props.onClickSignup && (
+                    <a href="#" onClick={this.props.onClickSignup}>Sign Up</a>
+                )}
+                {!this.props.onClickSignup && (
+                    <Link to="/signup">Sign Up</Link>
+                )}
             </div>
         </div>
     }
@@ -173,4 +185,4 @@ class LoginForm extends React.Component {
     }
 }
 
-export {SignupComponent, SignupForm, SignoutLink, LoginComponent, LoginForm}
+export {SignupComponent, SignoutLink, LoginComponent}

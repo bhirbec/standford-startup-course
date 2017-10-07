@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import {Link} from 'react-router-dom'
 import Dialog from 'material-ui/Dialog';
 
-import {SignupForm, LoginForm} from './auth'
+import {SignupComponent, LoginComponent} from './auth'
 import Form from './form'
 
 
@@ -219,24 +219,20 @@ class ReviewFrom extends React.Component {
     }
 
     signup() {
-        return <div className="auth-form dialog">
-            <h3>Sign up to post your review</h3>
-            <SignupForm resolve={this.post.bind(this)} />
-            <div className="centered">
-                <span>Already on letsResume? </span>
-                <a href="#" onClick={this.changeMode.bind(this, 'login')}>Log in</a>
-            </div>
+        return <div className="dialog">
+            <SignupComponent
+                title="Sign up to post your review"
+                onClickLogin={this.changeMode.bind(this, 'login')}
+                resolve={this.post.bind(this)} />
         </div>
     }
 
     login() {
-        return <div className="auth-form dialog">
-            <h3>Log in to post your review</h3>
-            <LoginForm resolve={this.post.bind(this)} />
-            <div className="centered">
-                <span>New to letsResume? </span>
-                <a href="#" onClick={this.changeMode.bind(this, 'signup')}>Sign Up</a>
-            </div>
+        return <div className="dialog">
+            <LoginComponent
+                title="Log in to post your review"
+                onClickSignup={this.changeMode.bind(this, 'signup')}
+                resolve={this.post.bind(this)} />
         </div>
     }
 }

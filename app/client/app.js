@@ -13,6 +13,7 @@ import InviteForm from './invite'
 import Home from './home'
 import {MyProfile, PublicProfile} from './profile'
 import {SearchBox, SearchResult} from './search'
+import {ReviewFrom} from './review'
 import Test from './test'
 import {SignupComponent, LoginComponent, SignoutLink} from './auth'
 
@@ -97,12 +98,27 @@ class App extends React.Component {
                             <Redirect to="/" />
                         )
                     )} />
-                    <Route exact path="/in/:id" render={(data) => (
+                    <Route exact path="/in/:profileId" render={(data) => (
                         <InnerLayout>
                             <PublicProfile
                                 fbUser={this.props.fbUser}
-                                profileId={data.match.params.id}
+                                profileId={data.match.params.profileId}
                                 serverData={this.props.serverData} />
+                        </InnerLayout>
+                    )} />
+                    <Route exact path="/in/:profileId/review/new" render={(data) => (
+                        <InnerLayout>
+                            <ReviewFrom
+                                fbUser={this.props.fbUser}
+                                profileId={data.match.params.profileId} />
+                        </InnerLayout>
+                    )} />
+                    <Route exact path="/in/:profileId/review/:revId" render={(data) => (
+                        <InnerLayout>
+                            <ReviewFrom
+                                fbUser={this.props.fbUser}
+                                revId={data.match.params.revId}
+                                profileId={data.match.params.profileId} />
                         </InnerLayout>
                     )} />
                     <Route render={(data) => (

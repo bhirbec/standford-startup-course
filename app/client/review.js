@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {Link} from 'react-router-dom'
-import Dialog from 'material-ui/Dialog';
+import {Link, Redirect} from 'react-router-dom'
 
 import {SignupComponent, LoginComponent} from './auth'
 import Form from './form'
@@ -44,13 +43,22 @@ class Reviews extends React.Component {
             })}
 
             {(fbUser === null || fbUser.uid != this.props.profileId) && (
-                <ReviewFrom {...this.props} />
+                <Link to={`/in/${this.props.profileId}/review/new`}>
+                    <button type="button" className="btn btn-default new-review-button">
+                        Write a Review
+                    </button>
+                </Link>
             )}
         </div>
     }
 }
 
 class Review extends React.Component {
+    delete() {
+        let ref = firebase.database().ref('publicReviews')
+        ref.child(this.props.rev.revId).child('review').remove()
+    }
+
     render() {
         let rev = this.props.rev
         let fbUser = this.props.fbUser
@@ -67,7 +75,14 @@ class Review extends React.Component {
             </div>
             {fbUser && fbUser.uid == rev.fromUid && (
                 <div className="review-buttons">
-                    <ReviewFrom {...this.props} />
+                    <Link to={`/in/${this.props.profileId}/review/${rev.revId}`}>
+                        <button type="button" className="btn btn-default">Edit</button>
+                    </Link>
+                    <button type="button"
+                        className="btn btn-default"
+                        onClick={this.delete.bind(this)}>
+                        Remove
+                    </button>
                 </div>
             )}
         </div>
@@ -79,12 +94,36 @@ class ReviewFrom extends React.Component {
     constructor(props) {
         super(props)
         this.data = {}
-        this.state = {mode: 'closed'}
+    }
+
+    componentDidMount() {
+        let fb = firebase.database()
+        let state = {'mode': 'review'}
+        let pr = fb.ref('profile').child(this.props.profileId).child('info').once('value')
+
+        pr.then(snap => {
+            let info = snap.val()
+            state['profileName'] = `${info.firstname} ${info.lastname}`
+
+            if (!this.props.revId) {
+                return Promise.reject()
+            } else {
+                return fb.ref('publicReviews').child(this.props.revId).once('value')
+            }
+        }).then(snap => {
+            state.rev = snap.val()
+            this.setState(state)
+        }).catch(error => {
+            if (error) {
+                state.error = error
+            }
+            this.setState(state)
+        })
     }
 
     post(fbUser) {
         let pr
-        if (this.props.rev) {
+        if (this.props.revId) {
             pr = this.update()
         } else {
             pr = this.create(fbUser)
@@ -118,15 +157,10 @@ class ReviewFrom extends React.Component {
 
     update() {
         let ref = firebase.database().ref('publicReviews')
-        return ref.child(this.props.rev.revId).update({
+        return ref.child(this.props.revId).update({
             review: this.data.review,
             UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
         })
-    }
-
-    delete() {
-        let ref = firebase.database().ref('publicReviews')
-        ref.child(this.props.rev.revId).child('review').remove()
     }
 
     onSubmit(data) {
@@ -145,54 +179,28 @@ class ReviewFrom extends React.Component {
         }
     }
 
-    changeMode(mode) {
+    changeMode(mode, e) {
+        e.preventDefault()
         this.setState({mode: mode})
     }
 
     render() {
-        return <div>
-
-            {!this.props.rev && (
-                <button type="button"
-                    className="btn btn-default new-review-button"
-                    onClick={this.changeMode.bind(this, 'review')}>
-                    Write a Review
-                </button>
-            )}
-
-            {this.props.rev && (
-                <button type="button"
-                    className="btn btn-default"
-                    onClick={this.changeMode.bind(this, 'review')}>
-                    Edit
-                </button>
-            )}
-
-            {this.props.rev && (
-                <button type="button"
-                    className="btn btn-default"
-                    onClick={this.delete.bind(this)}>
-                    Remove
-                </button>
-            )}
-            <Dialog
-                modal={false}
-                open={this.state.mode != 'closed'}
-                onRequestClose={this.changeMode.bind(this, 'closed')}>
-                {this.state.mode != 'closed' && (
-                    this[this.state.mode].bind(this)()
-                )}
-            </Dialog>
-        </div>
+        if (!this.state) {
+            return <div>Loading...</div>
+        } else if (this.state.mode == 'closed') {
+            return <Redirect to={`/in/${this.props.profileId}`} />
+        } else {
+            return this[this.state.mode].bind(this)()
+        }
     }
 
     review() {
         return <Form
             onSubmit={this.onSubmit.bind(this)}
-            data={this.props.rev || {}}
-            className="dialog">
+            data={this.state.rev}
+            className="experience-form">
 
-            <h3>{`Review ${this.props.profileName}`}</h3>
+            <h1>{`Review ${this.state.profileName}`}</h1>
 
             {this.state.error && (
                 <div className="form-error">{this.state.error}</div>
@@ -208,33 +216,26 @@ class ReviewFrom extends React.Component {
                 <button type="submit" className="btn btn-success">
                     {this.props.fbUser == null  ? "Save & Sign Up" : "Save"}
                 </button>
-                <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={this.changeMode.bind(this, 'closed')}>
-                    Close
-                </button>
+                <Link to={`/in/${this.props.profileId}`}>
+                    <button type="button" className="btn btn-default">Back</button>
+                </Link>
             </div>
         </Form>
     }
 
     signup() {
-        return <div className="dialog">
-            <SignupComponent
-                title="Sign up to post your review"
-                onClickLogin={this.changeMode.bind(this, 'login')}
-                resolve={this.post.bind(this)} />
-        </div>
+        return <SignupComponent
+            title="Sign up to post your review"
+            onClickLogin={this.changeMode.bind(this, 'login')}
+            resolve={this.post.bind(this)} />
     }
 
     login() {
-        return <div className="dialog">
-            <LoginComponent
-                title="Log in to post your review"
-                onClickSignup={this.changeMode.bind(this, 'signup')}
-                resolve={this.post.bind(this)} />
-        </div>
+        return <LoginComponent
+            title="Log in to post your review"
+            onClickSignup={this.changeMode.bind(this, 'signup')}
+            resolve={this.post.bind(this)} />
     }
 }
 
-export {Reviews}
+export {Reviews, ReviewFrom}

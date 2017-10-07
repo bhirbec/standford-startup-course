@@ -8,6 +8,10 @@ export default class Form extends React.Component {
         this.populate(this.props.data || {})
     }
 
+    componentWillReceiveProps(nextProps) {
+        this.populate(nextProps.data || {})
+    }
+
     populate(data) {
         // TODO: handle radio button and checkbox
         let $form = $(ReactDOM.findDOMNode(this))

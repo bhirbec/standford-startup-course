@@ -381,17 +381,17 @@ div.review-buttons {
 }
 
 /* experience form */
-div.experience-form {
+.experience-form {
     width: 40em;
 }
 
-div.experience-form textarea,
-div.experience-form input[type="text"] {
+.experience-form textarea,
+.experience-form input[type="text"] {
     width: 100%;
 }
 
 @media(max-width:767px) {
-    div.experience-form {
+    .experience-form {
         width: 100%;
     }
 }

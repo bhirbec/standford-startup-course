@@ -221,11 +221,8 @@ class PublicProfile extends BaseProfile {
         return <div className="me">
             {this.renderProfile()}
 
-            {/* TODO: we should be able to remove profileName
-            param when moving review form on another url */}
             <Reviews
                 fbUser={this.props.fbUser}
-                profileName={profileName}
                 profileId={this.props.profileId} />
         </div>
     }

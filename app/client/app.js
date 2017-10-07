@@ -11,7 +11,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import NoMatch from './error'
 import InviteForm from './invite'
 import Home from './home'
-import {MyProfile, PublicProfile} from './profile'
+import {MyProfile, Profile} from './profile'
 import {SearchBox, SearchResult} from './search'
 import {ReviewFrom} from './review'
 import Test from './test'
@@ -83,7 +83,15 @@ class App extends React.Component {
                     )} />
                     <Route path="/me" render={() => (
                         this.props.fbUser ? (
-                            <InnerLayout><MyProfile fbUser={this.props.fbUser} /></InnerLayout>
+                            <InnerLayout>
+                                {/* TODO: we could remove "me" parameter by merging
+                                 /me and /in/:myprofileid */}
+                                <MyProfile
+                                    me={true}
+                                    fbUser={this.props.fbUser}
+                                    profileId={this.props.fbUser.uid} />
+                                }
+                            </InnerLayout>
                         ) : (
                             <Redirect to="/" />
                         )
@@ -100,7 +108,7 @@ class App extends React.Component {
                     )} />
                     <Route exact path="/in/:profileId" render={(data) => (
                         <InnerLayout>
-                            <PublicProfile
+                            <Profile
                                 fbUser={this.props.fbUser}
                                 profileId={data.match.params.profileId}
                                 serverData={this.props.serverData} />

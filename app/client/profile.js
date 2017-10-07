@@ -10,22 +10,34 @@ import {Reviews} from './review'
 
 class MyProfile extends React.Component {
     render() {
-        // TODO: move routes to app.js
+        // TODO: move routes to app.js?
         return <div>
             <Route exact path="/me" render={() => (
-                <Profile fbUser={this.props.fbUser} profileId={this.props.fbUser.uid} />
+                <Profile {...this.props} />
             )} />
             <Route exact path="/me/edit" render={() => (
-                <ProfileForm fbUser={this.props.fbUser} profileId={this.props.fbUser.uid} />
+                <ProfileForm {...this.props} />
             )} />
         </div>
     }
 }
 
 
-class BaseProfile extends React.Component {
+class Profile extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = this.props.serverData
+    }
+
     componentDidMount() {
         this.fetch(this.props.profileId)
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.fbRef) {
+            this.fbRef.off()
+        }
+        this.fetch(nextProps.profileId)
     }
 
     componentWillUnmount() {
@@ -81,7 +93,35 @@ class BaseProfile extends React.Component {
         return hashtags
     }
 
-    renderProfile() {
+    render() {
+        if (!this.state) {
+            return <div>Loading...</div>
+        } else if (this.state.notfound) {
+            return <NoMatch />
+        }
+
+        return <div className="me">
+            {this.props.me && (
+                <div>
+                    View your <Link to={'/in/' + this.props.profileId}>public profile</Link>
+                </div>
+            )}
+
+            {this.profile()}
+
+            {this.props.me && (
+                <div className="new-work-experience">
+                    <Link to={'/me/edit'}>
+                        <button type="button" className="btn btn-default">Edit</button>
+                    </Link>
+                </div>
+            )}
+
+            <Reviews {...this.props} />
+        </div>
+    }
+
+    profile() {
         let pub = this.state.public || {}
         let hashtags = this.buildHashtags()
         let profileName = `${this.state.info.firstname} ${this.state.info.lastname}`
@@ -137,64 +177,6 @@ class BaseProfile extends React.Component {
             {pub.intro && (
                 <div className="intro">&ldquo;{pub.intro}&rdquo;</div>
             )}
-        </div>
-    }
-}
-
-class Profile extends BaseProfile {
-    render() {
-        if (!this.state) {
-            return <div>Loading...</div>
-        } else if (this.state.notfound) {
-            return <NoMatch />
-        }
-
-        return <div>
-            <div>
-                View your <Link to={'/in/' + this.props.profileId}>public profile</Link>
-            </div>
-
-            {this.renderProfile()}
-
-            <div className="new-work-experience">
-                <Link to={'/me/edit'}>
-                    <button type="button" className="btn btn-default">Edit</button>
-                </Link>
-            </div>
-            <Reviews {...this.props} />
-        </div>
-    }
-}
-
-
-class PublicProfile extends BaseProfile {
-    constructor(props) {
-        super(props)
-        this.state = this.props.serverData
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.fbRef) {
-            this.fbRef.off()
-        }
-        this.fetch(nextProps.profileId)
-    }
-
-    render() {
-        if (!this.state) {
-            return <div>Loading...</div>
-        } else if (this.state.notfound) {
-            return <NoMatch />
-        }
-
-        let profileName = `${this.state.info.firstname} ${this.state.info.lastname}`
-
-        return <div className="me">
-            {this.renderProfile()}
-
-            <Reviews
-                fbUser={this.props.fbUser}
-                profileId={this.props.profileId} />
         </div>
     }
 }
@@ -339,4 +321,4 @@ class Hashlike extends React.Component {
     }
 }
 
-export {MyProfile, PublicProfile}
+export {MyProfile, Profile}

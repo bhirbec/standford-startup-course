@@ -303,7 +303,6 @@ class ProfileForm extends React.Component {
 
 class Hashlike extends React.Component {
     onClick(value, e) {
-        e.preventDefault()
 
         if (!this.props.fbUser) {
             this.props.stagePendingLike(this.props.hashtag.name, value)
@@ -312,6 +311,7 @@ class Hashlike extends React.Component {
 
         let p = this.props
         postHashtagLike(p.fbUser, p.profileId, p.hashtag.name, value)
+        e.preventDefault()
     }
 
     render() {

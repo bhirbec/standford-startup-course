@@ -90,7 +90,6 @@ class App extends React.Component {
                                     me={true}
                                     fbUser={this.props.fbUser}
                                     profileId={this.props.fbUser.uid} />
-                                }
                             </InnerLayout>
                         ) : (
                             <Redirect to="/" />

@@ -132,6 +132,12 @@ class App extends React.Component {
                         <InnerLayout><NoMatch /></InnerLayout>
                     )}/>
                 </Switch>
+
+                {/* TODO: why can't we put this in the switch?
+                This triggers render() twice */}
+                {this.props.redirectUri && (
+                    <Redirect to={this.props.redirectUri} />
+                )}
             </div>
         </MuiThemeProvider>
     }

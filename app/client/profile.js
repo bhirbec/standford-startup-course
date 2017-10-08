@@ -2,10 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import {Link, Redirect, Route} from 'react-router-dom'
 
-import {SignupComponent, LoginComponent} from './auth'
 import NoMatch from './error'
-import {EditableExperience, Experience, ExperienceForm} from './experience'
 import Form from './form'
+import {postHashtagLike, pending} from './model'
 import {Reviews} from './review'
 
 
@@ -37,23 +36,6 @@ class Profile extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (this.fbRef) {
             this.fbRef.off()
-        }
-
-        // this is triggered when the user signs up after a hashtag vote
-        if (!this.props.fbUser && nextProps.fbUser) {
-            // send any pending like
-            if (this.pendingLike) {
-                postHashtagLike(
-                    nextProps.fbUser,
-                    this.props.profileId,
-                    this.pendingLike.hashtag,
-                    this.pendingLike.value
-                )
-                this.pendingLike = undefined
-            }
-
-            // We make sure to show the profile after a login/singup
-            this.setState({mode: 'profile'})
         }
 
         this.fetch(nextProps.profileId)
@@ -113,14 +95,9 @@ class Profile extends React.Component {
         return hashtags
     }
 
-    stagePendingLike(pendingLike) {
-        this.pendingLike = pendingLike
-        this.setState({mode: 'signup'})
-    }
-
-    changeMode(mode, e) {
-        e.preventDefault()
-        this.setState({mode: mode})
+    stagePendingLike(hashtag, value) {
+        pending.stageHashtagLike(this.props.profileId, hashtag, value)
+        this.setState({redirect: '/signup'})
     }
 
     render() {
@@ -128,21 +105,10 @@ class Profile extends React.Component {
             return <div>Loading...</div>
         } else if (this.state.notfound) {
             return <NoMatch />
+        } else if (this.state.redirect) {
+            return <Redirect to={this.state.redirect} />
         }
 
-        let comp
-        if (this.state.mode == 'signup') {
-            comp = this.signup()
-        } else if (this.state.mode == 'login') {
-            comp = this.login()
-        } else {
-            comp = this.profile()
-        }
-
-        return comp
-    }
-
-    profile() {
         let profile = this.state.profile || {}
         let pub = profile.public || {}
         let hashtags = this.buildHashtags()
@@ -218,18 +184,6 @@ class Profile extends React.Component {
             <Reviews {...this.props} />
         </div>
     }
-
-    signup() {
-        return <SignupComponent
-            title="Sign up to post your vote"
-            onClickLogin={this.changeMode.bind(this, 'login')} />
-    }
-
-    login() {
-        return <LoginComponent
-            title="Log in to post your vote"
-            onClickSignup={this.changeMode.bind(this, 'signup')} />
-    }
 }
 
 
@@ -257,7 +211,11 @@ class ProfileForm extends React.Component {
         let ref = fb.ref('profile').child(this.props.profileId).child('public')
 
         ref.set(data).then(() => {
-            this.setState({'redirect': '/me'})
+            if (this.props.done) {
+                this.props.done()
+            } else {
+                this.setState({'redirect': '/me'})
+            }
         })
     }
 
@@ -271,7 +229,7 @@ class ProfileForm extends React.Component {
         }
 
         return <div className="experience-form">
-            <h1>Your Profile</h1>
+            <h1>{this.props.title || "Your Profile"}</h1>
             <Form onSubmit={this.onSubmit.bind(this)} data={this.state || {}}>
                 {this.state.error && (
                     <div className="form-error">{this.state.error}</div>
@@ -348,7 +306,7 @@ class Hashlike extends React.Component {
         e.preventDefault()
 
         if (!this.props.fbUser) {
-            this.props.stagePendingLike({hashtag: this.props.hashtag.name, value: value})
+            this.props.stagePendingLike(this.props.hashtag.name, value)
             return
         }
 
@@ -370,17 +328,5 @@ class Hashlike extends React.Component {
     }
 }
 
-function postHashtagLike(fbUser, profileId, hashtag, value) {
-    return fbUser.getIdToken().then(idToken => {
-        let fb = firebase.database()
-        return fb.ref('likeQueue').push().set({
-            toUid: profileId,
-            fromUid: fbUser.uid,
-            idToken: idToken,
-            hashtag: hashtag,
-            value: value
-        })
-    })
-}
 
 export {MyProfile, Profile}

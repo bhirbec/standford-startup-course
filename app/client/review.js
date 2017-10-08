@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import {Link, Redirect} from 'react-router-dom'
 
-import {SignupComponent, LoginComponent} from './auth'
+import {postReview, pending} from './model'
 import Form from './form'
 
 
@@ -91,14 +91,10 @@ class Review extends React.Component {
 
 // TODO: split this form into NewReviewForm and EditReviewForm?
 class ReviewFrom extends React.Component {
-    constructor(props) {
-        super(props)
-        this.data = {}
-    }
 
     componentDidMount() {
         let fb = firebase.database()
-        let state = {'mode': 'review'}
+        let state = {}
         let pr = fb.ref('profile').child(this.props.profileId).child('info').once('value')
 
         pr.then(snap => {
@@ -121,89 +117,47 @@ class ReviewFrom extends React.Component {
         })
     }
 
-    componentWillReceiveProps(nextProps) {
-        let hasLogedin = !this.props.fbUser && nextProps.fbUser
-
-        // now that the user has logged in we can finish
-        if (hasLogedin) {
-            this.post(nextProps.fbUser)
-        }
-    }
-
-    post(fbUser) {
-        let pr
-        if (this.props.revId) {
-            pr = this.update()
-        } else {
-            pr = this.create(fbUser)
-        }
-
-        pr.then(() => {
-            this.setState({mode: 'closed'})
-        })
-    }
-
-    create(fbUser) {
-        return firebase.database().ref('profile').child(fbUser.uid + '/info').once('value', (snap) => {
-            let info = snap.val()
-
-            // TODO: do we have to denormalize the data for firstname and lastname?
-            let data = {
-                'toUid': this.props.profileId,
-                'fromUid': fbUser.uid,
-                'reviewer': {
-                    firstname: info.firstname,
-                    lastname: info.lastname
-                },
-                review: this.data.review,
-                UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
-            }
-
-            let ref = firebase.database().ref('publicReviews')
-            return ref.push().set(data)
-        })
-    }
-
-    update() {
+    update(review) {
         let ref = firebase.database().ref('publicReviews')
         return ref.child(this.props.revId).update({
-            review: this.data.review,
+            review: review,
             UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
         })
     }
 
     onSubmit(data) {
         if (data.review == '') {
-            this.setState({error: 'Review can not be empty.', 'mode': 'review'})
+            this.setState({error: 'Review can not be empty.'})
             return
         }
 
-        this.data = data
         this.setState({'error': null})
 
-        if (this.props.fbUser) {
-            this.post(this.props.fbUser)
-        } else {
-            this.setState({mode: 'signup'})
+        if (!this.props.fbUser) {
+            pending.stageReview(this.props.profileId, data.review)
+            this.setState({redirect: '/signup'})
+            return
         }
-    }
 
-    changeMode(mode, e) {
-        e.preventDefault()
-        this.setState({mode: mode})
+        let pr
+        if (this.props.revId) {
+            pr = this.update(data.review)
+        } else {
+            pr = postReview(this.props.fbUser, this.props.profileId, data.review)
+        }
+
+        pr.then(() => {
+            this.setState({redirect: `/in/${this.props.profileId}`})
+        })
     }
 
     render() {
         if (!this.state) {
             return <div>Loading...</div>
-        } else if (this.state.mode == 'closed') {
-            return <Redirect to={`/in/${this.props.profileId}`} />
-        } else {
-            return this[this.state.mode].bind(this)()
+        } else if (this.state.redirect) {
+            return <Redirect to={this.state.redirect} />
         }
-    }
 
-    review() {
         return <Form
             onSubmit={this.onSubmit.bind(this)}
             data={this.state.rev}
@@ -230,18 +184,6 @@ class ReviewFrom extends React.Component {
                 </Link>
             </div>
         </Form>
-    }
-
-    signup() {
-        return <SignupComponent
-            title="Sign up to post your review"
-            onClickLogin={this.changeMode.bind(this, 'login')} />
-    }
-
-    login() {
-        return <LoginComponent
-            title="Log in to post your review"
-            onClickSignup={this.changeMode.bind(this, 'signup')} />
     }
 }
 

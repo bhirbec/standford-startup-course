@@ -8,16 +8,11 @@ import Form from './form'
 class SignupComponent extends React.Component {
     render() {
         return <div className="auth-form">
-            <h1>{this.props.title || 'Sign Up for LetsResume'}</h1>
+            <h1>Sign Up for LetsResume</h1>
             <SignupForm />
             <div className="centered">
                 <span>Already on letsResume? </span>
-                {this.props.onClickLogin && (
-                    <a href="#" onClick={this.props.onClickLogin}>Log in</a>
-                )}
-                {!this.props.onClickLogin && (
-                    <Link to="/login">Log in</Link>
-                )}
+                <Link to="/login">Log in</Link>
             </div>
         </div>
     }
@@ -118,16 +113,11 @@ class SignoutLink extends React.Component {
 class LoginComponent extends React.Component {
     render() {
         return <div className="auth-form">
-            <h1>{this.props.title || "Log In to LetsResume"}</h1>
+            <h1>Log In to LetsResume</h1>
             <LoginForm />
             <div className="centered">
                 <span>New to letsResume? </span>
-                {this.props.onClickSignup && (
-                    <a href="#" onClick={this.props.onClickSignup}>Sign Up</a>
-                )}
-                {!this.props.onClickSignup && (
-                    <Link to="/signup">Sign Up</Link>
-                )}
+                <Link to="/signup">Sign Up</Link>
             </div>
         </div>
     }

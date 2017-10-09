@@ -10,7 +10,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import NoMatch from './error'
 import InviteForm from './invite'
 import Home from './home'
-import {MyProfile, Profile} from './profile'
+import {MyProfile, Profile, ProfileForm} from './profile'
 import {SearchBox, SearchResult} from './search'
 import {ReviewFrom} from './review'
 import Test from './test'
@@ -68,7 +68,7 @@ class App extends React.Component {
                     )} />
                     <Route exact path="/signup" render={() => (
                         this.props.fbUser ? (
-                            <Redirect to={this.props.redirectUri || "/me"} />
+                            <Redirect to={"/onboard?redirectUri=" + (this.props.redirectUri || '/me')} />
                         ) : (
                             <InnerLayout><Signup /></InnerLayout>
                         )
@@ -78,6 +78,19 @@ class App extends React.Component {
                             <Redirect to={this.props.redirectUri || "/me"} />
                         ) : (
                             <InnerLayout><Login /></InnerLayout>
+                        )
+                    )} />
+                    <Route exact path="/onboard" render={(data) => (
+                        this.props.fbUser ? (
+                            <InnerLayout>
+                                <ProfileForm
+                                    redirectUri={getQueryVariable(data.location.search, 'redirectUri')}
+                                    fbUser={this.props.fbUser}
+                                    profileId={this.props.fbUser.uid}
+                                    title="Let's get you ready in 5 minutes" />
+                            </InnerLayout>
+                        ) : (
+                            <Redirect to="/" />
                         )
                     )} />
                     <Route path="/me" render={() => (
@@ -367,6 +380,19 @@ class InnerLayout extends React.Component {
             </div>
         </div>
     }
+}
+
+
+function getQueryVariable(query, variable) {
+    query = query.substring(1)
+    let vars = query.split('&')
+    for (let i = 0; i < vars.length; i++) {
+        let pair = vars[i].split('=')
+        if (decodeURIComponent(pair[0]) == variable) {
+            return decodeURIComponent(pair[1])
+        }
+    }
+    return ""
 }
 
 export {App}

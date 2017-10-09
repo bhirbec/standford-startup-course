@@ -211,11 +211,7 @@ class ProfileForm extends React.Component {
         let ref = fb.ref('profile').child(this.props.profileId).child('public')
 
         ref.set(data).then(() => {
-            if (this.props.done) {
-                this.props.done()
-            } else {
-                this.setState({'redirect': '/me'})
-            }
+            this.setState({'redirect': (this.props.redirectUri || '/me')})
         })
     }
 
@@ -329,4 +325,4 @@ class Hashlike extends React.Component {
 }
 
 
-export {MyProfile, Profile}
+export {MyProfile, Profile, ProfileForm}

@@ -7,7 +7,6 @@ import MenuItem from 'material-ui/MenuItem'
 import Popover from 'material-ui/Popover';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
-
 import NoMatch from './error'
 import InviteForm from './invite'
 import Home from './home'
@@ -15,7 +14,7 @@ import {MyProfile, Profile} from './profile'
 import {SearchBox, SearchResult} from './search'
 import {ReviewFrom} from './review'
 import Test from './test'
-import {SignupComponent, LoginComponent, SignoutLink} from './auth'
+import {Signup, Login, SignoutLink} from './auth'
 
 
 let MenuItemStyle = {
@@ -71,14 +70,14 @@ class App extends React.Component {
                         this.props.fbUser ? (
                             <Redirect to="/me" />
                         ) : (
-                            <InnerLayout><SignupComponent /></InnerLayout>
+                            <InnerLayout><Signup /></InnerLayout>
                         )
                     )} />
                     <Route exact path="/login" render={() => (
                         this.props.fbUser ? (
                             <Redirect to="/me" />
                         ) : (
-                            <InnerLayout><LoginComponent /></InnerLayout>
+                            <InnerLayout><Login /></InnerLayout>
                         )
                     )} />
                     <Route path="/me" render={() => (

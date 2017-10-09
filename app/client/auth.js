@@ -1,29 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {Link, Redirect} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 
 import Form from './form'
 
 
-class SignupComponent extends React.Component {
-    render() {
-        return <div className="auth-form">
-            <h1>Sign Up for LetsResume</h1>
-            <SignupForm />
-            <div className="centered">
-                <span>Already on letsResume? </span>
-                <Link to="/login">Log in</Link>
-            </div>
-        </div>
-    }
-}
-
-class SignupForm extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {}
-    }
-
+class Signup extends React.Component {
     onSubmit(data) {
         let fb = firebase.database()
 
@@ -48,42 +30,50 @@ class SignupForm extends React.Component {
     }
 
     render() {
-        return <Form onSubmit={this.onSubmit.bind(this)}>
-            {this.state.error && (
-                <div className="form-error">{this.state.error}</div>
-            )}
-            <div className="form-group">
-                <label htmlFor="firstname">First Name</label>
-                <input id="firstname"
-                    type="text"
-                    name="firstname"
-                    className="form-control" />
-            </div>
-            <div className="form-group">
-                <label htmlFor="lastname">Last Name</label>
-                <input id="lastname"
-                    type="text"
-                    name="lastname"
-                    className="form-control" />
-            </div>
-            <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input id="email"
-                    type="text"
-                    name="email"
-                    className="form-control" />
-            </div>
-            <div className="form-group">
-                <label htmlFor="pwd">Password</label>
-                <input id="pwd"
-                    type="password"
-                    name="pwd"
-                    className="form-control" />
-            </div>
+        let state = this.state || {}
+        return <div className="auth-form">
+            <h1>Sign Up for LetsResume</h1>
+            <Form onSubmit={this.onSubmit.bind(this)}>
+                {state.error && (
+                    <div className="form-error">{state.error}</div>
+                )}
+                <div className="form-group">
+                    <label htmlFor="firstname">First Name</label>
+                    <input id="firstname"
+                        type="text"
+                        name="firstname"
+                        className="form-control" />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="lastname">Last Name</label>
+                    <input id="lastname"
+                        type="text"
+                        name="lastname"
+                        className="form-control" />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input id="email"
+                        type="text"
+                        name="email"
+                        className="form-control" />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="pwd">Password</label>
+                    <input id="pwd"
+                        type="password"
+                        name="pwd"
+                        className="form-control" />
+                </div>
+                <div className="centered">
+                    <button type="submit" className="btn btn-success">Sign up</button>
+                </div>
+            </Form>
             <div className="centered">
-                <button type="submit" className="btn btn-success">Sign up</button>
+                <span>Already on letsResume? </span>
+                <Link to="/login">Log in</Link>
             </div>
-        </Form>
+        </div>
     }
 }
 
@@ -110,25 +100,9 @@ class SignoutLink extends React.Component {
     }
 }
 
-class LoginComponent extends React.Component {
-    render() {
-        return <div className="auth-form">
-            <h1>Log In to LetsResume</h1>
-            <LoginForm />
-            <div className="centered">
-                <span>New to letsResume? </span>
-                <Link to="/signup">Sign Up</Link>
-            </div>
-        </div>
-    }
-}
 
-class LoginForm extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {}
-    }
 
+class Login extends React.Component {
     onSubmit(data) {
         firebase.auth().signInWithEmailAndPassword(data.email, data.pwd).catch((error) => {
             this.setState({error: error.message})
@@ -136,29 +110,38 @@ class LoginForm extends React.Component {
     }
 
     render() {
-        return <Form onSubmit={this.onSubmit.bind(this)}>
-            {this.state.error && (
-                <div className="form-error">{this.state.error}</div>
-            )}
-            <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input id="email"
-                    type="text"
-                    name="email"
-                    className="form-control" />
-            </div>
-            <div className="form-group">
-                <label htmlFor="pwd">Password</label>
-                <input id="pwd"
-                    type="password"
-                    name="pwd"
-                    className="form-control" />
-            </div>
+        let state = this.state || {}
+        return <div className="auth-form">
+            <h1>Log In to LetsResume</h1>
+            <Form onSubmit={this.onSubmit.bind(this)}>
+                {state.error && (
+                    <div className="form-error">{state.error}</div>
+                )}
+                <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input id="email"
+                        type="text"
+                        name="email"
+                        className="form-control" />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="pwd">Password</label>
+                    <input id="pwd"
+                        type="password"
+                        name="pwd"
+                        className="form-control" />
+                </div>
+                <div className="centered">
+                    <button type="submit" className="btn btn-success">Log In</button>
+                </div>
+            </Form>
             <div className="centered">
-                <button type="submit" className="btn btn-success">Log In</button>
+                <span>New to letsResume? </span>
+                <Link to="/signup">Sign Up</Link>
             </div>
-        </Form>
+        </div>
+
     }
 }
 
-export {SignupComponent, SignoutLink, LoginComponent}
+export {Signup, SignoutLink, Login}

@@ -68,14 +68,14 @@ class App extends React.Component {
                     )} />
                     <Route exact path="/signup" render={() => (
                         this.props.fbUser ? (
-                            <Redirect to="/me" />
+                            <Redirect to={this.props.redirectUri || "/me"} />
                         ) : (
                             <InnerLayout><Signup /></InnerLayout>
                         )
                     )} />
                     <Route exact path="/login" render={() => (
                         this.props.fbUser ? (
-                            <Redirect to="/me" />
+                            <Redirect to={this.props.redirectUri || "/me"} />
                         ) : (
                             <InnerLayout><Login /></InnerLayout>
                         )
@@ -131,12 +131,6 @@ class App extends React.Component {
                         <InnerLayout><NoMatch /></InnerLayout>
                     )}/>
                 </Switch>
-
-                {/* TODO: why can't we put this in the switch?
-                This triggers render() twice */}
-                {this.props.redirectUri && (
-                    <Redirect to={this.props.redirectUri} />
-                )}
             </div>
         </MuiThemeProvider>
     }

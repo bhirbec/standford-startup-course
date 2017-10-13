@@ -1,10 +1,10 @@
-const path = require('path')
-const read = require('fs').readFileSync
+import path from 'path'
+import {readFileSync as read} from 'fs'
 
-const jsx = require('react-jsx')
-const React = require('react')
+import jsx from 'react-jsx'
+import React from 'react'
 
-const config = require('./init.js').config
+import {config} from './init.js'
 
 
 function renderHTML(req, res, Content) {
@@ -41,4 +41,4 @@ function loadTemplate(filePath) {
     return templates[filePath]
 }
 
-module.exports = {renderHTML: renderHTML}
+export {renderHTML}

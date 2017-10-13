@@ -1,11 +1,12 @@
 import {fb, config} from './server/init.js'
-import {server} from './index.js'
+import app from './server/index.js'
 import {notifyInvite, notifyReview} from './mailer'
 import {index} from './search'
 import {likeHasktag} from './liker'
 
+
  // start web server
-server.listen(config.web.port, config.web.port.host, function () {
+app.listen(config.web.port, config.web.port.host, function () {
     console.log(`Starting web server on ${config.web.host}:${config.web.port}`)
 })
 

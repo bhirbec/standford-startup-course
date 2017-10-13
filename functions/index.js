@@ -3,6 +3,7 @@ const app = require('./app/server/app');
 const mailer = require('./app/server/mailer');
 const indexer = require('./app/server/algolia-indexer');
 const liker = require('./app/server/liker');
+const user = require('./app/server/user');
 
 
 exports.app = functions.https.onRequest(app);
@@ -16,7 +17,7 @@ exports.indexNewProfile = functions.database.ref('profile/{profileId}').onCreate
     return indexer.index(event.data)
 });
 
-// TODO: this is triggered with forceRefresh in the client
+// This is triggered each time a profile change
 exports.indexUpdatedProfile = functions.database.ref('profile/{profileId}').onUpdate((event) => {
     return indexer.index(event.data)
 });
@@ -31,6 +32,11 @@ exports.updateReview = functions.database.ref('publicReviews/{revId}').onUpdate(
 });
 
 // likes
-exports.hashtagLike = functions.database.ref('likeQueue/{likeId}').onCreate((event) => {
+exports.hashtagLike = functions.database.ref('queue/like/{likeId}').onCreate((event) => {
     return liker.likeHasktag(event.data)
 });
+
+// delete user
+exports.deleteUser = functions.database.ref('queue/deleteUser/{id}').onDelete(event => {
+    return user.deleteUser(event.data)
+})

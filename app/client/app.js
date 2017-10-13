@@ -270,6 +270,25 @@ class UserAvatar extends React.Component {
         this.setState({open: false})
     }
 
+    deleteUser() {
+        // TODO: confirm
+        this.props.fbUser.getIdToken().then(idToken => {
+            let fb = firebase.database()
+            return fb.ref('queue/deleteUser').push().set({
+                uid: this.props.fbUser.uid,
+                idToken: idToken,
+            })
+        }).then(() => {
+            return firebase.auth().signOut()
+        }).then(() => {
+            // TODO: acknowledge message
+            this.setState({'redirectUri': '/'})
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
     render() {
         let style = {
             backgroundColor: '#333',
@@ -278,6 +297,10 @@ class UserAvatar extends React.Component {
 
         if (this.props.fbUser) {
             return <div>
+                {this.state.redirectUri && (
+                    <Redirect to={this.state.redirectUri} />
+                )}
+
                 <Avatar
                     size={34}
                     style={style}
@@ -300,6 +323,9 @@ class UserAvatar extends React.Component {
                             <SignoutLink icon={
                                 <i className="material-icons">eject</i>
                             } />
+                        </MenuItem>
+                        <MenuItem style={MenuItemStyle} onClick={this.deleteUser.bind(this)}>
+                            Delete Account
                         </MenuItem>
                     </div>
                 </Popover>
@@ -394,5 +420,6 @@ function getQueryVariable(query, variable) {
     }
     return ""
 }
+
 
 export {App}

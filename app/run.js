@@ -3,6 +3,7 @@ import app from './server/app'
 import {notifyInvite, notifyReview} from './server/mailer'
 import {index} from './server/algolia-indexer'
 import {likeHasktag} from './server/liker'
+import {deleteUser} from './server/user'
 
 
  // start web server
@@ -17,7 +18,10 @@ app.listen(config.web.port, config.web.port.host, function () {
 // fb.ref('publicReviews').limitToLast(1).on('child_added', notifyReview)
 
 // likes (uncomment to test)
-// fb.ref('likeQueue').limitToLast(1).on('child_added', likeHasktag)
+// fb.ref('queue/like').limitToLast(1).on('child_added', likeHasktag)
+
+// deleteUser (uncomment to test)
+fb.ref('queue/deleteUser').limitToLast(1).on('child_added', deleteUser)
 
 // start indexer
 console.info('Starging Algolia indexer')

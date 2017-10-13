@@ -1,12 +1,12 @@
-import {fb, admin} from './init'
+import {fb} from './init'
+import {authenticate} from './user'
 
 // TODO: catch fb error
 function likeHasktag(snap) {
     let data = snap.val()
 
-    return admin.auth().verifyIdToken(data.idToken).then(decodedToken => {
-        let uid = decodedToken.uid;
-        if (uid !== data.fromUid) {
+    return authenticate(data.idToken, data.fromUid).then(ok => {
+        if (!ok) {
             return null
         }
 

@@ -24,7 +24,7 @@ function postReview(fbUser, profileId, review) {
 function postHashtagLike(fbUser, profileId, hashtag, value) {
     return fbUser.getIdToken().then(idToken => {
         let fb = firebase.database()
-        return fb.ref('likeQueue').push().set({
+        return fb.ref('queue/like').push().set({
             toUid: profileId,
             fromUid: fbUser.uid,
             idToken: idToken,

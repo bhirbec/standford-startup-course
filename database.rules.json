@@ -23,7 +23,7 @@
         }
       }
     },
-    "likeQueue": {
+    "queue": {
       ".read": false,
       ".write": "auth.uid !== null"
     },

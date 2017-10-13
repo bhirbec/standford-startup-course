@@ -23,4 +23,9 @@ function index(snap) {
     })
 }
 
-export {index}
+function unindexProfile(uid) {
+    return profileIndex.deleteObject(uid)
+}
+
+
+export {index, unindexProfile}

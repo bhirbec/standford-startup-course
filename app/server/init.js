@@ -1,8 +1,7 @@
-const path = require('path')
+import path from 'path'
 
-const cookieParser = require('cookie-parser')
-const admin = require('firebase-admin')
-const cmdArgs = require('command-line-args')
+import admin from 'firebase-admin'
+import cmdArgs from 'command-line-args'
 
 
 const options = cmdArgs([{
@@ -23,8 +22,6 @@ admin.initializeApp({
   databaseURL: config.firebaseAdmin.url
 })
 
-module.exports = {
-    admin: admin,
-    fb: admin.database(),
-    config: config
-}
+const fb = admin.database()
+
+export {admin, fb, config}

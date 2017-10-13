@@ -1,11 +1,11 @@
 const functions = require('firebase-functions');
-const app = require('./app');
+const app = require('./app/server/app');
 const mailer = require('./app/mailer');
 const search = require('./app/search');
 const liker = require('./app/liker');
 
 
-exports.app = functions.https.onRequest(app.server);
+exports.app = functions.https.onRequest(app);
 
 exports.newInvite = functions.database.ref('invites/{inviteId}').onCreate((event) => {
     return mailer.notifyInvite(event.data)

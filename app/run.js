@@ -1,5 +1,5 @@
 import {fb, config} from './server/init.js'
-import app from './server/index.js'
+import app from './server/app.js'
 import {notifyInvite, notifyReview} from './mailer'
 import {index} from './search'
 import {likeHasktag} from './liker'

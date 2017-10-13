@@ -5,8 +5,8 @@ import React from 'react'
 import {StaticRouter} from 'react-router'
 
 import {App} from '../client/app'
-import {fb} from './init.js'
-import {renderHTML} from './template.js'
+import {fb} from './init'
+import {renderHTML} from './template'
 
 
 let app = express()

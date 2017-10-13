@@ -1,7 +1,7 @@
 import {stringify} from 'querystring'
 import requestPromise from 'request-promise'
 
-import {fb, config} from '../server/init.js'
+import {fb, config} from './init'
 
 
 let domain = config.mailgun.domain

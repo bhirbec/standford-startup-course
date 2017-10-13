@@ -1,8 +1,8 @@
-import {fb, config} from './server/init.js'
-import app from './server/app.js'
-import {notifyInvite, notifyReview} from './mailer'
-import {index} from './search'
-import {likeHasktag} from './liker'
+import {fb, config} from './server/init'
+import app from './server/app'
+import {notifyInvite, notifyReview} from './server/mailer'
+import {index} from './server/algolia-indexer'
+import {likeHasktag} from './server/liker'
 
 
  // start web server

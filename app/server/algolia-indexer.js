@@ -1,6 +1,5 @@
 import algoliasearch from 'algoliasearch'
-// TODO: move init in its own package?
-import {fb, config} from '../server/init.js'
+import {fb, config} from './init'
 
 
 var client = algoliasearch(config.algolia.applicationId, config.algolia.adminApiKey);

@@ -1,4 +1,4 @@
-import {fb, admin} from '../server/init'
+import {fb, admin} from './init'
 
 // TODO: catch fb error
 function likeHasktag(snap) {

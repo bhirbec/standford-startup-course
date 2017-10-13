@@ -1,8 +1,8 @@
 const functions = require('firebase-functions');
 const app = require('./app/server/app');
-const mailer = require('./app/mailer');
-const search = require('./app/search');
-const liker = require('./app/liker');
+const mailer = require('./app/server/mailer');
+const indexer = require('./app/server/algolia-indexer');
+const liker = require('./app/server/liker');
 
 
 exports.app = functions.https.onRequest(app);
@@ -13,12 +13,12 @@ exports.newInvite = functions.database.ref('invites/{inviteId}').onCreate((event
 
 // TODO: delete profile
 exports.indexNewProfile = functions.database.ref('profile/{profileId}').onCreate((event) => {
-    return search.index(event.data)
+    return indexer.index(event.data)
 });
 
 // TODO: this is triggered with forceRefresh in the client
 exports.indexUpdatedProfile = functions.database.ref('profile/{profileId}').onUpdate((event) => {
-    return search.index(event.data)
+    return indexer.index(event.data)
 });
 
 // notify review

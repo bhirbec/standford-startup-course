@@ -87,7 +87,7 @@ class App extends React.Component {
                                     redirectUri={getQueryVariable(data.location.search, 'redirectUri')}
                                     fbUser={this.props.fbUser}
                                     profileId={this.props.fbUser.uid}
-                                    title="Let's get you ready in 5 minutes" />
+                                    title="Welcome to LetsResume!" />
                             </InnerLayout>
                         ) : (
                             <Redirect to="/" />

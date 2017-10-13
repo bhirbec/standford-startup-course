@@ -237,9 +237,9 @@ class ProfileForm extends React.Component {
                         className="form-control"
                         rows={6}
                         placeholder={
-                            "Example:\nI'm current working as Intern at Microsoft and I'm looking " +
+                            "Example:\nI'm currently working as Intern at Microsoft and I'm looking " +
                             "for a permanent position as Software Engineer. I'm proeficient " +
-                            "at C++, Python, and MySLQ."
+                            "at C++, Python, and MySQL."
                         } />
                 </div>
                 <div className="form-group">

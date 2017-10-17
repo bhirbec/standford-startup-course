@@ -38,6 +38,9 @@ class Reviews extends React.Component {
 
         return <div className="reviews">
             <h2>Reviews</h2>
+            {this.state.reviews.length == 0 && (
+                <p>No reviews...</p>
+            )}
             {this.state.reviews.map(rev => {
                 return <Review key={'review-' + rev.revId} rev={rev} {...this.props} />
             })}

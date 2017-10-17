@@ -1,28 +1,57 @@
 import {admin, fb} from './init'
 import {unindexProfile} from './algolia-indexer'
+import {notifyAccountDeletion} from './mailer'
 
-// TODO: remove reviews
-// TODO: send email
+
 function deleteUser(snap) {
+    let profile
     let data = snap.val()
 
     authenticate(data.idToken, data.uid).then(ok => {
         if (!ok) {
-            Throw('Authenticaion failed')
+            Throw('Authentication failed')
         } else {
-            return admin.auth().deleteUser(data.uid)
+            return fb.ref('profile').child(data.uid).once('value')
         }
-    }).then(() => {
-        console.log("Successfully deleted user")
+    })
+    .then(snap => {
+        profile = snap.val()
+        return admin.auth().deleteUser(data.uid)
+    })
+    .then(() => {
         return fb.ref('profile').child(data.uid).remove()
-    }).then((snap) => {
-        console.log("Successfully remove user reviews")
+    })
+    .then(() => {
+        return removeReviews("fromUid", data.uid)
+    })
+    .then(() => {
+        return removeReviews("toUid", data.uid)
+    })
+    .then(snap => {
         return unindexProfile(data.uid)
-    }).then(() => {
-        console.log("Successfully remove user from Algolia index");
-        return snap.ref.remove();
-    }).catch(error => {
-        console.log("Error deleting user:", error);
+    })
+    .then(() => {
+        return notifyAccountDeletion(profile)
+    })
+    .then(() => {
+        console.log(`Successfully removed user ${data.uid}`)
+        return snap.ref.remove()
+    })
+    .catch(error => {
+        if (error.code == 'auth/argument-error') {
+            // token has expired
+            return snap.ref.remove()
+        } else {
+            console.log("Error deleting user:", error);
+        }
+    })
+}
+
+function removeReviews(field, uid) {
+    return fb.ref('publicReviews').orderByChild(field).equalTo(uid).once('value', snap => {
+        snap.forEach(child => {
+            child.ref.remove()
+        })
     })
 }
 

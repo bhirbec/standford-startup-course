@@ -63,6 +63,22 @@ function notifyReview(snap) {
     })
 }
 
+function notifyAccountDeletion(profile) {
+    let templ = layout(`
+        Hi ${profile.info.firstname},
+
+        <p style="margin:20px 0">
+            Your account has been deleted. We hope to see you again soon.
+        </p>
+    `)
+
+    return send({
+        from: fromEmail,
+        to: profile.info.email,
+        subject: `Your account has been deleted!`,
+        html: templ
+    })
+}
 
 function inviteTemplate(reviewer, profileId) {
     return layout(`
@@ -134,4 +150,4 @@ function send(data) {
 
 }
 
-export {notifyInvite, notifyReview}
+export {notifyInvite, notifyReview, notifyAccountDeletion}

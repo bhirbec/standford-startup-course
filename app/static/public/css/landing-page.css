@@ -414,6 +414,11 @@ div.review-buttons {
     font-weight: normal;
 }
 
+/* delete-account */
+.delete-account {
+    margin: 15px 0;
+}
+
 /* tests */
 table.tests {
     border: 1px solid #ccc;

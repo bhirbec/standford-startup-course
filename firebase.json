@@ -13,7 +13,8 @@
       {"source": "/login", "function": "app"},
       {"source": "/signin", "function": "app"},
       {"source": "/search", "function": "app"},
-      {"source": "/test", "function": "app"}
+      {"source": "/test", "function": "app"},
+      {"source": "/account/*", "function": "app"}
     ]
   }
 }

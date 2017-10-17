@@ -140,6 +140,11 @@ class App extends React.Component {
                                 profileId={data.match.params.profileId} />
                         </InnerLayout>
                     )} />
+                    <Route exact path="/account/delete" render={(data) => (
+                        <InnerLayout>
+                            <DeleteAccount fbUser={this.props.fbUser} />
+                        </InnerLayout>
+                    )} />
                     <Route render={(data) => (
                         <InnerLayout><NoMatch /></InnerLayout>
                     )}/>
@@ -270,25 +275,6 @@ class UserAvatar extends React.Component {
         this.setState({open: false})
     }
 
-    deleteUser() {
-        // TODO: confirm
-        this.props.fbUser.getIdToken().then(idToken => {
-            let fb = firebase.database()
-            return fb.ref('queue/deleteUser').push().set({
-                uid: this.props.fbUser.uid,
-                idToken: idToken,
-            })
-        }).then(() => {
-            return firebase.auth().signOut()
-        }).then(() => {
-            // TODO: acknowledge message
-            this.setState({'redirectUri': '/'})
-        })
-        .catch(error => {
-            console.log(error)
-        })
-    }
-
     render() {
         let style = {
             backgroundColor: '#333',
@@ -324,8 +310,11 @@ class UserAvatar extends React.Component {
                                 <i className="material-icons">eject</i>
                             } />
                         </MenuItem>
-                        <MenuItem style={MenuItemStyle} onClick={this.deleteUser.bind(this)}>
-                            Delete Account
+                        <MenuItem style={MenuItemStyle}>
+                            <Link to='/account/delete'>
+                                <i className="material-icons">delete_forever</i>
+                                Delete Account
+                            </Link>
                         </MenuItem>
                     </div>
                 </Popover>
@@ -396,6 +385,65 @@ class DrawerMenu extends React.Component {
     }
 }
 
+
+class DeleteAccount extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {step: 1}
+    }
+
+    deleteUser() {
+        this.props.fbUser.getIdToken().then(idToken => {
+            let fb = firebase.database()
+            return fb.ref('queue/deleteUser').push().set({
+                uid: this.props.fbUser.uid,
+                idToken: idToken,
+            })
+        })
+        .then(() => {
+            return firebase.auth().signOut()
+        })
+        .then(() => {
+            this.setState({'step': 2})
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
+    render() {
+        if (this.state.step == 1) {
+            return <div>
+                <h1>You are about to delete your account</h1>
+
+                <p>
+                    By clicking the button here below you acknowledge that the following
+                    data will be deleted:
+                </p>
+
+                <ul>
+                    <li>Your user account with your email</li>
+                    <li>Your profile</li>
+                    <li>Reviews other users wrote for you</li>
+                    <li>Reviews you wrote for other users</li>
+                </ul>
+
+                <button
+                    type="button"
+                    className="btn btn-danger delete-account"
+                    onClick={this.deleteUser.bind(this)}>Delete Your Account</button>
+            </div>
+        }
+
+        if (this.state.step == 2) {
+            return <div>
+                <h1>Your account has been deleted</h1>
+                <p>Hope to see you again soon.</p>
+                <Link to='/'>Back to home page</Link>
+            </div>
+        }
+    }
+}
 
 class InnerLayout extends React.Component {
     render() {

@@ -37,6 +37,6 @@ exports.hashtagLike = functions.database.ref('queue/like/{likeId}').onCreate((ev
 });
 
 // delete user
-exports.deleteUser = functions.database.ref('queue/deleteUser/{id}').onDelete(event => {
+exports.deleteUser = functions.database.ref('queue/deleteUser/{id}').onCreate(event => {
     return user.deleteUser(event.data)
 })

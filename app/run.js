@@ -21,9 +21,9 @@ app.listen(config.web.port, config.web.port.host, function () {
 // fb.ref('queue/like').limitToLast(1).on('child_added', likeHasktag)
 
 // deleteUser (uncomment to test)
-fb.ref('queue/deleteUser').limitToLast(1).on('child_added', deleteUser)
+// fb.ref('queue/deleteUser').limitToLast(1).on('child_added', deleteUser)
 
 // start indexer
-console.info('Starging Algolia indexer')
-fb.ref('profile').limitToLast(1).on('child_added', index)
-fb.ref('profile').on('child_changed', index)
+// console.info('Starging Algolia indexer')
+// fb.ref('profile').limitToLast(1).on('child_added', index)
+// fb.ref('profile').on('child_changed', index)

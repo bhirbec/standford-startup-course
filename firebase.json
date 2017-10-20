@@ -11,7 +11,7 @@
       {"source": "/me/experience", "function": "app"},
       {"source": "/me/experience/*", "function": "app"},
       {"source": "/login", "function": "app"},
-      {"source": "/signin", "function": "app"},
+      {"source": "/signup", "function": "app"},
       {"source": "/search", "function": "app"},
       {"source": "/test", "function": "app"},
       {"source": "/account/*", "function": "app"},

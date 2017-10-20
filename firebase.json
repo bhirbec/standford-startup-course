@@ -14,7 +14,8 @@
       {"source": "/signin", "function": "app"},
       {"source": "/search", "function": "app"},
       {"source": "/test", "function": "app"},
-      {"source": "/account/*", "function": "app"}
+      {"source": "/account/*", "function": "app"},
+      {"source": "/message/*", "function": "app"}
     ]
   }
 }

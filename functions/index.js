@@ -1,8 +1,10 @@
 const functions = require('firebase-functions');
+
 const app = require('./app/server/app');
-const mailer = require('./app/server/mailer');
 const indexer = require('./app/server/algolia-indexer');
 const liker = require('./app/server/liker');
+const mailer = require('./app/server/mailer');
+const messager = require('./app/server/messager');
 const user = require('./app/server/user');
 
 
@@ -34,6 +36,11 @@ exports.updateReview = functions.database.ref('publicReviews/{revId}').onUpdate(
 // likes
 exports.hashtagLike = functions.database.ref('queue/like/{likeId}').onCreate((event) => {
     return liker.likeHasktag(event.data)
+});
+
+// send Message
+exports.sendMessage = functions.database.ref('queue/message/{messageId}').onCreate((event) => {
+    return messager.sendMessage(event.data)
 });
 
 // delete user

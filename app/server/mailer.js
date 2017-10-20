@@ -1,12 +1,13 @@
-import {stringify} from 'querystring'
-import requestPromise from 'request-promise'
-
+import mailgun from 'mailgun-js'
 import {fb, config} from './init'
 
 
-let domain = config.mailgun.domain
 let fromEmail = `LetsResume <team@${config.mailgun.domain}>`
-let baseURL = `https://api:${config.mailgun.apiKey}@api.mailgun.net/v3/`
+
+let mailer = mailgun({
+    apiKey: config.mailgun.apiKey,
+    domain: config.mailgun.domain
+})
 
 
 function notifyInvite(snap) {
@@ -80,6 +81,34 @@ function notifyAccountDeletion(profile) {
     })
 }
 
+
+function notifyMessage(text, from, to) {
+    let templ = layout(`
+        Hi ${to.firstname},
+
+        <p style="margin:20px 0">
+            You've received a message from
+            <a href="${config.web.url}/in/${from.uid}" style="text-decoration:none; color: #15c" target="_blank">
+                <strong>${from.firstname} ${from.lastname}</strong></a>:
+        </p>
+        <p style="margin:20px 0">
+            <i><pre style="font-family: Arial">&ldquo;${trim(text)}&rdquo;</pre></i>
+        </p>
+    `)
+
+    return send({
+        "h:Reply-To": `${from.firstname} ${from.lastname} <${from.email}>`,
+        from: fromEmail,
+        to: to.email,
+        subject: `You've received a message!`,
+        html: templ
+    })
+}
+
+function trim(str) {
+    return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+}
+
 function inviteTemplate(reviewer, profileId) {
     return layout(`
         Hi,
@@ -140,14 +169,9 @@ function layout(content) {
 
 
 function send(data) {
-    return requestPromise.post({
-        url: baseURL + domain + '/messages?' + stringify(data),
-        headers: {"Content-Type": "application/json"},
-        json: true
-    }).catch((err) => {
-        throw `Mailgun returned an error: ${err.statusCode} - ${err.error.message}`
+    return mailer.messages().send(data).catch((err) => {
+        throw `Mailgun returned an error: ${err}`
     })
-
 }
 
-export {notifyInvite, notifyReview, notifyAccountDeletion}
+export {notifyInvite, notifyReview, notifyAccountDeletion, notifyMessage}

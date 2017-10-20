@@ -5,11 +5,13 @@ import Avatar from 'material-ui/Avatar'
 import Drawer from 'material-ui/Drawer'
 import MenuItem from 'material-ui/MenuItem'
 import Popover from 'material-ui/Popover';
+import Snackbar from 'material-ui/Snackbar';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 import NoMatch from './error'
 import InviteForm from './invite'
 import Home from './home'
+import Message from './message'
 import {MyProfile, Profile, ProfileForm} from './profile'
 import {SearchBox, SearchResult} from './search'
 import {ReviewFrom} from './review'
@@ -107,6 +109,17 @@ class App extends React.Component {
                             <Redirect to="/" />
                         )
                     )} />
+
+                    <Route path="/message/:profileId" render={(data) => (
+                        <InnerLayout>
+                            {this.props.fbUser ? (
+                                <Message fbUser={this.props.fbUser} profileId={data.match.params.profileId} />
+                            ) : (
+                                <Redirect to="/signup" />
+                            )}
+                        </InnerLayout>
+                    )} />
+
                     <Route exact path="/search" render={(data) => (
                         <InnerLayout><SearchResult query={data.location.state ? data.location.state.query: ''} /></InnerLayout>
                     )} />
@@ -149,6 +162,7 @@ class App extends React.Component {
                         <InnerLayout><NoMatch /></InnerLayout>
                     )}/>
                 </Switch>
+                <Flasher fbUser={this.props.fbUser} />
             </div>
         </MuiThemeProvider>
     }
@@ -453,6 +467,52 @@ class InnerLayout extends React.Component {
                 {this.props.children}
             </div>
         </div>
+    }
+}
+
+
+class Flasher extends React.Component {
+    componentDidMount() {
+        this.listen(this.props.fbUser)
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.listen(nextProps.fbUser)
+    }
+
+    componentWillunmount() {
+        this.stop()
+    }
+
+    listen(fbUser) {
+        this.stop()
+
+        if (fbUser) {
+            let fb = firebase.database()
+            this.flashRef = fb.ref('profile').child(fbUser.uid).child('flash').on('child_added', snap => {
+                this.setState({flash: snap.val()})
+                snap.ref.remove()
+            })
+        }
+    }
+
+    stop() {
+        if (this.flashRef) {
+            this.flashRef.off()
+        }
+    }
+
+    handleSnackbarClose() {
+        this.setState({flash: null})
+    }
+
+    render() {
+        return <Snackbar
+            open={Boolean(this.state && this.state.flash)}
+            message={this.state ? (this.state.flash || '') : ''}
+            autoHideDuration={5000}
+            className='snack'
+            onRequestClose={this.handleSnackbarClose.bind(this)} />
     }
 }
 

@@ -121,6 +121,13 @@ class Profile extends React.Component {
                 </div>
             )}
 
+            {/* TODO: implement send and signup flow */}
+            {!this.props.me && (
+                <div>
+                    <Link to={`/message/${this.props.profileId}`}>Send message</Link>
+                </div>
+            )}
+
             <div>
                 <h1 className="main-color">{profileName}</h1>
                 {(pub.occupation || pub.location || pub.companies) && (

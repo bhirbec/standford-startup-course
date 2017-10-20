@@ -4,6 +4,7 @@ import {notifyInvite, notifyReview} from './server/mailer'
 import {index} from './server/algolia-indexer'
 import {likeHasktag} from './server/liker'
 import {deleteUser} from './server/user'
+import {sendMessage} from './server/messager'
 
 
  // start web server
@@ -22,6 +23,9 @@ app.listen(config.web.port, config.web.port.host, function () {
 
 // deleteUser (uncomment to test)
 // fb.ref('queue/deleteUser').limitToLast(1).on('child_added', deleteUser)
+
+// message
+fb.ref('queue/message').limitToLast(1).on('child_added', sendMessage)
 
 // start indexer
 // console.info('Starging Algolia indexer')

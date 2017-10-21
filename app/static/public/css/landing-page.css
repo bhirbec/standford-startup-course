@@ -139,32 +139,61 @@ nav.mobile #search-box input {
 .intro-header {
     /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
     padding-bottom: 50px;
-    text-align: center;
-    color: #666;
-    background-color: #eeeeee;
+    color: #000;
+    height: 450px;
+    background: url(/public/img/ben-rosett-10614.jpg?v=1) no-repeat top center;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-color: #444;
 }
 
 .intro-header h1,
 .intro-header h2 {
-    margin-top: 50px;
-    margin-bottom: 50px;
     font-weight: normal;
 }
 
-.intro-message > h1 {
-    font-size: 3em;
+.intro-message h2 {
+    font-size: 30px;
+    margin-top: 50px;
+    margin-bottom: 0px;
+}
+
+.intro-message h1 {
+    font-size: 30px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.intro-message h1,
+.intro-message h2 {
+    color: white;
 }
 
 .features {
+    text-align: center;
     padding-top: 50px;
     padding-bottom: 50px;
     background-color: #fff;
 }
 
-.features h4 {
-    padding-top: 20px;
-    padding-bottom: 10px;
+.features .card-box {
+    margin-bottom: 50px;
+}
+
+.features .material-icons {
+    color: #666;
+    font-size: 60px;
     font-weight: normal;
+}
+
+.features h4 {
+    margin: 15px auto;
+}
+
+.features h4 .main-color {
+    margin-top: 5px;
 }
 
 .about-us {

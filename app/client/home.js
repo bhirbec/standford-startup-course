@@ -7,11 +7,13 @@ class Home extends React.Component {
         return <div className="content-section-a">
             <div className="intro-header">
                 <div className="container intro-message">
+                    <h2>
+                        Your resume says what you did...<br />
+                    </h2>
                     <h1>
-                        Let's show the world,<br />
-                        <span className="main-color">How awesome you are</span>
+                        <span className="main-color">LetsResume</span>
+                        &nbsp;shapes your reputation.
                     </h1>
-
                     <Link to='/signup'>
                         <button
                             id="signup"
@@ -40,24 +42,24 @@ class Home extends React.Component {
 
                     <div className="card p-3 col-12 col-md-6 col-lg-4">
                         <div className="card-box">
-                            <i className="material-icons">lightbulb_outline</i>
+                            <i className="material-icons">people</i>
                             <h4 className="card-title py-3 mbr-fonts-style display-5">
-                                #ShowOff
-                                <div className="main-color">Let's show you off.</div>
+                                #Trust
+                                <div className="main-color">Build your reputation.</div>
                             </h4>
                             <p className="mbr-text mbr-fonts-style display-7">
-                                Receive positive reviews & up-votes on your skills
-                                and abilities.
+                                Receive positive reviews & up-votes and build
+                                your reputation.
                             </p>
                         </div>
                     </div>
 
                     <div className="card p-3 col-12 col-md-6 col-lg-4">
                         <div className="card-box">
-                            <i className="material-icons">thumb_up</i>
+                            <i className="material-icons">language</i>
                             <h4 className="card-title py-3 mbr-fonts-style display-5">
-                                #GetHired
-                                <div className="main-color">Well, that was easy.</div>
+                                #GetDiscovered
+                                <div className="main-color">Recruiters will find you.</div>
                             </h4>
                             <p className="mbr-text mbr-fonts-style display-7">
                                 Showcase a crowd-endorsed resume that gets
@@ -67,6 +69,7 @@ class Home extends React.Component {
                     </div>
                 </div>
             </div>
+
 
 
             {/*<div className="about-us">

@@ -8,11 +8,10 @@ class Home extends React.Component {
             <div className="intro-header">
                 <div className="container intro-message">
                     <h2>
-                        Your resume says what you did...<br />
+                        Your resume says what your did,
                     </h2>
-                    <h1>
-                        <span className="main-color">LetsResume</span>
-                        &nbsp;shapes your reputation.
+                    <h1 className="main-color">
+                        We show how awesome you are.
                     </h1>
                     <Link to='/signup'>
                         <button

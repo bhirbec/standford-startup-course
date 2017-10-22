@@ -140,9 +140,9 @@ nav.mobile #search-box input {
     /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
     padding-bottom: 50px;
     color: #000;
-    height: 400px;
-    text-align: center;
-    background: url(/public/img/ben-rosett-10614-2.jpg?v=1) no-repeat top center;
+    height: 450px;
+    text-align: left;
+    background: url(/public/img/Man-2.jpg?v=1) no-repeat center center;
     background-size: cover;
     -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -157,14 +157,14 @@ nav.mobile #search-box input {
 
 .intro-message h2 {
     font-size: 30px;
-    margin-top: 50px;
+    margin-top: 25px;
     margin-bottom: 20px;
 }
 
 .intro-message h1 {
     font-size: 30px;
     margin-top: 20px;
-    margin-bottom: 50px;
+    margin-bottom: 25px;
 }
 
 .intro-message h1,
@@ -220,7 +220,12 @@ nav.mobile #search-box input {
 
 @media(max-width:767px) {
     .intro-message {
+        text-align: center;
         padding-bottom: 15%;
+    }
+
+    .intro-header {
+        height: inherit;
     }
 }
 
@@ -236,7 +241,7 @@ p.copyright {
 /* signup */
 #signup {
     font-size: 25px;
-    margin: 50px 0;
+    margin-top: 100px;
 }
 
 /* auth form */

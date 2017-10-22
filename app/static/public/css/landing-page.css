@@ -378,6 +378,36 @@ div.me div.intro {
     font-style: italic;
 }
 
+.fixed-actions {
+    position: fixed;
+    left: 0;
+    top: 80px;
+    width: 100%;
+}
+
+.fixed-actions .container > * {
+    margin-bottom: 15px;
+}
+
+@media(min-width:768px) {
+    /* desktop */
+    .fixed-actions .container {
+        position: relative;
+        left: -80px;
+    }
+
+}
+
+@media(max-width:767px) {
+    /* mobile */
+    .me {
+    }
+
+    .fixed-actions .container {
+        text-align: right;
+    }
+}
+
 /* experience (archived) */
 div.me div.job-experience {
     margin-top: 40px;

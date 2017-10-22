@@ -27,6 +27,7 @@ static/build/index.js: $(shell find client -name "*.js")
 		-x material-ui/Avatar \
 		-x material-ui/Dialog \
 		-x material-ui/Drawer \
+		-x material-ui/FloatingActionButton \
 		-x material-ui/MenuItem \
 		-x material-ui/Popover \
 		-x material-ui/Snackbar \
@@ -47,6 +48,7 @@ static/build/lib.js: node_modules/.rebuild
 		-r material-ui/Avatar \
 		-r material-ui/Dialog \
 		-r material-ui/Drawer \
+		-r material-ui/FloatingActionButton \
 		-r material-ui/MenuItem \
 		-r material-ui/Popover \
 		-r material-ui/Snackbar \

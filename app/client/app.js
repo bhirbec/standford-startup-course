@@ -489,7 +489,9 @@ class Flasher extends React.Component {
 
         if (fbUser) {
             let fb = firebase.database()
-            this.flashRef = fb.ref('profile').child(fbUser.uid).child('flash').on('child_added', snap => {
+            this.flashRef = fb.ref('profile').child(fbUser.uid).child('flash')
+
+            this.flashRef.on('child_added', snap => {
                 this.setState({flash: snap.val()})
                 snap.ref.remove()
             })

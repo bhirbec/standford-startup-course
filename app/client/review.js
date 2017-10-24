@@ -44,14 +44,6 @@ class Reviews extends React.Component {
             {this.state.reviews.map(rev => {
                 return <Review key={'review-' + rev.revId} rev={rev} {...this.props} />
             })}
-
-            {(fbUser === null || fbUser.uid != this.props.profileId) && (
-                <Link to={`/in/${this.props.profileId}/review/new`}>
-                    <button type="button" className="btn btn-default new-review-button">
-                        Write a Review
-                    </button>
-                </Link>
-            )}
         </div>
     }
 }

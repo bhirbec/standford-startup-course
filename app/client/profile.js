@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {Link, Redirect, Route} from 'react-router-dom'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
 
 import NoMatch from './error'
 import Form from './form'
@@ -110,71 +109,70 @@ class Profile extends React.Component {
             return <Redirect to={this.state.redirect} />
         }
 
+        let fbUser = this.props.fbUser || undefined
         let profile = this.state.profile || {}
         let pub = profile.public || {}
         let hashtags = this.buildHashtags()
         let profileName = `${profile.info.firstname} ${profile.info.lastname}`
 
-        return <div>
-            <div className="fixed-actions">
-                <div className="container">
-                    {!this.props.fbUser || (this.props.fbUser.uid != this.props.profileId) && (
-                        <div>
-                            <Link to={`/message/${this.props.profileId}`}>
-                                {/* TODO: implement send and signup flow */}
-                                <FloatingActionButton mini={true} backgroundColor={'#F15C25'}>
-                                    <i className="material-icons" title="Send a message">message</i>
-                                </FloatingActionButton>
-                            </Link>
-                        </div>
-                    )}
-                    {this.props.fbUser && this.props.fbUser.uid == this.props.profileId && (
-                        <div>
-                            <Link to={'/me/edit'}>
-                                <FloatingActionButton mini={true} backgroundColor={'#666'}>
-                                    <i className="material-icons" title="Edit profile">edit</i>
-                                </FloatingActionButton>
-                            </Link>
-                        </div>
-                    )}
-                </div>
+        return <div className="me">
+            <div className="profile-header">
+                <h1 className="main-color">
+                    {(this.props.fbUser && this.props.fbUser.uid == this.props.profileId) ?
+                        <Link to={'/me/edit'} className="main-color">
+                            {profileName}
+                            <i className="material-icons main-color" title="Edit your profile">edit</i>
+                        </Link>
+                        :
+                        <span>{profileName}</span>
+                    }
+                </h1>
+                {pub.occupation && (
+                    <h2>{pub.occupation}</h2>
+                )}
+                {pub.location && (
+                    <div className="location">
+                        <i className="material-icons">location_on</i>{pub.location}
+                    </div>
+                )}
+                {(pub.school) && (
+                    <div className="school clearfix">
+                        <i className="material-icons">school</i>{pub.school}
+                    </div>
+                )}
             </div>
 
-            <div className="me">
-                <div>
-                    <h1 className="main-color">{profileName}</h1>
-                    {(pub.occupation || pub.location || pub.companies) && (
-                        <div className="title clearfix">
-                            {pub.occupation && (
-                                <h2>{pub.occupation}</h2>
-                            )}
-                            {pub.companies && (
-                                <div className="clearfix">
-                                    <span>worked @ </span>
-                                    {pub.companies.split(/[\r\n]+/).map((c) => {
-                                        return <div key={"c-" + c} className="hashtag">{c}</div>
-                                    })}
-                                </div>
-                            )}
-                            {(pub.location || pub.degree) && (
-                                <div className="minor-stuff clearfix">
-                                    {pub.school && (
-                                        <span>
-                                            <i className="material-icons">school</i>{pub.school}
-                                        </span>
-                                    )}
-                                    {pub.location && (
-                                        <span>
-                                            <i className="material-icons">location_on</i>{pub.location}
-                                        </span>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
+            {(fbUser === undefined || fbUser.uid !== this.props.profileId) && (
+                <div className="profile-actions">
+                    <Link to={`/message/${this.props.profileId}`}>
+                        {/* TODO: implement send and signup flow */}
+                        <button type="submit" className="btn btn-success">
+                            <i className="material-icons" title="Send a message">message</i>Contact
+                        </button>
+                    </Link>
 
-                {hashtags && (
+                    <Link to={`/in/${this.props.profileId}/review/new`}>
+                        <button type="button" className="btn btn-default">
+                            <i className="material-icons" title="Send a message">edit</i>Review
+                        </button>
+                    </Link>
+                </div>
+            )}
+
+            {pub.companies && (
+                <div className="hired-by">
+                    <h3>Hired by </h3>
+                    <div>
+                        {pub.companies.split(/[\r\n]+/).map((c) => {
+                            return <div key={"c-" + c} className="hashtag">{c}</div>
+                        })}
+                    </div>
+                </div>
+            )}
+
+            {hashtags && (
+                <div>
+                    <h3>Skills</h3>
                     <div>
                         {hashtags.map((hashtag) => {
                             return <div className="hashtag" key={"hashtag-" + hashtag.name}>
@@ -187,14 +185,17 @@ class Profile extends React.Component {
                             </div>
                         })}
                     </div>
-                )}
+                </div>
+            )}
 
-                {pub.intro && (
-                    <div className="intro">&ldquo;{pub.intro}&rdquo;</div>
-                )}
+            {pub.intro && (
+                <div className="intro">
+                    <h3>About me</h3>
+                    <p>&ldquo;{pub.intro}&rdquo;</p>
+                </div>
+            )}
 
-                <Reviews {...this.props} />
-            </div>
+            <Reviews {...this.props} />
         </div>
     }
 }

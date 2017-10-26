@@ -301,13 +301,25 @@ class UserAvatar extends React.Component {
                     <Redirect to={this.state.redirectUri} />
                 )}
 
-                <Avatar
-                    size={34}
-                    style={style}
-                    className="avatar-icon"
-                    onClick={this.toggle.bind(this)}>
-                    <i className="material-icons">settings</i>
-                </Avatar>
+                {this.props.fbUser.photoURL && (
+                    <Avatar
+                        size={35}
+                        style={style}
+                        className="avatar-icon"
+                        onClick={this.toggle.bind(this)}
+                        src={this.props.fbUser.photoURL}>
+                    </Avatar>
+                )}
+
+                {!this.props.fbUser.photoURL && (
+                    <Avatar
+                        size={35}
+                        style={style}
+                        className="avatar-icon"
+                        onClick={this.toggle.bind(this)}>
+                        <i className="material-icons">settings</i>
+                    </Avatar>
+                )}
 
                 <Popover
                     open={this.state.open}

@@ -12,7 +12,7 @@ let mailer = mailgun({
 
 function notifyInvite(snap) {
     let data = snap.val()
-    let ref = fb.ref('profile').child(data.fromUid).child('info').once('value')
+    let ref = fb.ref('profile').child(data.fromUid).child('view/identity').once('value')
 
     return ref.then((snap) => {
         return snap.val()
@@ -36,22 +36,29 @@ function notifyInvite(snap) {
 
 function notifyReview(snap) {
     let review = snap.val()
-    let reviewerRef = fb.ref('profile').child(review.fromUid).child('info').once('value')
-    let revieweeRef = fb.ref('profile').child(review.toUid).child('info').once('value')
-    let reviewee, reviewer
+
+    // TODO: use promise.all()?
+    let reviewerRef = fb.ref('profile').child(review.fromUid).child('view/identity').once('value')
+    let revieweeRef = fb.ref('profile').child(review.toUid).child('view/identity').once('value')
+    let revieweeEmailRef = fb.ref('profile').child(review.toUid).child('contactDetails/email').once('value')
+    let reviewee, revieweeEmail, reviewer
 
     return reviewerRef.then((snap) => {
         reviewer = snap.val()
         return revieweeRef
     })
-    .then((snap) => {
+    .then(snap => {
         reviewee = snap.val()
+        return revieweeEmailRef
+    })
+    .then(snap => {
+        revieweeEmail = snap.val()
         return
     })
     .then(() => {
         return send({
             from: fromEmail,
-            to: reviewee.email,
+            to: revieweeEmail,
             subject: `You received a review from ${reviewer.firstname} ${reviewer.lastname}`,
             html: reviewTemplate(reviewer, reviewee)
         })
@@ -66,7 +73,7 @@ function notifyReview(snap) {
 
 function notifyAccountDeletion(profile) {
     let templ = layout(`
-        Hi ${profile.info.firstname},
+        Hi ${profile.view.identity.firstname},
 
         <p style="margin:20px 0">
             Your account has been deleted. We hope to see you again soon.
@@ -75,7 +82,7 @@ function notifyAccountDeletion(profile) {
 
     return send({
         from: fromEmail,
-        to: profile.info.email,
+        to: profile.contactDetails.email,
         subject: `Your account has been deleted!`,
         html: templ
     })

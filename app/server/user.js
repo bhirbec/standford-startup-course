@@ -3,6 +3,34 @@ import {unindexProfile} from './algolia-indexer'
 import {notifyAccountDeletion} from './mailer'
 
 
+function onCreate(event) {
+    const user = event.data
+
+    let photoURL = ""
+    if (user.providerData && user.providerData[0]) {
+        photoURL = user.providerData[0].photoURL
+    }
+
+    // TODO: split firstname and lastname
+    return fb.ref(`profile/${user.uid}`).set({
+        view: {
+            identity: {
+                uid: user.uid,
+                firstname: user.displayName || "",
+                lastname: "",
+                photoURL: photoURL,
+            },
+        },
+        contactDetails: {
+            email: user.email,
+            emailVerified: user.emailVerified || false,
+        },
+        providerData: user.providerData || "",
+        isAnonymous: user.isAnonymous || false,
+        metadata: user.metadata || "",
+    })
+}
+
 function deleteUser(snap) {
     let profile
     let data = snap.val()
@@ -63,4 +91,4 @@ function authenticate(idToken, uid) {
     })
 }
 
-export {deleteUser, authenticate}
+export {onCreate, deleteUser, authenticate}

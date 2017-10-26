@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {Link, Redirect, Route} from 'react-router-dom'
+import Avatar from 'material-ui/Avatar'
 
 import NoMatch from './error'
 import Form from './form'
@@ -48,7 +49,7 @@ class Profile extends React.Component {
     fetch(uid) {
         // we put this here (and not in constructor) for server-side rendering
         let fb = firebase.database()
-        this.fbRef = fb.ref('profile').child(uid)
+        this.fbRef = fb.ref('profile').child(uid).child('view')
 
         this.fbRef.on('value', (snap) => {
             if (!snap.exists()) {
@@ -69,7 +70,7 @@ class Profile extends React.Component {
     buildHashtags() {
         let profile = this.state.profile || {}
         let taglikes = profile.like || {}
-        let hashtags = (profile.public || {}).hashtags || ""
+        let hashtags = profile.hashtags || ""
 
         if (!hashtags) {
             return []
@@ -113,7 +114,7 @@ class Profile extends React.Component {
         let profile = this.state.profile || {}
         let pub = profile.public || {}
         let hashtags = this.buildHashtags()
-        let profileName = `${profile.info.firstname} ${profile.info.lastname}`
+        let profileName = `${profile.identity.firstname} ${profile.identity.lastname}`
 
         return <div className="me">
             <div className="profile-header">
@@ -127,17 +128,20 @@ class Profile extends React.Component {
                         <span>{profileName}</span>
                     }
                 </h1>
-                {pub.occupation && (
-                    <h2>{pub.occupation}</h2>
+                {profile.occupation && (
+                    <h2>{profile.occupation}</h2>
                 )}
-                {pub.location && (
+                {profile.identity.photoURL && (
+                    <Avatar src={profile.identity.photoURL} size={90} />
+                )}
+                {profile.location && (
                     <div className="location">
-                        <i className="material-icons">location_on</i>{pub.location}
+                        <i className="material-icons">location_on</i>{profile.location}
                     </div>
                 )}
-                {(pub.school) && (
+                {(profile.school) && (
                     <div className="school clearfix">
-                        <i className="material-icons">school</i>{pub.school}
+                        <i className="material-icons">school</i>{profile.school}
                     </div>
                 )}
             </div>
@@ -159,11 +163,11 @@ class Profile extends React.Component {
                 </div>
             )}
 
-            {pub.companies && (
+            {profile.companies && (
                 <div className="hired-by">
                     <h3>Hired by </h3>
                     <div>
-                        {pub.companies.split(/[\r\n]+/).map((c) => {
+                        {profile.companies.split(/[\r\n]+/).map((c) => {
                             return <div key={"c-" + c} className="hashtag">{c}</div>
                         })}
                     </div>
@@ -188,10 +192,10 @@ class Profile extends React.Component {
                 </div>
             )}
 
-            {pub.intro && (
+            {profile.intro && (
                 <div className="intro">
                     <h3>About me</h3>
-                    <p>&ldquo;{pub.intro}&rdquo;</p>
+                    <p>&ldquo;{profile.intro}&rdquo;</p>
                 </div>
             )}
 
@@ -204,27 +208,38 @@ class Profile extends React.Component {
 class ProfileForm extends React.Component {
     componentDidMount() {
         let fb = firebase.database()
-        let ref = fb.ref('profile').child(this.props.profileId).child('public')
+        let ref = fb.ref('profile').child(this.props.profileId).child('view')
+        // TODO: wait for backend to create profile/$uid/form
         ref.once('value', (snap) => {
-            this.setState(snap.val() || {})
+            let state = snap.val() || {}
+            state['firstname'] = state.identity ? state.identity.firstname : ''
+            state['lastname'] = state.identity ? state.identity.lastname : ''
+            this.setState(state)
         })
     }
 
-    onSubmit(data) {
-        if (data.occupation == "") {
-            this.setState({error: '"Occupation" field can not be empty.'})
-            return
+    onSubmit(formData) {
+        let required = ['firstname', 'lastname', 'occupation', 'hashtags']
+        for (let i = 0; i < required.length; i++) {
+            let field = required[i]
+            if (!formData[field]) {
+                this.setState({error: `"${field}" field can not be empty.`})
+                return
+            }
         }
 
-        if (data.hashtags == "") {
-            this.setState({error: '"Hashtags" field can not be empty.'})
-            return
-        }
+        let data = {}
+        data['identity/firstname'] = formData.firstname
+        data['identity/lastname'] = formData.lastname
+        data['hashtags'] = formData.hashtags.trim()
+        data['companies'] = formData.companies.trim()
+        data['intro'] = formData.intro
+        data['location'] = formData.location
+        data['school'] = formData.school
+        data['occupation'] = formData.occupation
 
-        let fb = firebase.database()
-        let ref = fb.ref('profile').child(this.props.profileId).child('public')
-
-        ref.set(data).then(() => {
+        let path = `profile/${this.props.profileId}/view`
+        firebase.database().ref(path).update(data).then(() => {
             this.setState({'redirect': (this.props.redirectUri || '/me')})
         })
     }
@@ -244,6 +259,23 @@ class ProfileForm extends React.Component {
                 {this.state.error && (
                     <div className="form-error">{this.state.error}</div>
                 )}
+
+                <div className="form-group">
+                    <label htmlFor="firstname">First name:</label>
+                    <input id="firstname"
+                        name="firstname"
+                        type="text"
+                        className="form-control" />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="lastname">Last name:</label>
+                    <input id="lastname"
+                        name="lastname"
+                        type="text"
+                        className="form-control" />
+                </div>
+
                 <div className="form-group">
                     <label htmlFor="intro">Your intro in 200 characters:</label>
                     <textarea id="intro"

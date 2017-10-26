@@ -3,16 +3,16 @@
 function postReview(fbUser, profileId, review) {
     let fb = firebase.database()
 
-    return fb.ref('profile').child(fbUser.uid + '/info').once('value', (snap) => {
-        let info = snap.val()
+    return fb.ref('profile').child(fbUser.uid + '/view/identity').once('value', snap => {
+        let identity = snap.val()
 
-        // TODO: do we have to denormalize the data for firstname and lastname?
+        // TODO: denormalize the data for firstname and lastname
         return fb.ref('publicReviews').push().set({
             'toUid': profileId,
             'fromUid': fbUser.uid,
             'reviewer': {
-                firstname: info.firstname,
-                lastname: info.lastname
+                firstname: identity.firstname,
+                lastname: identity.lastname
             },
             review: review,
             UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')

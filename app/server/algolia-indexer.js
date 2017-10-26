@@ -7,13 +7,13 @@ var profileIndex = client.initIndex('profile');
 
 
 function index(snap) {
-    let info = snap.val().info
+    let view = snap.val()
 
     let data = {
-        firstname: info.firstname,
-        lastname: info.lastname,
-        uid: snap.key,
-        objectID: snap.key
+        firstname: view.identity.firstname,
+        lastname: view.identity.lastname,
+        uid: view.identity.uid,
+        objectID: view.identity.uid
     }
 
     profileIndex.saveObject(data, (err, content) => {

@@ -33,7 +33,7 @@ function MakeAppRoot(req, serverData) {
 
 app.get('/in/:id', (req, res) => {
     // TODO: remove code duplication in componentDidMount
-    let p = fb.ref('profile').child(req.params.id).once('value')
+    let p = fb.ref('profile').child(req.params.id).child('view').once('value')
 
     p.then(snap => {
         let root = MakeAppRoot(req, snap.val())

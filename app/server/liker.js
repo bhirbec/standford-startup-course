@@ -11,7 +11,7 @@ function likeHasktag(snap) {
         } else {
             return fb.ref('profile')
                 .child(data.toUid)
-                .child('like')
+                .child('view/like')
                 .child(data.hashtag)
                 .child(data.fromUid)
                 .set(data.value)

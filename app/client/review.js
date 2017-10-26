@@ -90,11 +90,11 @@ class ReviewFrom extends React.Component {
     componentDidMount() {
         let fb = firebase.database()
         let state = {}
-        let pr = fb.ref('profile').child(this.props.profileId).child('info').once('value')
+        let pr = fb.ref('profile').child(this.props.profileId).child('view').once('value')
 
         pr.then(snap => {
-            let info = snap.val()
-            state['profileName'] = `${info.firstname} ${info.lastname}`
+            let view = snap.val()
+            state['profileName'] = `${view.identity.firstname} ${view.identity.lastname}`
 
             if (!this.props.revId) {
                 return Promise.reject()

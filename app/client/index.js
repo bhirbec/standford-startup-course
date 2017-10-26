@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
+import {init as initAuth} from './auth'
 import {App} from './app'
 import {pending} from './model'
 import {Router} from 'react-router-dom'
@@ -16,7 +17,11 @@ Router.history = history
 injectTapEventPlugin();
 
 window.init = function () {
+    // init Firebase
     firebase.initializeApp(window.config.fb)
+
+    // must be called after firebase.initializeApp
+    initAuth()
 
     firebase.auth().onAuthStateChanged((fbUser) => {
         let isLogged = fbUser != null

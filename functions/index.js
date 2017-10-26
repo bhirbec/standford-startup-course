@@ -15,12 +15,12 @@ exports.newInvite = functions.database.ref('invites/{inviteId}').onCreate((event
 });
 
 // TODO: delete profile
-exports.indexNewProfile = functions.database.ref('profile/{profileId}').onCreate((event) => {
+exports.indexNewProfile = functions.database.ref('profile/{profileId}/view').onCreate((event) => {
     return indexer.index(event.data)
 });
 
 // This is triggered each time a profile change
-exports.indexUpdatedProfile = functions.database.ref('profile/{profileId}').onUpdate((event) => {
+exports.indexUpdatedProfile = functions.database.ref('profile/{profileId}/view').onUpdate((event) => {
     return indexer.index(event.data)
 });
 
@@ -43,7 +43,10 @@ exports.sendMessage = functions.database.ref('queue/message/{messageId}').onCrea
     return messager.sendMessage(event.data)
 });
 
-// delete user
+// user
+exports.createUser = functions.auth.user().onCreate(user.onCreate)
+
+// delete user (TODO: use functions.auth.user().onDelete())
 exports.deleteUser = functions.database.ref('queue/deleteUser/{id}').onCreate(event => {
     return user.deleteUser(event.data)
 })

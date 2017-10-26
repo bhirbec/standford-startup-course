@@ -5,52 +5,63 @@ import {Link} from 'react-router-dom'
 import Form from './form'
 
 
+let ui
+
+function init() {
+    ui = new firebaseui.auth.AuthUI(firebase.auth());
+}
+
+function initSocialSignup(redirectURI) {
+  let uiConfig = {
+    signInSuccessUrl: redirectURI,
+    signInOptions: [
+      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+      // firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+      // firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+      // firebase.auth.GithubAuthProvider.PROVIDER_ID,
+      // firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      // firebase.auth.PhoneAuthProvider.PROVIDER_ID
+    ],
+  };
+
+  // Initialize the FirebaseUI Widget using Firebase.
+  // The start method will wait until the DOM is loaded.
+  ui.start('#firebaseui-auth-container', uiConfig);
+}
+
+
 class Signup extends React.Component {
     onSubmit(data) {
-        let fb = firebase.database()
-
-        if (data.firstname == "") {
-            this.setState({error: "First Name can not be empty"})
-            return
-        }
-
-        if (data.lastname == "") {
-            this.setState({error: "Last Name can not be empty"})
-            return
-        }
-
-        firebase.auth().createUserWithEmailAndPassword(data.email, data.pwd)
-        .then((fbUser) => {
-            data.uid = fbUser.uid
-            delete data['pwd']
-            return fb.ref('profile/' + fbUser.uid + '/info').set(data)
-        }).catch((error) => {
+        firebase.auth().createUserWithEmailAndPassword(data.email, data.pwd).catch((error) => {
             this.setState({error: error.message})
         })
+    }
+
+    componentDidMount() {
+        initSocialSignup('/onboard')
+    }
+
+    componentWillReceiveProps() {
+        initSocialSignup('/onboard')
     }
 
     render() {
         let state = this.state || {}
         return <div className="auth-form">
             <h1>Sign Up for LetsResume</h1>
+
+            <div className="question">
+                <span>Already on letsResume? </span>
+                <Link to="/login">Log in</Link>
+            </div>
+
+            <div id="firebaseui-auth-container"></div>
+            <div className="or"><span>OR</span></div>
+
             <Form onSubmit={this.onSubmit.bind(this)}>
                 {state.error && (
                     <div className="form-error">{state.error}</div>
                 )}
-                <div className="form-group">
-                    <label htmlFor="firstname">First Name</label>
-                    <input id="firstname"
-                        type="text"
-                        name="firstname"
-                        className="form-control" />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="lastname">Last Name</label>
-                    <input id="lastname"
-                        type="text"
-                        name="lastname"
-                        className="form-control" />
-                </div>
                 <div className="form-group">
                     <label htmlFor="email">Email</label>
                     <input id="email"
@@ -69,10 +80,6 @@ class Signup extends React.Component {
                     <button type="submit" className="btn btn-success">Sign up</button>
                 </div>
             </Form>
-            <div className="centered">
-                <span>Already on letsResume? </span>
-                <Link to="/login">Log in</Link>
-            </div>
         </div>
     }
 }
@@ -109,10 +116,27 @@ class Login extends React.Component {
         })
     }
 
+    componentDidMount() {
+        initSocialSignup('/me')
+    }
+
+    componentWillReceiveProps() {
+        initSocialSignup('/me')
+    }
+
     render() {
         let state = this.state || {}
         return <div className="auth-form">
             <h1>Log In to LetsResume</h1>
+
+            <div className="question">
+                <span>New to letsResume? </span>
+                <Link to="/signup">Sign Up</Link>
+            </div>
+
+            <div id="firebaseui-auth-container"></div>
+            <div className="or"><span>OR</span></div>
+
             <Form onSubmit={this.onSubmit.bind(this)}>
                 {state.error && (
                     <div className="form-error">{state.error}</div>
@@ -135,13 +159,8 @@ class Login extends React.Component {
                     <button type="submit" className="btn btn-success">Log In</button>
                 </div>
             </Form>
-            <div className="centered">
-                <span>New to letsResume? </span>
-                <Link to="/signup">Sign Up</Link>
-            </div>
         </div>
-
     }
 }
 
-export {Signup, SignoutLink, Login}
+export {Signup, SignoutLink, Login, init}

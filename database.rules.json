@@ -12,6 +12,9 @@
         "flash": {
           ".write": "auth.uid === $uid"
         },
+        "view": {
+          ".write": "auth.uid === $uid"
+        },
         "info": {
           ".write": "auth.uid === $uid"
         },

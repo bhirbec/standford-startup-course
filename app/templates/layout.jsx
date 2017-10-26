@@ -18,6 +18,9 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
 
+    <script src="https://cdn.firebase.com/libs/firebaseui/2.4.1/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.4.1/firebaseui.css" />
+
     {/* HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries */}
     {/* WARNING: Respond.js doesn't work if you view the page via file:// */}
     <meta name="react-comment-hack" dangerouslySetInnerHTML={{__html: `

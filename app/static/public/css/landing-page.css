@@ -274,13 +274,40 @@ p.copyright {
     }
 }
 
-.auth-form h1,
-.auth-form .centered {
+.auth-form h1 {
     text-align: center;
 }
 
-.auth-form button {
-    margin: 15px auto;
+.auth-form .question {
+    color: #aaa;
+    font-size: 14px;
+    margin: 25px auto;
+    text-align: center;
+}
+
+.auth-form button,
+li.firebaseui-list-item > button.firebaseui-idp-button {
+    display: block;
+    margin: 25px auto;
+}
+
+ul.firebaseui-idp-list,
+li.firebaseui-list-item > button.firebaseui-idp-button {
+    margin: 0 auto;
+}
+
+.or {
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 25px;
+}
+
+.or span {
+    background-color: #fff;
+    position: relative;
+    top: 10px;
+    color: #666;
+    padding: 0 15px;
 }
 
 /* form errors */
@@ -320,8 +347,8 @@ div.me {
 }
 
 div.me > div {
-    margin-top: 25px;
-    margin-bottom: 40px;
+    margin-top: 20px;
+    margin-bottom: 30px;
 }
 
 div.me div.profile-header {
@@ -335,6 +362,7 @@ div.me div.profile-header h2 {
 
 div.me div.profile-header h1 i {
     font-size: 20px;
+    margin-left: 10px;
 }
 
 div.me div.profile-header i {

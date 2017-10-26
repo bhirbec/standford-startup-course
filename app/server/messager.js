@@ -15,13 +15,21 @@ function sendMessage(snap) {
             Throw('Authentication failed')
         }
 
-        let p1 = fb.ref('profile').child(data.fromUid).child('info').once('value')
-        let p2 = fb.ref('profile').child(data.toUid).child('info').once('value')
-        return Promise.all([p1, p2])
+        let fromRef = fb.ref('profile').child(data.fromUid)
+        let toRef = fb.ref('profile').child(data.toUid)
+
+        return Promise.all([
+            fromRef.child('view/identity').once('value'),
+            fromRef.child('contactDetails/email').once('value'),
+            toRef.child('view/identity').once('value'),
+            toRef.child('contactDetails/email').once('value'),
+        ])
     })
     .then(snaps => {
         fromIdentity = snaps[0].val()
-        toIdentity = snaps[1].val()
+        fromIdentity.email = snaps[1].val()
+        toIdentity = snaps[2].val()
+        toIdentity.email = snaps[3].val()
 
         let now = new Date().getTime()
         let updates = {}

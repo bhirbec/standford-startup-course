@@ -25,7 +25,7 @@ app.listen(config.web.port, config.web.port.host, function () {
 // fb.ref('queue/deleteUser').limitToLast(1).on('child_added', deleteUser)
 
 // message
-fb.ref('queue/message').limitToLast(1).on('child_added', sendMessage)
+// fb.ref('queue/message').limitToLast(1).on('child_added', sendMessage)
 
 // start indexer
 // console.info('Starging Algolia indexer')

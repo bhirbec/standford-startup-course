@@ -31,47 +31,31 @@ function onCreate(event) {
     })
 }
 
-function deleteUser(snap) {
+function onDelete(event) {
+    let uid = event.data.uid
     let profile
-    let data = snap.val()
 
-    authenticate(data.idToken, data.uid).then(ok => {
-        if (!ok) {
-            Throw('Authentication failed')
-        } else {
-            return fb.ref('profile').child(data.uid).once('value')
-        }
-    })
-    .then(snap => {
+    fb.ref('profile').child(uid).once('value').then(snap => {
         profile = snap.val()
-        return admin.auth().deleteUser(data.uid)
+        return fb.ref('profile').child(uid).remove()
     })
     .then(() => {
-        return fb.ref('profile').child(data.uid).remove()
+        return removeReviews("fromUid", uid)
     })
     .then(() => {
-        return removeReviews("fromUid", data.uid)
-    })
-    .then(() => {
-        return removeReviews("toUid", data.uid)
+        return removeReviews("toUid", uid)
     })
     .then(snap => {
-        return unindexProfile(data.uid)
+        return unindexProfile(uid)
     })
     .then(() => {
         return notifyAccountDeletion(profile)
     })
     .then(() => {
-        console.log(`Successfully removed user ${data.uid}`)
-        return snap.ref.remove()
+        console.log(`Successfully removed user ${uid}`)
     })
     .catch(error => {
-        if (error.code == 'auth/argument-error') {
-            // token has expired
-            return snap.ref.remove()
-        } else {
-            console.log("Error deleting user:", error);
-        }
+        console.log("Error deleting user:", error);
     })
 }
 
@@ -91,4 +75,4 @@ function authenticate(idToken, uid) {
     })
 }
 
-export {onCreate, deleteUser, authenticate}
+export {onCreate, onDelete, authenticate}

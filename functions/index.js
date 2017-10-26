@@ -44,9 +44,5 @@ exports.sendMessage = functions.database.ref('queue/message/{messageId}').onCrea
 });
 
 // user
-exports.createUser = functions.auth.user().onCreate(user.onCreate)
-
-// delete user (TODO: use functions.auth.user().onDelete())
-exports.deleteUser = functions.database.ref('queue/deleteUser/{id}').onCreate(event => {
-    return user.deleteUser(event.data)
-})
+exports.onCreateUser = functions.auth.user().onCreate(user.onCreate)
+exports.onDeleteUser = functions.auth.user().onDelete(user.onDelete)

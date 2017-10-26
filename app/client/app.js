@@ -419,21 +419,12 @@ class DeleteAccount extends React.Component {
     }
 
     deleteUser() {
-        this.props.fbUser.getIdToken().then(idToken => {
-            let fb = firebase.database()
-            return fb.ref('queue/deleteUser').push().set({
-                uid: this.props.fbUser.uid,
-                idToken: idToken,
-            })
-        })
-        .then(() => {
-            return firebase.auth().signOut()
-        })
-        .then(() => {
+        this.props.fbUser.delete().then((resp) => {
             this.setState({'step': 2})
         })
         .catch(error => {
             console.log(error)
+            this.setState({error: error})
         })
     }
 
@@ -453,6 +444,10 @@ class DeleteAccount extends React.Component {
                     <li>Reviews other users wrote for you</li>
                     <li>Reviews you wrote for other users</li>
                 </ul>
+
+                {this.state.error && (
+                    <div className="form-error">{this.state.error}</div>
+                )}
 
                 <button
                     type="button"

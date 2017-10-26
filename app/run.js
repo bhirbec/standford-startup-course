@@ -21,9 +21,6 @@ app.listen(config.web.port, config.web.port.host, function () {
 // likes (uncomment to test)
 // fb.ref('queue/like').limitToLast(1).on('child_added', likeHasktag)
 
-// deleteUser (uncomment to test)
-// fb.ref('queue/deleteUser').limitToLast(1).on('child_added', deleteUser)
-
 // message
 // fb.ref('queue/message').limitToLast(1).on('child_added', sendMessage)
 

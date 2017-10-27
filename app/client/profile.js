@@ -70,15 +70,8 @@ class Profile extends React.Component {
     buildHashtags() {
         let profile = this.state.profile || {}
         let taglikes = profile.like || {}
-        let hashtags = profile.hashtags || ""
 
-        if (!hashtags) {
-            return []
-        }
-
-        hashtags = hashtags.split(/[\r\n]+/)
-        for (let i=0; i < hashtags.length; i++) {
-            let name = hashtags[i]
+        return Object.keys(profile.hashtags || {}).map(name => {
             let likes = 0
             let unlikes = 0
 
@@ -91,9 +84,8 @@ class Profile extends React.Component {
                 }
             }
 
-            hashtags[i] = {name: name, likes: likes, unlikes: unlikes}
-        }
-        return hashtags
+            return {name: name, likes: likes, unlikes: unlikes}
+        })
     }
 
     stagePendingLike(hashtag, value) {
@@ -114,6 +106,7 @@ class Profile extends React.Component {
         let profile = this.state.profile || {}
         let pub = profile.public || {}
         let hashtags = this.buildHashtags()
+        let companies = Object.keys(profile.companies || {})
         let profileName = `${profile.identity.firstname} ${profile.identity.lastname}`
 
         return <div className="me">
@@ -163,23 +156,23 @@ class Profile extends React.Component {
                 </div>
             )}
 
-            {profile.companies && (
+            {companies.length > 0 && (
                 <div className="hired-by">
                     <h3>Hired by </h3>
                     <div>
-                        {profile.companies.split(/[\r\n]+/).map((c) => {
-                            return <div key={"c-" + c} className="hashtag">{c}</div>
-                        })}
+                        {companies.map(c =>
+                            <div key={"c-" + c} className="hashtag">{c}</div>
+                        )}
                     </div>
                 </div>
             )}
 
-            {hashtags && (
+            {hashtags.length > 0 && (
                 <div>
                     <h3>Skills</h3>
                     <div>
-                        {hashtags.map((hashtag) => {
-                            return <div className="hashtag" key={"hashtag-" + hashtag.name}>
+                        {hashtags.map(hashtag => (
+                            <div className="hashtag" key={"hashtag-" + hashtag.name}>
                                 {hashtag.name}
                                 <Hashlike
                                     profileId={this.props.profileId}
@@ -187,7 +180,7 @@ class Profile extends React.Component {
                                     hashtag={hashtag}
                                     stagePendingLike={this.stagePendingLike.bind(this)} />
                             </div>
-                        })}
+                        ))}
                     </div>
                 </div>
             )}
@@ -214,6 +207,8 @@ class ProfileForm extends React.Component {
             let state = snap.val() || {}
             state['firstname'] = state.identity ? state.identity.firstname : ''
             state['lastname'] = state.identity ? state.identity.lastname : ''
+            state['hashtags'] = mapToStr(state.hashtags || {})
+            state['companies'] = mapToStr(state.companies || {})
             this.setState(state)
         })
     }
@@ -231,8 +226,8 @@ class ProfileForm extends React.Component {
         let data = {}
         data['identity/firstname'] = formData.firstname
         data['identity/lastname'] = formData.lastname
-        data['hashtags'] = formData.hashtags.trim()
-        data['companies'] = formData.companies.trim()
+        data['hashtags'] = strToMap(formData.hashtags)
+        data['companies'] = strToMap(formData.companies)
         data['intro'] = formData.intro
         data['location'] = formData.location
         data['school'] = formData.school
@@ -368,6 +363,17 @@ class Hashlike extends React.Component {
             </span>
         </span>
     }
+}
+
+let strToMap = (str) => {
+    let out = {}
+    let list = str.trim().split(/[\r\n]+/)
+    list.forEach((h, i) => out[h] = true)
+    return out
+}
+
+let mapToStr = (m) => {
+    return Object.keys(m).join('\r\n')
 }
 
 

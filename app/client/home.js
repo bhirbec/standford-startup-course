@@ -8,7 +8,7 @@ class Home extends React.Component {
             <div className="intro-header">
                 <div className="container intro-message">
                     <h2>
-                        Your resume says what your did,
+                        Your resume says what you did,
                     </h2>
                     <h1 className="main-color">
                         We show how awesome you are.

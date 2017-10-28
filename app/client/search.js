@@ -3,6 +3,7 @@ import {Router} from 'react-router-dom'
 import {Link} from 'react-router-dom'
 import React from 'react'
 import ReactDOM from 'react-dom'
+import Avatar from 'material-ui/Avatar'
 
 
 class SearchBox extends React.Component {
@@ -31,7 +32,7 @@ class SearchBox extends React.Component {
         return <input
             type="text"
             className="form-control"
-            placeholder="Search people"
+            placeholder="Search people & skills"
             value={this.state ? this.state.query: ''}
             onChange={this.onChange.bind(this)} />
     }
@@ -55,8 +56,18 @@ class SearchResult extends React.Component {
 
         // TODO: show pagination
         let params = {
-          attributesToRetrieve: ['firstname', 'lastname', 'uid'],
-          hitsPerPage: 50
+            attributesToRetrieve: [
+                'firstname',
+                'lastname',
+                'occupation',
+                'location',
+                'school',
+                'companies',
+                'hashtags',
+                'photoURL',
+                'uid',
+            ],
+            hitsPerPage: 50
         }
 
         index.search(query, params, (err, content) => {
@@ -74,14 +85,60 @@ class SearchResult extends React.Component {
             return <div>Loading...</div>
         }
 
-        return <div>
+        return <div className="search-result">
             {this.state.profiles.length == 0 && (
                 <h2>No Result found</h2>
             )}
             {this.state.profiles.map((profile, i) => {
-                return <div key={`search-${profile.uid}`}>
-                    <h2>{profile.firstname} {profile.lastname}</h2>
-                    <Link to={`/in/${profile.uid}`}>View profile</Link>
+                return <div className="search-hit" key={`search-${profile.uid}`}>
+
+                    <div className="avatar">
+                        {profile.photoURL && (
+                            <Avatar src={profile.photoURL} size={50} />
+                        )}
+                        {!profile.photoURL && (
+                            <Avatar size={50}>
+                                {profile.firstname.charAt(0).toUpperCase()}
+                            </Avatar>
+                        )}
+                    </div>
+
+                    <h2>
+                        <Link to={`/in/${profile.uid}`}>
+                            {profile.firstname} {profile.lastname}
+                        </Link>
+                    </h2>
+
+                    <h3>{profile.occupation || "No known occupation..."}</h3>
+
+                    {profile.companies && (
+                        <div style={{margin: 0}}>
+                            <span>Hired by: </span>
+                            <span>{profile.companies.map(c =>
+                                <div className="hashtag" key={`c-${profile.uid}-${c}`}>{c}</div>)
+                            }</span>
+                        </div>
+                    )}
+
+                    {profile.hashtags && (
+                        <div style={{margin: 0}}>
+                            <span>{profile.hashtags.map(h =>
+                                <div className="hashtag" key={`h-${profile.uid}-${h}`}>#{h}</div>)
+                            }</span>
+                        </div>
+                    )}
+
+                    {profile.location && (
+                        <div className="location">
+                            <i className="material-icons">location_on</i>{profile.location}
+                        </div>
+                    )}
+
+                    {(profile.school) && (
+                        <div className="school clearfix">
+                            <i className="material-icons">school</i>{profile.school}
+                        </div>
+                    )}
                 </div>
             })}
         </div>

@@ -12,6 +12,12 @@ function index(snap) {
     let data = {
         firstname: view.identity.firstname,
         lastname: view.identity.lastname,
+        photoURL: view.identity.photoURL,
+        occupation: view.occupation,
+        school: view.school,
+        location: view.location,
+        companies: Object.keys(view.companies || {}),
+        hashtags: Object.keys(view.hashtags || {}),
         uid: view.identity.uid,
         objectID: view.identity.uid
     }

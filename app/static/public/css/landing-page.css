@@ -38,10 +38,14 @@ h2 {
 
 @media(max-width:767px) {
     h1 {
-        font-size: 24px;
+        font-size: 26px;
     }
 
     h2 {
+        font-size: 18px;
+    }
+
+    h3 {
         font-size: 16px;
     }
 }
@@ -369,12 +373,16 @@ div.me div.profile-header i {
     margin-right: 3px;
 }
 
-div.me div.location,
-div.me div.school {
+div.location,
+div.school {
     color: #bbb;
     font-size: 12px;
     margin: 10px 3px 0 0;
     line-height: 15px;
+}
+
+div.school i {
+    margin-right: 5px;
 }
 
 div.me div.profile-actions {
@@ -396,12 +404,45 @@ div.me div.hired-by h3 {
     margin-top: 0;
 }
 
-div.me div.hashtag:first-child {
+/* search result */
+div.search-hit {
+    min-height: 60px;
+    margin: 30px 0;
+    padding-left: 70px;
+    position: relative;
+}
+
+div.search-hit .avatar {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+div.search-hit > * {
+    margin-bottom: 10px;
+}
+
+div.search-result h2 {
+    text-decoration: underline;
+}
+
+div.search-result h2,
+div.search-result h3 {
+    margin: 10px 0;
+}
+
+div.search-result h3 {
+    font-weight: normal;
+}
+
+
+/* hashtag */
+div div.hashtag:first-child {
     border-left: none;
     padding-left: 0;
 }
 
-div.me div.hashtag {
+div.hashtag {
     display: inline-block;
     font-size: 14px;
     border-left: 1px solid #ddd;
@@ -410,22 +451,22 @@ div.me div.hashtag {
     margin-bottom: 5px;
 }
 
-div.me div.hashtag span {
+div.hashtag span {
     color: #bbb;
 }
 
-div.me div.hashtag i {
+div.hashtag i {
     font-size: 13px;
     margin-left: 5px;
     margin-right: 2px;
 }
 
-div.me div.hashtag span.likes {
+div.hashtag span.likes {
     color: #76CC59;
     cursor: pointer;
 }
 
-div.me div.hashtag span.unlikes {
+div.hashtag span.unlikes {
     cursor: pointer;
 }
 

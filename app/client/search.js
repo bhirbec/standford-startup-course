@@ -3,7 +3,8 @@ import {Router} from 'react-router-dom'
 import {Link} from 'react-router-dom'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Avatar from 'material-ui/Avatar'
+
+import {UserAvatar} from './common'
 
 
 class SearchBox extends React.Component {
@@ -91,17 +92,7 @@ class SearchResult extends React.Component {
             )}
             {this.state.profiles.map((profile, i) => {
                 return <div className="search-hit" key={`search-${profile.uid}`}>
-
-                    <div className="avatar">
-                        {profile.photoURL && (
-                            <Avatar src={profile.photoURL} size={50} />
-                        )}
-                        {!profile.photoURL && (
-                            <Avatar size={50}>
-                                {profile.firstname.charAt(0).toUpperCase()}
-                            </Avatar>
-                        )}
-                    </div>
+                    <UserAvatar identity={{photoURL: profile.photoURL, firstname: profile.firstname}} />
 
                     <h2>
                         <Link to={`/in/${profile.uid}`}>

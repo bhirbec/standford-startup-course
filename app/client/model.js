@@ -1,22 +1,10 @@
 
-
 function postReview(fbUser, profileId, review) {
     let fb = firebase.database()
 
-    return fb.ref('profile').child(fbUser.uid + '/view/identity').once('value', snap => {
-        let identity = snap.val()
-
-        // TODO: denormalize the data for firstname and lastname
-        return fb.ref('publicReviews').push().set({
-            'toUid': profileId,
-            'fromUid': fbUser.uid,
-            'reviewer': {
-                firstname: identity.firstname,
-                lastname: identity.lastname
-            },
-            review: review,
-            UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
-        })
+    return fb.ref('profile').child(fbUser.uid).child('reviewsSent').child(profileId).push().set({
+        review: review,
+        UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
     })
 }
 

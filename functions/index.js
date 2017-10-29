@@ -5,6 +5,7 @@ const indexer = require('./app/server/algolia-indexer');
 const liker = require('./app/server/liker');
 const mailer = require('./app/server/mailer');
 const messager = require('./app/server/messager');
+const profile = require('./app/server/profile');
 const user = require('./app/server/user');
 const db = func.database
 
@@ -24,13 +25,21 @@ exports.indexUpdatedProfile = db.ref('profile/{profileId}/view').onUpdate(e => {
     return indexer.index(e.data)
 });
 
-// notify review
-exports.newReview = db.ref('publicReviews/{revId}').onCreate(e => {
-    return mailer.notifyReview(e.data)
+exports.onIdentityUpdated = db.ref('profile/{profileId}/view/identity').onUpdate(e => {
+    return profile.onIdentityUpdated(e.data.val())
 });
 
-exports.updateReview = db.ref('publicReviews/{revId}').onUpdate(e => {
-    return mailer.notifyReview(e.data)
+// Review
+exports.newReview = db.ref('profile/{fromUid}/reviewsSent/{toUid}/{revId}').onCreate(e => {
+    return profile.onReviewUpdated(e.params.fromUid, e.params.toUid, e.params.revId, e.data.val())
+});
+
+exports.udpateReview = db.ref('profile/{fromUid}/reviewsSent/{toUid}/{revId}').onUpdate(e => {
+    return profile.onReviewUpdated(e.params.fromUid, e.params.toUid, e.params.revId, e.data.val())
+});
+
+exports.deleteReview = db.ref('profile/{fromUid}/reviewsSent/{toUid}/{revId}').onDelete(e => {
+    return profile.onReviewDeleted(e.params.toUid, e.params.revId)
 });
 
 // likes

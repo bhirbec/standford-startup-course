@@ -505,6 +505,23 @@ div.review-buttons {
     margin: 5px 0;
 }
 
+div.review-buttons a {
+    margin-right: 15px;
+}
+
+div.review-buttons i {
+    font-size: 16px;
+    margin-right: 5px;
+}
+
+div.review-header {
+    float: left
+}
+
+div.review-body {
+    padding-left: 50px;
+}
+
 .new-review-button {
     margin-top: 40px;
 }

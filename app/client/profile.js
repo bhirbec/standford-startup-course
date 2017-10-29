@@ -192,7 +192,7 @@ class Profile extends React.Component {
                 </div>
             )}
 
-            <Reviews {...this.props} />
+            <Reviews {...this.props} reviews={this.state.profile.reviewsReceived} />
         </div>
     }
 }

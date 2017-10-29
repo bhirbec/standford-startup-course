@@ -34,9 +34,7 @@ function notifyInvite(snap) {
 }
 
 
-function notifyReview(snap) {
-    let review = snap.val()
-
+function notifyReview(review) {
     // TODO: use promise.all()?
     let reviewerRef = fb.ref('profile').child(review.fromUid).child('view/identity').once('value')
     let revieweeRef = fb.ref('profile').child(review.toUid).child('view/identity').once('value')

@@ -15,17 +15,8 @@
         "view": {
           ".write": "auth.uid === $uid"
         },
-        "info": {
+        "reviewsSent": {
           ".write": "auth.uid === $uid"
-        },
-        "experience": {
-          ".write": "auth.uid === $uid"
-        },
-        "public": {
-          ".write": "auth.uid === $uid"
-        },
-        "like": {
-          ".write": false
         }
       }
     },

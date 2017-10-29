@@ -4,44 +4,20 @@ import {Link, Redirect} from 'react-router-dom'
 
 import {postReview, pending} from './model'
 import Form from './form'
+import {UserAvatar} from './common'
 
 
 class Reviews extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {reviews: []}
-    }
-
-    componentDidMount() {
-        let fb = firebase.database()
-        this.ref = fb.ref('publicReviews').orderByChild("toUid").equalTo(this.props.profileId)
-
-        this.ref.on('value', snap => {
-            let reviews = []
-            snap.forEach(snap => {
-                let rev = snap.val()
-                if (rev.review) {
-                    rev.revId = snap.key
-                    reviews.push(rev)
-                }
-            })
-            this.setState({reviews: reviews})
-        })
-    }
-
-    componentWillUnmount() {
-        this.ref.off()
-    }
-
     render() {
-        let fbUser = this.props.fbUser
+        let reviews = this.props.reviews || {}
+        reviews = Object.keys(reviews).map(k => reviews[k])
 
         return <div className="reviews">
-            <h2>Reviews</h2>
-            {this.state.reviews.length == 0 && (
+            <h3>Reviews</h3>
+            {reviews.length == 0 && (
                 <p>No reviews...</p>
             )}
-            {this.state.reviews.map(rev => {
+            {reviews.map(rev => {
                 return <Review key={'review-' + rev.revId} rev={rev} {...this.props} />
             })}
         </div>
@@ -50,36 +26,43 @@ class Reviews extends React.Component {
 
 class Review extends React.Component {
     delete() {
-        let ref = firebase.database().ref('publicReviews')
-        ref.child(this.props.rev.revId).child('review').remove()
+        firebase.database().ref('profile')
+            .child(this.props.fbUser.uid)
+            .child('reviewsSent')
+            .child(this.props.rev.toUid)
+            .child(this.props.rev.revId)
+            .remove()
     }
 
     render() {
         let rev = this.props.rev
         let fbUser = this.props.fbUser
 
-        return <div className="review">
-            <div className="review-info">
-                <Link to={`/in/${rev.fromUid}`}>
-                    {rev.reviewer.firstname} {rev.reviewer.lastname}
-                </Link>
-                <span> - {rev.UTCdate}</span>
+        return <div className="review clearfix">
+            <div className="review-header">
+                <UserAvatar identity={rev.reviewerIdentity} size={40} />
             </div>
-            <div className="review-text">
-                &ldquo;{rev.review}&rdquo;
-            </div>
-            {fbUser && fbUser.uid == rev.fromUid && (
-                <div className="review-buttons">
-                    <Link to={`/in/${this.props.profileId}/review/${rev.revId}`}>
-                        <button type="button" className="btn btn-default">Edit</button>
+            <div className="review-body">
+                <div className="review-info">
+                    <Link to={`/in/${rev.fromUid}`}>
+                        {rev.reviewerIdentity.firstname} {rev.reviewerIdentity.lastname}
                     </Link>
-                    <button type="button"
-                        className="btn btn-default"
-                        onClick={this.delete.bind(this)}>
-                        Remove
-                    </button>
+                    <span> - {rev.UTCdate}</span>
                 </div>
-            )}
+                <div className="review-text">
+                    &ldquo;{rev.review}&rdquo;
+                </div>
+                {fbUser && fbUser.uid == rev.fromUid && (
+                    <div className="review-buttons">
+                        <Link to={`/in/${this.props.profileId}/review/${rev.revId}`}>
+                            <i className="material-icons">edit</i>Edit
+                        </Link>
+                        <a href="#" onClick={this.delete.bind(this)}>
+                            <i className="material-icons">delete</i>Remove
+                        </a>
+                    </div>
+                )}
+            </div>
         </div>
     }
 }
@@ -89,19 +72,22 @@ class ReviewFrom extends React.Component {
 
     componentDidMount() {
         let fb = firebase.database()
+        let props = this.props
         let state = {}
-        let pr = fb.ref('profile').child(this.props.profileId).child('view').once('value')
+        let pr = fb.ref(`profile/${props.profileId}/view/identity`).once('value')
 
         pr.then(snap => {
-            let view = snap.val()
-            state['profileName'] = `${view.identity.firstname} ${view.identity.lastname}`
+            let identity = snap.val()
+            state['profileName'] = `${identity.firstname} ${identity.lastname}`
 
-            if (!this.props.revId) {
+            if (!props.revId) {
                 return Promise.reject()
             } else {
-                return fb.ref('publicReviews').child(this.props.revId).once('value')
+                let path = `profile/${props.fbUser.uid}/reviewsSent/${props.profileId}/${props.revId}`
+                return fb.ref(path).once('value')
             }
         }).then(snap => {
+            this.rendered = true
             state.rev = snap.val()
             this.setState(state)
         }).catch(error => {
@@ -113,11 +99,12 @@ class ReviewFrom extends React.Component {
     }
 
     update(review) {
-        let ref = firebase.database().ref('publicReviews')
-        return ref.child(this.props.revId).update({
-            review: review,
-            UTCdate: new Date().toJSON().slice(0,10).replace(/-/g,'/')
-        })
+        let data = {}
+        let props = this.props
+        let path = `profile/${props.fbUser.uid}/reviewsSent/${props.profileId}/${props.revId}`
+        data[`${path}/review`] = review
+        data[`${path}/UTCdate`] = new Date().toJSON().slice(0,10).replace(/-/g,'/')
+        return firebase.database().ref().update(data)
     }
 
     onSubmit(data) {
@@ -126,11 +113,9 @@ class ReviewFrom extends React.Component {
             return
         }
 
-        this.setState({'error': null})
-
         if (!this.props.fbUser) {
             pending.stageReview(this.props.profileId, data.review)
-            this.setState({redirect: '/signup'})
+            this.setState({'error': null, redirect: '/signup'})
             return
         }
 
@@ -142,11 +127,12 @@ class ReviewFrom extends React.Component {
         }
 
         pr.then(() => {
-            this.setState({redirect: `/in/${this.props.profileId}`})
+            this.setState({'error': null, redirect: `/in/${this.props.profileId}`})
         })
     }
 
     render() {
+        console.log('render')
         if (!this.state) {
             return <div>Loading...</div>
         } else if (this.state.redirect) {

@@ -25,7 +25,9 @@ class Reviews extends React.Component {
 }
 
 class Review extends React.Component {
-    delete() {
+    delete(e) {
+        e.preventDefault()
+
         firebase.database().ref('profile')
             .child(this.props.fbUser.uid)
             .child('reviewsSent')
@@ -132,7 +134,6 @@ class ReviewFrom extends React.Component {
     }
 
     render() {
-        console.log('render')
         if (!this.state) {
             return <div>Loading...</div>
         } else if (this.state.redirect) {

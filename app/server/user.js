@@ -33,38 +33,45 @@ function onCreate(event) {
 
 function onDelete(event) {
     let uid = event.data.uid
-    let profile
+    let profileSnap
 
     fb.ref('profile').child(uid).once('value').then(snap => {
-        profile = snap.val()
-        return fb.ref('profile').child(uid).remove()
+        profileSnap = snap
+        return removeReviews(profileSnap)
     })
     .then(() => {
-        return removeReviews("fromUid", uid)
-    })
-    .then(() => {
-        return removeReviews("toUid", uid)
+        return profileSnap.ref.remove()
     })
     .then(snap => {
         return unindexProfile(uid)
     })
     .then(() => {
-        return notifyAccountDeletion(profile)
+        return notifyAccountDeletion(profileSnap.val())
     })
     .then(() => {
         console.log(`Successfully removed user ${uid}`)
     })
     .catch(error => {
-        console.log("Error deleting user:", error);
+        console.log("Error deleting user:", error)
     })
 }
 
-function removeReviews(field, uid) {
-    return fb.ref('publicReviews').orderByChild(field).equalTo(uid).once('value', snap => {
-        snap.forEach(child => {
-            child.ref.remove()
+
+function removeReviews(profileSnap) {
+    let data = {}
+
+    profileSnap.child('reviewsSent').forEach(profileSnap => {
+        profileSnap.forEach(revSnap => {
+            data[`profile/${profileSnap.key}/reviewsReceived/${revSnap.key}`] = null
         })
     })
+
+    profileSnap .child('view/reviewsReceived').forEach(revSnap => {
+        let rev = revSnap.val()
+        data[`profile/${rev.fromUid}/reviewsSent/${rev.toUid}/${revSnap.key}`] = null
+    })
+
+    return fb.ref().update(data)
 }
 
 

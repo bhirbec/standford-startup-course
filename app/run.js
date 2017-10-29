@@ -1,6 +1,6 @@
 import {fb, config} from './server/init'
 import app from './server/app'
-import {notifyInvite, notifyReview} from './server/mailer'
+import {notifyInvite} from './server/mailer'
 import {index} from './server/algolia-indexer'
 import {likeHasktag} from './server/liker'
 import {deleteUser} from './server/user'
@@ -14,9 +14,6 @@ app.listen(config.web.port, config.web.port.host, function () {
 
 // invite notification (uncomment to test)
 // fb.ref('invites').limitToLast(1).on('child_added', notifyInvite)
-
-// review notification (uncomment to test)
-// fb.ref('publicReviews').limitToLast(1).on('child_added', notifyReview)
 
 // likes (uncomment to test)
 // fb.ref('queue/like').limitToLast(1).on('child_added', likeHasktag)

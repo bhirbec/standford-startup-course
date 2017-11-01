@@ -16,7 +16,7 @@ import {MyProfile, Profile, ProfileForm} from './profile'
 import {SearchBox, SearchResult} from './search'
 import {ReviewFrom} from './review'
 import Test from './test'
-import {Signup, Login, SignoutLink} from './auth'
+import {Signup, Login, SignoutLink, Loggedin} from './auth'
 
 
 let MenuItemStyle = {
@@ -54,11 +54,6 @@ class App extends React.Component {
                     isAdmin={this.props.isAdmin}
                     toggleDrawer={this.toggleDrawer.bind(this)} />
 
-                <DesktopNavbar
-                    fbUser={this.props.fbUser}
-                    isAdmin={this.props.isAdmin}
-                    toggleDrawer={this.toggleDrawer.bind(this)} />
-
                 <MobileNavbar
                     fbUser={this.props.fbUser}
                     isAdmin={this.props.isAdmin}
@@ -69,18 +64,19 @@ class App extends React.Component {
                         <Home />
                     )} />
                     <Route exact path="/signup" render={() => (
-                        this.props.fbUser ? (
-                            <Redirect to={"/onboard?redirectUri=" + (this.props.redirectUri || '/me')} />
-                        ) : (
-                            <InnerLayout><Signup /></InnerLayout>
-                        )
+                        <InnerLayout>
+                            <Signup fbUser={this.props.fbUser} redirectUri={this.props.redirectUri} />
+                        </InnerLayout>
                     )} />
                     <Route exact path="/login" render={() => (
-                        this.props.fbUser ? (
-                            <Redirect to={this.props.redirectUri || "/me"} />
-                        ) : (
-                            <InnerLayout><Login /></InnerLayout>
-                        )
+                        <InnerLayout>
+                            <Login fbUser={this.props.fbUser} />
+                        </InnerLayout>
+                    )} />
+                    <Route exact path="/logged-in" render={() => (
+                        <InnerLayout>
+                            <Loggedin fbUser={this.props.fbUser} />
+                        </InnerLayout>
                     )} />
                     <Route exact path="/onboard" render={(data) => (
                         this.props.fbUser ? (
@@ -169,47 +165,6 @@ class App extends React.Component {
 }
 
 
-class DesktopNavbar extends React.Component {
-    render() {
-        return <nav className="navbar navbar-default navbar-fixed-top desktop" role="navigation">
-            <div className="container">
-                <div className="navbar-header">
-                    <a href="#" onClick={this.props.toggleDrawer} className="navbar-brand">
-                        <i className="material-icons">menu</i>
-                    </a>
-                    <Link id="logo" className="navbar-brand" to={this.props.fbUser ? '/me' : '/'}>
-                       <span>LETS</span>
-                       <span className="main-color">RESUME</span>
-                    </Link>
-                    <Route path="/" render={(data) => (
-                        <span id="search-box">
-                            <SearchBox query={data.location.state ? data.location.state.query : ''} />
-                            <i className="material-icons">search</i>
-                        </span>
-                    )} />
-                </div>
-                <div className="collapse navbar-collapse">
-                    <ul className="nav navbar-nav navbar-right">
-                        {this.props.fbUser && ([
-                            <li key="to-invit-form">
-                                <InviteForm profileId={this.props.fbUser.uid} />
-                            </li>,
-                            <li key="to-avatar">
-                                <UserAvatar fbUser={this.props.fbUser} />
-                            </li>,
-                        ])}
-
-                        {!this.props.fbUser && ([
-                            <li key="to-login"><Link to='/login'>Log in</Link></li>,
-                            <li key="to-signup"><Link to='/signup'>Sign Up</Link></li>,
-                        ])}
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    }
-}
-
 class MobileNavbar extends React.Component {
     constructor(props) {
         super(props)
@@ -229,43 +184,45 @@ class MobileNavbar extends React.Component {
     }
 
     render() {
-        return <nav className="navbar navbar-default navbar-fixed-top mobile" role="navigation">
-            <div className="container">
-                <div className="navbar-header">
-                    <a href="#" onClick={this.props.toggleDrawer} className="navbar-brand">
+        if (!this.state.open) {
+            return <nav key="nav-bar" id="nav" role="navigation">
+                <div id="left-nav" className="clearfix">
+                    <a id="menu-icon" href="#" onClick={this.props.toggleDrawer}>
                         <i className="material-icons">menu</i>
                     </a>
-                    {!this.state.open && (
-                        <Link id="logo" className="navbar-brand" to={this.props.fbUser ? '/me' : '/'}>
-                           <span>LETS</span>
-                           <span className="main-color">RESUME</span>
-                        </Link>
-                    )}
-
-                    {!this.state.open && (
-                        <UserAvatar fbUser={this.props.fbUser} />
-                    )}
-
-                    <Route path="/" render={(data) => (
-                        <span id="search-box">
-                            {!this.state.open && (
-                                <i className="material-icons" onClick={this.toggle.bind(this, true)}>
-                                    search
-                                </i>
-                            )}
-                            {this.state.open && (
-                                <SearchBox query={data.location.state ? data.location.state.query : ''} />
-                            )}
-                            {this.state.open && (
-                                <i className="material-icons" onClick={this.toggle.bind(this, false)}>
-                                    highlight_off
-                                </i>
-                            )}
-                        </span>
-                    )} />
+                    <Link id="logo" to={this.props.fbUser ? '/me' : '/'}>
+                       <span className="lets">LETS</span>
+                       <span className="main-color">RESUME</span>
+                    </Link>
                 </div>
-            </div>
-        </nav>
+                <div id="right-nav" className="clearfix">
+                    <UserAvatar fbUser={this.props.fbUser} />
+                    {!this.props.fbUser && (
+                        <Link to="/signup">Sign up</Link>
+                    )}
+                    {!this.props.fbUser && (
+                        <Link to='/login'>Log in</Link>
+                    )}
+                    <i id="open-search" className="material-icons" onClick={this.toggle.bind(this, true)}>
+                        search
+                    </i>
+                </div>
+            </nav>
+        } else {
+            return <nav key="nav-bar" id="nav" role="navigation">
+                <Route path="/" render={(data) => (
+                    <span id="search-box">
+                        <SearchBox query={data.location.state ? data.location.state.query : ''} />
+                        <i className="material-icons search-icon" onClick={this.toggle.bind(this, true)}>
+                            search
+                        </i>
+                        <i className="material-icons close-search" onClick={this.toggle.bind(this, false)}>
+                            highlight_off
+                        </i>
+                    </span>
+                )} />
+            </nav>
+        }
     }
 }
 

@@ -4,7 +4,6 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import {init as initAuth} from './auth'
 import {App} from './app'
-import {pending} from './model'
 import {Router} from 'react-router-dom'
 import createBrowserHistory from 'history/createBrowserHistory'
 
@@ -30,13 +29,8 @@ window.init = function () {
         if (!isLogged) {
             renderApp(fbUser, false)
         } else {
-            /* we may have stored a "like/review" from an anonymous user. If so,
-            the user has now signed up and we can save the data. We redirect to
-            the profile receiving the "like/review" */
-            let redirectUri = pending.flush(fbUser)
-
             firebase.database().ref('admin/' + fbUser.uid).once('value', (snap) => {
-                renderApp(fbUser, snap.exists(), redirectUri)
+                renderApp(fbUser, snap.exists())
             })
         }
     })
@@ -45,6 +39,6 @@ window.init = function () {
 function renderApp(fbUser, isAdmin, redirectUri) {
     let el = document.getElementById('app')
     ReactDOM.render(<Router history={history}>
-        <App fbUser={fbUser} isAdmin={isAdmin} redirectUri={redirectUri} />
+        <App fbUser={fbUser} isAdmin={isAdmin} />
     </Router>, el)
 }

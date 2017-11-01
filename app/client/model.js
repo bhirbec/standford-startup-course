@@ -1,3 +1,5 @@
+import Cookies from 'universal-cookie';
+
 
 function postReview(fbUser, profileId, review) {
     let fb = firebase.database()
@@ -23,40 +25,42 @@ function postHashtagLike(fbUser, profileId, hashtag, value) {
 }
 
 
-function pendingData() {
-    this.pendingReview = null
-    this.pendingHashlike = null
-}
-
-pendingData.prototype = {
-    stageReview: function (profileId, review) {
-        this.pendingReview = {'profileId': profileId, 'review': review}
+const pending = {
+    stageReview: (profileId, review) => {
+        let cookies = new Cookies()
+        let data = {'func': 'postReview', profileId: profileId, 'review': review}
+        cookies.set('pending', data, { path: '/', maxAge: 10*60})
     },
 
-    stageHashtagLike: function (profileId, hashtag, value) {
-        this.pendingHashlike = {'profileId': profileId, 'hashtag': hashtag, 'value': value}
+    stageHashtagLike: (profileId, hashtag, value) => {
+        let cookies = new Cookies()
+        let data = {'func': 'postHashtagLike', 'profileId': profileId, 'hashtag': hashtag, 'value': value}
+        cookies.set('pending', data, { path: '/', maxAge: 10*60})
     },
 
-    flush: function (fbUser) {
-        let p = this.pendingReview
-        if (p) {
-            postReview(fbUser, p.profileId, p.review)
-            this.pendingReview = null;
-            return `/in/${p.profileId}`
+    flush: (fbUser) => {
+        let cookies = new Cookies()
+        let data = cookies.get('pending')
 
+        if (!data) {
+            return null
         }
 
-        p = this.pendingHashlike
-        if (p) {
-            postHashtagLike(fbUser, p.profileId, p.hashtag, p.value)
-            this.pendingHashlike = null;
-            return `/in/${p.profileId}`
+        if (data.func == 'postReview') {
+            postReview(fbUser, data.profileId, data.review)
+            cookies.remove('pending')
+            return `/in/${data.profileId}`
+        }
+
+        if (data.func == 'postHashtagLike') {
+            postHashtagLike(fbUser, data.profileId, data.hashtag, data.value)
+            cookies.remove('pending')
+            return `/in/${data.profileId}`
         }
 
         return null
     }
 }
 
-let pending = new pendingData()
 
 export {postReview, postHashtagLike, pending}

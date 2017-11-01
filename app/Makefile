@@ -38,6 +38,7 @@ static/build/index.js: $(shell find client -name "*.js")
 		-x react-router-dom \
 		-x react-select \
 		-x react-tap-event-plugin \
+		-x universal-cookie \
 		client/index.js > $@
 
 static/build/lib.js: node_modules/.rebuild
@@ -59,6 +60,7 @@ static/build/lib.js: node_modules/.rebuild
 		-r react-router-dom \
 		-r react-select \
 		-r react-tap-event-plugin \
+		-r universal-cookie \
 		-o $@
 
 app:

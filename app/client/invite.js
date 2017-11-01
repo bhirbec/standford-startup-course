@@ -35,9 +35,8 @@ export default class InviteForm extends React.Component {
     }
 
     render() {
-        return <a href="#" onClick={this.changeMode.bind(this, 'open')} className="main-color invite">
-            <i className="material-icons main-color">person_add</i>
-            Invite Reviewer
+        return <button className="btn btn-success invite" onClick={this.changeMode.bind(this, 'open')}>
+            <i className="material-icons" title="Send a message">person_add</i>Invite
 
             <Snackbar
                 open={Boolean(this.state.ack)}
@@ -80,6 +79,6 @@ export default class InviteForm extends React.Component {
                     </div>
                 </Form>
             </Dialog>
-        </a>
+        </button>
     }
 }

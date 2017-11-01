@@ -17,6 +17,9 @@
         },
         "reviewsSent": {
           ".write": "auth.uid === $uid"
+        },
+        "onboarded": {
+          ".write": "auth.uid === $uid"
         }
       }
     },

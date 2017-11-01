@@ -224,18 +224,21 @@ class ProfileForm extends React.Component {
         }
 
         let data = {}
-        data['identity/firstname'] = formData.firstname
-        data['identity/lastname'] = formData.lastname
-        data['hashtags'] = strToMap(formData.hashtags)
-        data['companies'] = strToMap(formData.companies)
-        data['intro'] = formData.intro
-        data['location'] = formData.location
-        data['school'] = formData.school
-        data['occupation'] = formData.occupation
+        data['view/identity/firstname'] = formData.firstname
+        data['view/identity/lastname'] = formData.lastname
+        data['view/hashtags'] = strToMap(formData.hashtags)
+        data['view/companies'] = strToMap(formData.companies)
+        data['view/intro'] = formData.intro
+        data['view/location'] = formData.location
+        data['view/school'] = formData.school
+        data['view/occupation'] = formData.occupation
+        data['onboarded'] = true
 
-        let path = `profile/${this.props.profileId}/view`
+        let path = `profile/${this.props.profileId}`
         firebase.database().ref(path).update(data).then(() => {
-            this.setState({'redirect': (this.props.redirectUri || '/me')})
+            // flush pending action after onboarding
+            let redirectURI = pending.flush(this.props.fbUser)
+            this.setState({redirect: redirectURI || '/me'})
         })
     }
 

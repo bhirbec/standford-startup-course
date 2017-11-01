@@ -28,6 +28,7 @@ function onCreate(event) {
         providerData: user.providerData || "",
         isAnonymous: user.isAnonymous || false,
         metadata: user.metadata || "",
+        onboarded: false
     })
 }
 

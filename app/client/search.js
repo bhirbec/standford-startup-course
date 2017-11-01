@@ -13,6 +13,10 @@ class SearchBox extends React.Component {
         this.state = {query: props.query}
     }
 
+    componentDidMount() {
+        ReactDOM.findDOMNode(this).focus()
+    }
+
     componentWillReceiveProps(props) {
         this.state = {query: props.query}
     }

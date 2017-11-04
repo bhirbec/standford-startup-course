@@ -242,6 +242,11 @@ class ProfileForm extends React.Component {
         })
     }
 
+    onTouchTap(e) {
+        e.preventDefault()
+        $(ReactDOM.findDOMNode(this)).find('form').submit()
+    }
+
     render() {
         if (this.state == null) {
             return null
@@ -330,7 +335,10 @@ class ProfileForm extends React.Component {
                         placeholder={"Example:\nJava\nC++\nCTO"} />
                 </div>
                 <div>
-                    <button type="submit" className="btn btn-success">Save</button>
+                    <button
+                        type="submit"
+                        onTouchTap={this.onTouchTap.bind(this)}
+                        className="btn btn-success">Save</button>
                     <Link to="/me">
                         <button type="button" className="btn btn-default">Back</button>
                     </Link>

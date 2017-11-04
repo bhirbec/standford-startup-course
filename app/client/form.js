@@ -6,6 +6,22 @@ export default class Form extends React.Component {
 
     componentDidMount() {
         this.populate(this.props.data || {})
+        this.submitting = false
+
+        /* this makes possible to fire the submit outside of the component. This is
+        used in combination with onTouchTap event to fix textarea bug on android
+        chrome */
+        $(ReactDOM.findDOMNode(this)).submit(e => {
+            e.stopImmediatePropagation()
+
+            if (!this.submitting) {
+                this.onSubmit(e)
+            } else {
+                e.preventDefault()
+            }
+            this.submitting = !this.submitting
+            return false;
+        })
     }
 
     componentWillReceiveProps(nextProps) {
@@ -36,10 +52,6 @@ export default class Form extends React.Component {
     }
 
     render() {
-        return <form
-            onSubmit={this.onSubmit.bind(this)}
-            className={this.props.className}>
-            {this.props.children}
-        </form>
+        return <form className={this.props.className}>{this.props.children}</form>
     }
 }

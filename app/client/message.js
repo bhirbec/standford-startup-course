@@ -31,6 +31,11 @@ export default class Message extends React.Component {
         })
     }
 
+    onTouchTap(e) {
+        e.preventDefault()
+        $(ReactDOM.findDOMNode(this)).submit()
+    }
+
     render() {
         return <Form onSubmit={this.onSubmit.bind(this)}>
             <h1>Message</h1>
@@ -45,11 +50,14 @@ export default class Message extends React.Component {
 
             <div className="form-group">
                 <label htmlFor="toMessage">Your message:</label>
-                <textarea id="toMessage" rows={15} name="text" className="form-control" />
+                <textarea id="toMessage" rows={10} name="text" className="form-control" />
             </div>
 
             <div>
-                <button type="submit" className="btn btn-success">Save</button>
+                <button
+                    type="submit"
+                    onTouchTap={this.onTouchTap.bind(this)}
+                    className="btn btn-success">Save</button>
                 <Link to={`/in/${this.props.profileId}`}>
                     <button type="button" className="btn btn-default">Back</button>
                 </Link>

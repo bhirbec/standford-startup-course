@@ -15,17 +15,19 @@ export default class Form extends React.Component {
             e.stopImmediatePropagation()
 
             if (!this.submitting) {
+                this.submitting = true
                 this.onSubmit(e)
             } else {
                 e.preventDefault()
             }
-            this.submitting = !this.submitting
             return false;
         })
     }
 
     componentWillReceiveProps(nextProps) {
-        this.populate(nextProps.data || {})
+        // this assumes the parent component re-render itself after the submit.
+        // Either showing error or redirecting
+        this.submitting = false
     }
 
     populate(data) {

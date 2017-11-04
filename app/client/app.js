@@ -196,7 +196,9 @@ class MobileNavbar extends React.Component {
                     </Link>
                 </div>
                 <div id="right-nav" className="clearfix">
-                    <UserAvatar fbUser={this.props.fbUser} />
+                    {this.props.fbUser && (
+                        <UserAvatar fbUser={this.props.fbUser} />
+                    )}
                     {!this.props.fbUser && (
                         <Link to="/signup">Sign up</Link>
                     )}
@@ -230,12 +232,23 @@ class MobileNavbar extends React.Component {
 class UserAvatar extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {open: false}
+        this.state = {open: false, identity: null}
     }
 
     toggle(e) {
         e.preventDefault();
         this.setState({open: true, anchorEl: e.currentTarget})
+    }
+
+    componentDidMount() {
+        this.ref = firebase.database().ref(`profile/${this.props.fbUser.uid}/view/identity`)
+        this.ref.on('value', snap => {
+            this.setState({identity: snap.val()})
+        })
+    }
+
+    componentWillunmount() {
+        this.ref.off()
     }
 
     componentWillReceiveProps() {
@@ -247,64 +260,67 @@ class UserAvatar extends React.Component {
     }
 
     render() {
-        let style = {
-            backgroundColor: '#333',
-            margin: 8,
-        }
-
-        if (this.props.fbUser) {
-            return <div>
-                {this.state.redirectUri && (
-                    <Redirect to={this.state.redirectUri} />
-                )}
-
-                {this.props.fbUser.photoURL && (
-                    <Avatar
-                        size={35}
-                        style={style}
-                        className="avatar-icon"
-                        onClick={this.toggle.bind(this)}
-                        src={this.props.fbUser.photoURL}>
-                    </Avatar>
-                )}
-
-                {!this.props.fbUser.photoURL && (
-                    <Avatar
-                        size={35}
-                        style={style}
-                        className="avatar-icon"
-                        onClick={this.toggle.bind(this)}>
-                        <i className="material-icons">settings</i>
-                    </Avatar>
-                )}
-
-                <Popover
-                    open={this.state.open}
-                    anchorEl={this.state.anchorEl}
-                    anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-                    targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                    onRequestClose={this.close.bind(this)}>
-                    <div id="user-avatar">
-                        <MenuItem key="to-signout" style={MenuItemStyle} disabled={true}>
-                            {this.props.fbUser.email}
-                        </MenuItem>
-                        <MenuItem style={MenuItemStyle}>
-                            <SignoutLink icon={
-                                <i className="material-icons">eject</i>
-                            } />
-                        </MenuItem>
-                        <MenuItem style={MenuItemStyle}>
-                            <Link to='/account/delete'>
-                                <i className="material-icons">delete_forever</i>
-                                Delete Account
-                            </Link>
-                        </MenuItem>
-                    </div>
-                </Popover>
-            </div>
-        } else {
+        if (!this.state.identity) {
             return null
         }
+
+        let style = {margin: 8}
+        let photoURL = this.state.identity.photoURL
+
+        return <div>
+            {this.state.redirectUri && (
+                <Redirect to={this.state.redirectUri} />
+            )}
+
+            {photoURL && (
+                <Avatar
+                    size={35}
+                    style={style}
+                    className="avatar-icon"
+                    onClick={this.toggle.bind(this)}
+                    src={photoURL}>
+                </Avatar>
+            )}
+
+            {!photoURL && (
+                <Avatar
+                    size={35}
+                    style={style}
+                    className="avatar-icon"
+                    onClick={this.toggle.bind(this)}>
+
+                    {this.state.identity.firstname ?
+                        this.state.identity.firstname.charAt(0).toUpperCase()
+                        :
+                        <i className="material-icons" style={{fontSize: 25}}>person</i>
+                    }
+                </Avatar>
+            )}
+
+            <Popover
+                open={this.state.open}
+                anchorEl={this.state.anchorEl}
+                anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                onRequestClose={this.close.bind(this)}>
+                <div id="user-avatar">
+                    <MenuItem key="to-signout" style={MenuItemStyle} disabled={true}>
+                        {this.props.fbUser.email}
+                    </MenuItem>
+                    <MenuItem style={MenuItemStyle}>
+                        <SignoutLink icon={
+                            <i className="material-icons">eject</i>
+                        } />
+                    </MenuItem>
+                    <MenuItem style={MenuItemStyle}>
+                        <Link to='/account/delete'>
+                            <i className="material-icons">delete_forever</i>
+                            Delete Account
+                        </Link>
+                    </MenuItem>
+                </div>
+            </Popover>
+        </div>
     }
 }
 

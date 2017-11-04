@@ -4,6 +4,7 @@ import {Link, Redirect, Route} from 'react-router-dom'
 import Avatar from 'material-ui/Avatar'
 
 import NoMatch from './error'
+import {UserAvatar} from './common'
 import Form from './form'
 import {postHashtagLike, pending} from './model'
 import {Reviews} from './review'
@@ -207,6 +208,7 @@ class ProfileForm extends React.Component {
             let state = snap.val() || {}
             state['firstname'] = state.identity ? state.identity.firstname : ''
             state['lastname'] = state.identity ? state.identity.lastname : ''
+            state['photoURL'] = state.identity ? state.identity.photoURL : ''
             state['hashtags'] = mapToStr(state.hashtags || {})
             state['companies'] = mapToStr(state.companies || {})
             this.setState(state)
@@ -226,6 +228,8 @@ class ProfileForm extends React.Component {
         let data = {}
         data['view/identity/firstname'] = formData.firstname
         data['view/identity/lastname'] = formData.lastname
+        if (formData.photoURL)
+            data['view/identity/photoURL'] = formData.photoURL
         data['view/hashtags'] = strToMap(formData.hashtags)
         data['view/companies'] = strToMap(formData.companies)
         data['view/intro'] = formData.intro
@@ -256,7 +260,7 @@ class ProfileForm extends React.Component {
             return <Redirect to={this.state.redirect} />
         }
 
-        return <div className="experience-form">
+        return <div className="me">
             <h1>{this.props.title || "Your Profile"}</h1>
             <Form onSubmit={this.onSubmit.bind(this)} data={this.state || {}}>
                 {this.state.error && (
@@ -278,6 +282,11 @@ class ProfileForm extends React.Component {
                         type="text"
                         className="form-control" />
                 </div>
+
+                <PhotoUploader
+                    fbUser={this.props.fbUser}
+                    photoURL={this.state.photoURL}
+                    firstname={this.state.firstname} />
 
                 <div className="form-group">
                     <label htmlFor="intro">Your intro in 200 characters:</label>
@@ -348,6 +357,94 @@ class ProfileForm extends React.Component {
     }
 }
 
+
+class PhotoUploader extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            photoURL: this.props.photoURL,
+            firstname: this.props.firstname,
+            progress: 0,
+            open: false
+        }
+    }
+
+    open(e) {
+        e.preventDefault()
+        this.setState({open: true, progress: 0, error: null})
+    }
+
+    close(e) {
+        e.preventDefault()
+        this.setState({open: false, error: null})
+    }
+
+    upload(e) {
+        let file = e.target.files[0]
+
+        if (!this.validate(file.name)) {
+            this.setState({error: "Format not supported."})
+            return
+        }
+
+        // TODO: clean up previous photo
+        let ref = firebase.storage().ref(`/photo/${this.props.fbUser.uid}/${file.name}`)
+        let task = ref.put(file)
+
+        task.on('state_changed', snap => {
+            let progress = (snap.bytesTransferred / snap.totalBytes)*100
+            this.setState({progress: progress, error: null})
+        }, err => {
+            this.setState({error: "Upload failed - " + err.message})
+        }, () => {
+            let photoURL = task.snapshot.downloadURL
+            this.setState({photoURL: photoURL, open: false})
+        })
+    }
+
+    validate(filename) {
+        let extensions = [".jpg", ".jpeg", ".png"]
+
+        for (let i = 0; i < extensions.length; i++) {
+            let ext = extensions[i];
+            if (filename.substr(filename.length - ext.length, ext.length).toLowerCase() == ext.toLowerCase()) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    render() {
+        let identity = {
+            photoURL: this.state.photoURL,
+            firstname: this.state.firstname,
+        }
+
+        return <div className="form-group">
+            <input type="hidden" name="photoURL" value={this.state.photoURL} />
+
+            {this.state.error && (
+                <div className="form-error">{this.state.error}</div>
+            )}
+
+            {this.state.open && (
+                <span>
+                    <label htmlFor="hashtags">Upload a picture (PNG or JPEG format, max of 1MB):</label>
+                    <input type="file" accept="image/*" onChange={this.upload.bind(this)} />
+                    <progress id="uploader" value={this.state.progress} max="100">{this.state.progress}%</progress>
+                    <a href="#" onClick={this.close.bind(this)}>Close</a>
+                </span>
+            )}
+            {!this.state.open && (
+                <span>
+                    <UserAvatar identity={identity} size={50} />
+                    <a href="#" onClick={this.open.bind(this)}>Change picture</a>
+                </span>
+            )}
+        </div>
+    }
+}
 
 class Hashlike extends React.Component {
     onClick(value, e) {

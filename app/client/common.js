@@ -14,7 +14,11 @@ class UserAvatar extends React.Component {
             )}
             {!identity.photoURL && (
                 <Avatar size={size}>
-                    {identity.firstname.charAt(0).toUpperCase()}
+                    {identity.firstname ?
+                        identity.firstname.charAt(0).toUpperCase()
+                        :
+                        <i className="material-icons" style={{fontSize: 30}}>person</i>
+                    }
                 </Avatar>
             )}
         </div>

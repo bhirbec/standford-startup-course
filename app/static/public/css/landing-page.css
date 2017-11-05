@@ -677,3 +677,58 @@ table.tests th {
 .RichEditor-activeButton {
     color: black;
 }
+
+/* social sharing */
+body {
+    position: relative;
+}
+
+
+@media(max-width:767px) { /* mobile */
+    div.social-sharing-container {
+        position: fixed;
+        width: 100%;
+        bottom: 10px;
+        right: 0;
+    }
+
+    div.social-sharing {
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    div.social-sharing div.button-container {
+        display: inline-block;
+        margin-left: 15px;
+        text-align: center;
+    }
+}
+
+@media(min-width:768px) { /* mobile */
+    div.social-sharing-container {
+        position: absolute;
+        right: 55px;
+        top: 100px;
+    }
+
+    div.social-sharing {
+        position: fixed;
+    }
+
+    div.social-sharing div.button-container {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+}
+
+div.social-sharing .share-count {
+    font-size: 12px;
+}
+
+div.social-sharing .share-button {
+    cursor: pointer;
+}
+
+div.social-sharing .share-button:hover:not(:active) {
+    opacity: 0.75;
+}

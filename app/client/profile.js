@@ -8,6 +8,7 @@ import {UserAvatar} from './common'
 import Form from './form'
 import {postHashtagLike, pending} from './model'
 import {Reviews} from './review'
+import SocialButtons from './social'
 
 
 class MyProfile extends React.Component {
@@ -138,6 +139,10 @@ class Profile extends React.Component {
                         <i className="material-icons">school</i>{profile.school}
                     </div>
                 )}
+
+                <SocialButtons
+                    profileId={this.props.profileId}
+                    title={`Checkout ${profile.identity.firstname} on LetsResume`} />
             </div>
 
             {(fbUser === undefined || fbUser.uid !== this.props.profileId) && (

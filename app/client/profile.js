@@ -175,7 +175,7 @@ class Profile extends React.Component {
 
             {hashtags.length > 0 && (
                 <div>
-                    <h3>Skills</h3>
+                    <h3>Votes by the crowd</h3>
                     <div>
                         {hashtags.map(hashtag => (
                             <div className="hashtag" key={"hashtag-" + hashtag.name}>
@@ -221,7 +221,7 @@ class ProfileForm extends React.Component {
     }
 
     onSubmit(formData) {
-        let required = ['firstname', 'lastname', 'occupation', 'hashtags']
+        let required = ['firstname', 'lastname', 'hashtags']
         for (let i = 0; i < required.length; i++) {
             let field = required[i]
             if (!formData[field]) {
@@ -240,7 +240,7 @@ class ProfileForm extends React.Component {
         data['view/intro'] = formData.intro
         data['view/location'] = formData.location
         data['view/school'] = formData.school
-        data['view/occupation'] = formData.occupation
+        data['view/occupation'] = formData.occupation || 'Open to new opportunities'
         data['onboarded'] = true
 
         let path = `profile/${this.props.profileId}`
@@ -267,13 +267,14 @@ class ProfileForm extends React.Component {
 
         return <div className="me">
             <h1>{this.props.title || "Your Profile"}</h1>
+            <p>* required field</p>
             <Form onSubmit={this.onSubmit.bind(this)} data={this.state || {}}>
                 {this.state.error && (
                     <div className="form-error">{this.state.error}</div>
                 )}
 
                 <div className="form-group">
-                    <label htmlFor="firstname">First name:</label>
+                    <label htmlFor="firstname">First name *</label>
                     <input id="firstname"
                         name="firstname"
                         type="text"
@@ -281,7 +282,7 @@ class ProfileForm extends React.Component {
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="lastname">Last name:</label>
+                    <label htmlFor="lastname">Last name *</label>
                     <input id="lastname"
                         name="lastname"
                         type="text"
@@ -294,59 +295,62 @@ class ProfileForm extends React.Component {
                     firstname={this.state.firstname} />
 
                 <div className="form-group">
-                    <label htmlFor="intro">Your intro in 200 characters:</label>
-                    <textarea id="intro"
-                        name="intro"
+                    <label htmlFor="hashtags">Enter keywords to get discovered and up-voted (one entry per line) *</label>
+                    <textarea id="hashtags"
+                        name="hashtags"
                         className="form-control"
-                        rows={6}
-                        placeholder={
-                            "Example:\nI'm currently working as Intern at Microsoft and I'm looking " +
-                            "for a permanent position as Software Engineer. I'm proeficient " +
-                            "at C++, Python, and MySQL."
-                        } />
+                        rows={10}
+                        placeholder={"Marketing\nCommunication\nSales\nHTML\nExcel\nWeb Design\netc"} />
                 </div>
+
                 <div className="form-group">
-                    <label htmlFor="location">Location:</label>
+                    <label htmlFor="location">Location</label>
                     <input id="location"
                         name="location"
                         type="text"
                         className="form-control"
-                        placeholder="Example: New York, San Diego, San Francisco..." />
+                        placeholder="New York, San Diego, San Francisco, etc" />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="school">School & Degree:</label>
+                    <label htmlFor="school">School & Degree</label>
                     <input id="school"
                         name="school"
                         type="text"
                         className="form-control"
-                        placeholder="Example: UCSD" />
+                        placeholder="UCSD" />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="occupation">Current/Last occupation:</label>
+                    <label htmlFor="occupation">Occupation</label>
                     <input id="occupation"
                         name="occupation"
                         type="text"
                         className="form-control"
-                        placeholder="Example: Software Engineer, Student, CEO of Tesla" />
+                        placeholder="Student, CEO, Open to new opportunities, etc" />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="companies">Last companies your worked for (one entry per line):</label>
+                    <label htmlFor="companies">Companies that have hired you (one entry per line)</label>
                     <textarea id="company-name"
                         name="companies"
                         className="form-control"
                         rows={6}
                         placeholder={
-                            "Example:\nFacebook (2010 to present)\n" +
-                            "Google (2005 to 2010)\n"
+                            "Facebook (2010 to present)\n" +
+                            "Google (2005 to 2010)\n" +
+                            "etc"
                         } />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="hashtags">Enter hashtags (one entry per line):</label>
-                    <textarea id="hashtags"
-                        name="hashtags"
+                    <label htmlFor="intro">Your elevator pitch in 30 seconds</label>
+                    <textarea id="intro"
+                        name="intro"
                         className="form-control"
-                        rows={10}
-                        placeholder={"Example:\nJava\nC++\nCTO"} />
+                        rows={6}
+                        placeholder={
+                            "I'm currently working as an Intern at Apple, and I'm looking " +
+                            "for a permanent position as a Product Manager in Technology. " +
+                            "I'm hard working, a quick learner, and have a Degree in Computer " +
+                            "Science from UCSD."
+                        } />
                 </div>
                 <div>
                     <button

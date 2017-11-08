@@ -13,7 +13,7 @@ class Reviews extends React.Component {
         reviews = Object.keys(reviews).map(k => reviews[k])
 
         return <div className="reviews">
-            <h3>Reviews</h3>
+            <h3>What the crowd is saying</h3>
             {reviews.length == 0 && (
                 <p>No reviews...</p>
             )}

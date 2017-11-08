@@ -225,6 +225,7 @@ class ProfileForm extends React.Component {
         for (let i = 0; i < required.length; i++) {
             let field = required[i]
             if (!formData[field]) {
+                window.scrollTo(0, 0)
                 this.setState({error: `"${field}" field can not be empty.`})
                 return
             }
@@ -233,22 +234,34 @@ class ProfileForm extends React.Component {
         let data = {}
         data['view/identity/firstname'] = formData.firstname
         data['view/identity/lastname'] = formData.lastname
+        data['view/hashtags'] = strToMap(formData.hashtags)
+
         if (formData.photoURL)
             data['view/identity/photoURL'] = formData.photoURL
-        data['view/hashtags'] = strToMap(formData.hashtags)
-        data['view/companies'] = strToMap(formData.companies)
-        data['view/intro'] = formData.intro
-        data['view/location'] = formData.location
-        data['view/school'] = formData.school
+
+        if (formData.companies) {
+            data['view/companies'] = strToMap(formData.companies)
+        } else {
+            data['view/companies'] = null
+        }
+
+        data['view/intro'] = formData.intro || null
+        data['view/location'] = formData.location || null
+        data['view/school'] = formData.school || null
         data['view/occupation'] = formData.occupation || 'Open to new opportunities'
         data['onboarded'] = true
 
         let path = `profile/${this.props.profileId}`
-        firebase.database().ref(path).update(data).then(() => {
-            // flush pending action after onboarding
-            let redirectURI = pending.flush(this.props.fbUser)
-            this.setState({redirect: redirectURI || '/me'})
-        })
+
+        try {
+            firebase.database().ref(path).update(data).then(() => {
+                // flush pending action after onboarding
+                let redirectURI = pending.flush(this.props.fbUser)
+                this.setState({redirect: redirectURI || '/me'})
+            })
+        } catch (err) {
+            this.setState({error: err.message})
+        }
     }
 
     onTouchTap(e) {

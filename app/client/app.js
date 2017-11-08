@@ -171,11 +171,14 @@ class MobileNavbar extends React.Component {
         this.state = {open: false}
     }
 
-    componentWillReceiveProps(props) {
+    componentDidMount() {
         let isSearch = window.location.pathname.substr(0, 7) == '/search'
-        if (!isSearch) {
-            this.setState({open: false})
-        }
+        this.setState({open: isSearch})
+    }
+
+    componentWillReceiveProps() {
+        let isSearch = window.location.pathname.substr(0, 7) == '/search'
+        this.setState({open: isSearch})
     }
 
     toggle(open, e) {

@@ -147,7 +147,7 @@ class Profile extends React.Component {
 
             {(fbUser === undefined || fbUser.uid !== this.props.profileId) && (
                 <div className="profile-actions">
-                    <Link to={`/message/${this.props.profileId}`}>
+                    <Link to={`/contact/${this.props.profileId}`}>
                         {/* TODO: implement send and signup flow */}
                         <button type="submit" className="btn btn-success">
                             <i className="material-icons" title="Send a message">message</i>Contact

@@ -11,7 +11,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import NoMatch from './error'
 import InviteForm from './invite'
 import Home from './home'
-import Message from './message'
+import ContactForm from './contact-form'
 import {MyProfile, Profile, ProfileForm} from './profile'
 import {SearchBox, SearchResult} from './search'
 import {ReviewFrom} from './review'
@@ -106,10 +106,12 @@ class App extends React.Component {
                         )
                     )} />
 
-                    <Route path="/message/:profileId" render={(data) => (
+                    <Route path="/contact/:profileId" render={(data) => (
                         <InnerLayout>
                             {this.props.fbUser ? (
-                                <Message fbUser={this.props.fbUser} profileId={data.match.params.profileId} />
+                                <ContactForm
+                                    fbUser={this.props.fbUser}
+                                    profileId={data.match.params.profileId} />
                             ) : (
                                 <Redirect to="/signup" />
                             )}

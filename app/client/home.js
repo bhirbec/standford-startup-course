@@ -8,10 +8,10 @@ class Home extends React.Component {
             <div className="intro-header">
                 <div className="container intro-message">
                     <h2>
-                        Your resume says what you did,
+                        Nobody wants to read your resume.
                     </h2>
                     <h1 className="main-color">
-                        We show how awesome you are.
+                        LetsResume...only for badasses!
                     </h1>
                     <Link to='/signup'>
                         <button
@@ -30,38 +30,36 @@ class Home extends React.Component {
                         <div className="card-box">
                             <i className="material-icons">access_time</i>
                             <h4 className="card-title py-3 mbr-fonts-style display-5">
-                                #SaveTime
-                                <div className="main-color">Don't write your resume.</div>
+                                <div className="main-color">Don't write your resume</div>
                             </h4>
                             <p className="mbr-text mbr-fonts-style display-7">
-                                Just fill in the basics. Your network will finish it for you!
+                                Just fill in the basics in under 3 minutes.<br />
+                                (Recruiters won't read the rest anyways)
                             </p>
                         </div>
                     </div>
 
                     <div className="card p-3 col-12 col-md-6 col-lg-4">
                         <div className="card-box">
-                            <i className="material-icons">people</i>
+                            <i className="material-icons">share</i>
                             <h4 className="card-title py-3 mbr-fonts-style display-5">
-                                #Trust
-                                <div className="main-color">Build your reputation.</div>
+                                <div className="main-color">Let the crowd raise you up</div>
                             </h4>
                             <p className="mbr-text mbr-fonts-style display-7">
-                                Receive positive reviews & up-votes and build
-                                your reputation.
+                                Invite your trusted network to write positive
+                                reviews & up-vote your skills.
                             </p>
                         </div>
                     </div>
 
                     <div className="card p-3 col-12 col-md-6 col-lg-4">
                         <div className="card-box">
-                            <i className="material-icons">language</i>
+                            <i className="material-icons">thumb_up</i>
                             <h4 className="card-title py-3 mbr-fonts-style display-5">
-                                #GetDiscovered
-                                <div className="main-color">Recruiters will find you.</div>
+                                <div className="main-color">Stand out from the pack</div>
                             </h4>
                             <p className="mbr-text mbr-fonts-style display-7">
-                                Showcase a crowd-endorsed resume that gets
+                                Showcase a crowd-endorsed profile that gets
                                 you noticed!
                             </p>
                         </div>

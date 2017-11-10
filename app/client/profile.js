@@ -70,13 +70,15 @@ class Profile extends React.Component {
 
     buildHashtags() {
         let profile = this.state.profile || {}
+        let hashtags = profile.hashtags || {}
         let taglikes = profile.like || {}
 
-        return Object.keys(profile.hashtags || {}).map(name => {
+        return Object.keys(hashtags).map(key => {
+            let label = hashtags[key]
             let likes = 0
             let unlikes = 0
 
-            let hlikes = taglikes[name] || {}
+            let hlikes = taglikes[key] || {}
             for (let uid in hlikes) {
                 if (hlikes[uid] == -1) {
                     unlikes += 1
@@ -85,7 +87,16 @@ class Profile extends React.Component {
                 }
             }
 
-            return {name: name, likes: likes, unlikes: unlikes}
+            return {key: key, label: label, likes: likes, unlikes: unlikes}
+        })
+    }
+
+    buildCompanies() {
+        let profile = this.state.profile || {}
+        let companies = profile.companies || {}
+
+        return Object.keys(companies).map(key => {
+            return {key: key, label: companies[key]}
         })
     }
 
@@ -107,7 +118,7 @@ class Profile extends React.Component {
         let profile = this.state.profile || {}
         let pub = profile.public || {}
         let hashtags = this.buildHashtags()
-        let companies = Object.keys(profile.companies || {})
+        let companies = this.buildCompanies()
         let profileName = `${profile.identity.firstname} ${profile.identity.lastname}`
 
         return <div className="me">
@@ -166,7 +177,7 @@ class Profile extends React.Component {
                     <h3>Hired by </h3>
                     <div>
                         {companies.map(c =>
-                            <div key={"c-" + c} className="hashtag">{c}</div>
+                            <div key={"c-" + c.key} className="hashtag">{c.label}</div>
                         )}
                     </div>
                 </div>
@@ -177,8 +188,8 @@ class Profile extends React.Component {
                     <h3>Votes by the crowd</h3>
                     <div>
                         {hashtags.map(hashtag => (
-                            <div className="hashtag" key={"hashtag-" + hashtag.name}>
-                                {hashtag.name}
+                            <div className="hashtag" key={"hashtag-" + hashtag.key}>
+                                {hashtag.label}
                                 <Hashlike
                                     profileId={this.props.profileId}
                                     fbUser={this.props.fbUser}
@@ -207,12 +218,12 @@ class Hashlike extends React.Component {
     onClick(value, e) {
 
         if (!this.props.fbUser) {
-            this.props.stagePendingLike(this.props.hashtag.name, value)
+            this.props.stagePendingLike(this.props.hashtag.key, value)
             return
         }
 
         let p = this.props
-        postHashtagLike(p.fbUser, p.profileId, p.hashtag.name, value)
+        postHashtagLike(p.fbUser, p.profileId, p.hashtag.key, value)
         e.preventDefault()
     }
 

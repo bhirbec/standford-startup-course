@@ -8,6 +8,9 @@ var profileIndex = client.initIndex('profile');
 
 function index(snap) {
     let view = snap.val()
+    let companies = view.companies || {}
+    let hashtags = view.hashtags || {}
+
 
     let data = {
         firstname: view.identity.firstname,
@@ -16,8 +19,8 @@ function index(snap) {
         occupation: view.occupation,
         school: view.school,
         location: view.location,
-        companies: Object.keys(view.companies || {}),
-        hashtags: Object.keys(view.hashtags || {}),
+        companies: Object.keys(companies).map(key => companies[key]),
+        hashtags: Object.keys(hashtags).map(key => hashtags[key]),
         uid: view.identity.uid,
         objectID: view.identity.uid
     }

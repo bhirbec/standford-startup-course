@@ -1,3 +1,4 @@
+import btoa from 'btoa'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {Link, Redirect} from 'react-router-dom'
@@ -275,10 +276,11 @@ class PhotoUploader extends React.Component {
 let strToMap = (str) => {
     let out = {}
     let list = str.trim().split(/[\r\n]+/)
-    list.forEach((h, i) => out[h] = true)
+    // convert to b64 to allow special characters in firabase key ('#', '$', ',', etc)
+    list.forEach((h, i) => out[btoa(h)] = h)
     return out
 }
 
 let mapToStr = (m) => {
-    return Object.keys(m).join('\r\n')
+    return Object.keys(m).map(key => m[key]).join('\r\n')
 }

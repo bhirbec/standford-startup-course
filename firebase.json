@@ -15,6 +15,7 @@
       {"source": "/login", "function": "app"},
       {"source": "/signup", "function": "app"},
       {"source": "/logged-in", "function": "app"},
+      {"source": "/password-reset", "function": "app"},
       {"source": "/search", "function": "app"},
       {"source": "/test", "function": "app"},
       {"source": "/account/*", "function": "app"},

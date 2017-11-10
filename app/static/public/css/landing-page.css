@@ -324,8 +324,11 @@ p.copyright {
     text-align: center;
 }
 
-.auth-form button,
-li.firebaseui-list-item > button.firebaseui-idp-button {
+.auth-form .centered {
+    text-align: center;
+}
+
+.auth-form .centered > * {
     display: block;
     margin: 25px auto;
 }
@@ -342,7 +345,7 @@ li.firebaseui-list-item > button.firebaseui-idp-button {
 }
 
 .or span {
-    background-color: #fff;
+    background-color: #fdfdfd;
     position: relative;
     top: 10px;
     color: #666;

@@ -17,7 +17,7 @@ import ProfileForm from './profile-form'
 import {SearchBox, SearchResult} from './search'
 import {ReviewFrom} from './review'
 import Test from './test'
-import {Signup, Login, SignoutLink, Loggedin} from './auth'
+import {Signup, Login, SignoutLink, Loggedin, PasswordReset} from './auth'
 
 
 let MenuItemStyle = {
@@ -78,6 +78,9 @@ class App extends React.Component {
                         <InnerLayout>
                             <Loggedin fbUser={this.props.fbUser} />
                         </InnerLayout>
+                    )} />
+                    <Route exact path="/password-reset" render={() => (
+                        <InnerLayout><PasswordReset /></InnerLayout>
                     )} />
                     <Route exact path="/onboard" render={(data) => (
                         this.props.fbUser ? (

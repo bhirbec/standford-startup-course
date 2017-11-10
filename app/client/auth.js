@@ -151,6 +151,7 @@ class Login extends AuthBase {
                 </div>
                 <div className="centered">
                     <button type="submit" className="btn btn-success">Log In</button>
+                    <Link to="/password-reset">Forgot password?</Link>
                 </div>
             </Form>
         </div>
@@ -217,5 +218,59 @@ class SignoutLink extends React.Component {
     }
 }
 
+class PasswordReset extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {}
+    }
 
-export {Signup, SignoutLink, Login, Loggedin, init}
+    onSubmit(formData) {
+        if (!formData.email) {
+            this.setState({error: `"email" field can not be empty.`})
+            return
+        }
+
+        firebase.auth().sendPasswordResetEmail(formData.email).then(() => {
+            this.setState({error: null, ack: true})
+        }).catch(error => {
+            console.log(error)
+            this.setState({error: error.message})
+        })
+    }
+
+    render() {
+        return <div className="auth-form">
+            <h1>Password Reset</h1>
+
+            {this.state.ack && (
+                <div className="centered">
+                    <p>Please check your email and click the secure link.</p>
+                    <Link to="/login">Back to login</Link>
+                </div>
+            )}
+
+            {!this.state.ack && (
+                <Form onSubmit={this.onSubmit.bind(this)}>
+                    {this.state.error && (
+                        <div className="form-error">{this.state.error}</div>
+                    )}
+
+                    <div className="form-group">
+                        <label htmlFor="email">Please enter your email</label>
+                        <input id="email"
+                            name="email"
+                            type="text"
+                            className="form-control" />
+                    </div>
+
+                    <div className="centered">
+                        <button type="submit" className="btn btn-success">Send</button>
+                    </div>
+                </Form>
+            )}
+        </div>
+    }
+}
+
+
+export {Signup, SignoutLink, Login, Loggedin, PasswordReset, init}

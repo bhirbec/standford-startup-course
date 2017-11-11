@@ -89,7 +89,6 @@ class ReviewFrom extends React.Component {
                 return fb.ref(path).once('value')
             }
         }).then(snap => {
-            this.rendered = true
             state.rev = snap.val()
             this.setState(state)
         }).catch(error => {

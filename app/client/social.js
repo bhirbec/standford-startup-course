@@ -42,12 +42,12 @@ const EmailIcon = generateShareIcon('email');
 
 class SocialButtons extends React.Component {
   render() {
-    const shareUrl = `http://letsresume.com/in/${this.props.profileId}`;
+    const shareUrl = `https://letsresume.com/in/${this.props.profileId}`;
     const title = this.props.title;
 
     return (
-        <div className="social-sharing-container">
-            <div className="social-sharing">
+        <div className={this.props.className || "social-sharing"}>
+            <div className="clearfix">
                 <div className="button-container clearfix">
                     <FacebookShareButton
                         url={shareUrl}
@@ -55,7 +55,6 @@ class SocialButtons extends React.Component {
                         className="share-button">
                         <FacebookIcon size={32} round />
                     </FacebookShareButton>
-
                     <FacebookShareCount
                         url={shareUrl}
                         className="share-count">
@@ -70,7 +69,6 @@ class SocialButtons extends React.Component {
                         className="share-button">
                         <TwitterIcon size={32} round />
                     </TwitterShareButton>
-
                     <div className="share-count">&nbsp;</div>
                 </div>
 
@@ -80,7 +78,6 @@ class SocialButtons extends React.Component {
                         className="share-button">
                         <GooglePlusIcon size={32} round />
                     </GooglePlusShareButton>
-
                     <GooglePlusShareCount
                         url={shareUrl}
                         className="share-count">
@@ -97,7 +94,6 @@ class SocialButtons extends React.Component {
                         className="share-button">
                         <LinkedinIcon size={32} round />
                     </LinkedinShareButton>
-
                     <LinkedinShareCount
                         url={shareUrl}
                         className="share-count">

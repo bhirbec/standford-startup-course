@@ -124,7 +124,7 @@ class Profile extends React.Component {
         return <div className="me">
             <div className="profile-header">
                 <h1 className="main-color">
-                    {(this.props.fbUser && this.props.fbUser.uid == this.props.profileId) ?
+                    {this.props.me ?
                         <Link to={'/me/edit'} className="main-color">
                             {profileName}
                             <i className="material-icons main-color" title="Edit your profile">edit</i>
@@ -136,6 +136,9 @@ class Profile extends React.Component {
                 {profile.occupation && (
                     <h2>{profile.occupation}</h2>
                 )}
+                {this.props.me && (
+                    <p><Link to={`/in/${this.props.profileId}`}>View public profile</Link></p>
+                )}
                 {profile.identity.photoURL && (
                     <Avatar src={profile.identity.photoURL} size={90} />
                 )}
@@ -144,15 +147,25 @@ class Profile extends React.Component {
                         <i className="material-icons">location_on</i>{profile.location}
                     </div>
                 )}
-                {(profile.school) && (
+                {profile.school && (
                     <div className="school clearfix">
                         <i className="material-icons">school</i>{profile.school}
                     </div>
                 )}
-
-                <SocialButtons
-                    profileId={this.props.profileId}
-                    title={`Checkout ${profile.identity.firstname} on LetsResume`} />
+                {this.props.me && (
+                    <div className="social-boarding">
+                        <p>Share your profile to get up-voted and receive reviews</p>
+                        <SocialButtons
+                            profileId={this.props.profileId}
+                            title={`Checkout ${profile.identity.firstname} on LetsResume`}
+                            className="my-sharing" />
+                    </div>
+                )}
+                {!this.props.me && (
+                    <SocialButtons
+                        profileId={this.props.profileId}
+                        title={`Checkout ${profile.identity.firstname} on LetsResume`} />
+                )}
             </div>
 
             {(fbUser === undefined || fbUser.uid !== this.props.profileId) && (

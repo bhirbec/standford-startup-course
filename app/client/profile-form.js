@@ -117,7 +117,7 @@ export default class ProfileForm extends React.Component {
                         name="hashtags"
                         className="form-control"
                         rows={10}
-                        placeholder={"Marketing\nCommunication\nSales\nHTML\nExcel\nWeb Design\netc"} />
+                        placeholder={"Marketing\r\nCommunication\r\nSales\r\nHTML\r\nExcel\r\nWeb Design\r\netc"} />
                 </div>
 
                 <div className="form-group">
@@ -151,8 +151,8 @@ export default class ProfileForm extends React.Component {
                         className="form-control"
                         rows={6}
                         placeholder={
-                            "Facebook (2010 to present)\n" +
-                            "Google (2005 to 2010)\n" +
+                            "Facebook (2010 to present)\r\n" +
+                            "Google (2005 to 2010)\r\n" +
                             "etc"
                         } />
                 </div>

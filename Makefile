@@ -22,3 +22,7 @@ deploy: build
 deploy-functions: build
 	./app/node_modules/babel-cli/bin/babel.js app/server --presets=es2015,react --out-dir functions/app/server
 	firebase deploy --only functions
+
+deploy-hosting: build
+	./app/node_modules/babel-cli/bin/babel.js app/client --presets=es2015,react --out-dir functions/app/client
+	firebase deploy --only hosting

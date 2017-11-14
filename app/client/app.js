@@ -401,12 +401,11 @@ class DeleteAccount extends React.Component {
     }
 
     deleteUser() {
-        this.props.fbUser.delete().then((resp) => {
+        this.props.fbUser.delete().then(resp => {
             this.setState({'step': 2})
         })
         .catch(error => {
-            console.log(error)
-            this.setState({error: error})
+            this.setState({error: error.message})
         })
     }
 

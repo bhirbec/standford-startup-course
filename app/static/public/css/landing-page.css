@@ -705,25 +705,21 @@ div.my-sharing div.button-container {
 
 @media(max-width:767px) { /* mobile */
     div.social-sharing {
+        z-index: 10;
         position: fixed;
         width: 100%;
         bottom: 10px;
         right: 0;
-    }
-
-    div.social-sharing > div {
-        width: 100%;
-        margin: 0 auto;
+        text-align: center;
     }
 
     div.social-sharing div.button-container {
         display: inline-block;
         margin-left: 15px;
-        text-align: center;
     }
 }
 
-@media(min-width:768px) { /* mobile */
+@media(min-width:768px) { /* desktop */
     div.social-sharing {
         position: absolute;
         right: 55px;

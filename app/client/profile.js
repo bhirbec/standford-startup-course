@@ -168,7 +168,6 @@ class Profile extends React.Component {
                     <div className="social-boarding">
                         <p>Share your profile to get up-voted and receive reviews</p>
                         <SocialButtons
-                            profileId={this.props.profileId}
                             shareUrl={`https://letsresume.com/in/${this.props.profileId}`}
                             title={`Checkout ${profile.identity.firstname} on LetsResume`}
                             className="my-sharing" />
@@ -176,7 +175,6 @@ class Profile extends React.Component {
                 )}
                 {!this.props.me && (
                     <SocialButtons
-                        profileId={this.props.profileId}
                         shareUrl={`https://letsresume.com/in/${this.props.profileId}`}
                         title={`Checkout ${profile.identity.firstname} on LetsResume`} />
                 )}

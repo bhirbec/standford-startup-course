@@ -1,6 +1,8 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 
+import SocialButtons from './social'
+
 
 class Home extends React.Component {
     onClickSignup() {
@@ -13,6 +15,10 @@ class Home extends React.Component {
     render() {
         return <div className="content-section-a">
             <div className="intro-header">
+                <SocialButtons
+                    shareUrl={`https://letsresume.com`}
+                    title={`LetsResume - Resume built by the crowd`} />
+
                 <div className="container intro-message">
                     <h2>
                         Nobody wants to read your resume.

@@ -33,6 +33,7 @@ class Profile extends React.Component {
 
     componentDidMount() {
         this.fetch(this.props.profileId)
+        this.trackProfileView(this.props.profileId)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -40,7 +41,18 @@ class Profile extends React.Component {
             this.fbRef.off()
         }
 
+        if (this.props.profileId != nextProps.profileId) {
+            this.trackProfileView(nextProps.profileId)
+        }
+
         this.fetch(nextProps.profileId)
+    }
+
+    trackProfileView(profileId) {
+        gtag('event', 'profile-view', {
+            event_category: 'general',
+            event_label: 'Profile view'
+        })
     }
 
     componentWillUnmount() {
@@ -157,6 +169,7 @@ class Profile extends React.Component {
                         <p>Share your profile to get up-voted and receive reviews</p>
                         <SocialButtons
                             profileId={this.props.profileId}
+                            shareUrl={`https://letsresume.com/in/${this.props.profileId}`}
                             title={`Checkout ${profile.identity.firstname} on LetsResume`}
                             className="my-sharing" />
                     </div>
@@ -164,6 +177,7 @@ class Profile extends React.Component {
                 {!this.props.me && (
                     <SocialButtons
                         profileId={this.props.profileId}
+                        shareUrl={`https://letsresume.com/in/${this.props.profileId}`}
                         title={`Checkout ${profile.identity.firstname} on LetsResume`} />
                 )}
             </div>
@@ -229,6 +243,12 @@ class Profile extends React.Component {
 
 class Hashlike extends React.Component {
     onClick(value, e) {
+        let eventName = value == 1 ? 'hashtag-like' : 'hashtag-dislike'
+        gtag('event', eventName, {
+            'event_category': 'engagement',
+            'event_label': `Hashtag votes`,
+            'hashtag': this.props.hashtag.label,
+        })
 
         if (!this.props.fbUser) {
             this.props.stagePendingLike(this.props.hashtag.key, value)

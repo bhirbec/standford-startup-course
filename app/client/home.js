@@ -3,6 +3,13 @@ import {Link} from 'react-router-dom'
 
 
 class Home extends React.Component {
+    onClickSignup() {
+        gtag('event', 'onboarding-clicked-signup-on-home', {
+            'event_category': 'onboarding',
+            'event_label': `Clicked Signup button (Home page)`,
+        })
+    }
+
     render() {
         return <div className="content-section-a">
             <div className="intro-header">
@@ -13,7 +20,7 @@ class Home extends React.Component {
                     <h1 className="main-color">
                         LetsResume...only for badasses!
                     </h1>
-                    <Link to='/signup'>
+                    <Link to='/signup' onClick={this.onClickSignup.bind(this)}>
                         <button
                             id="signup"
                             type="button"

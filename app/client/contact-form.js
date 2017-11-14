@@ -24,6 +24,11 @@ export default class ContactForm extends React.Component {
             return firebase.database().ref('queue/message').push().set(data)
         })
         .then(() => {
+            gtag('event', 'contact-request', {
+                'event_category': 'engagement',
+                'event_label': `Contact Request`
+            })
+
             this.setState({redirectUri: `/in/${this.props.profileId}`})
         })
         .catch(error => {

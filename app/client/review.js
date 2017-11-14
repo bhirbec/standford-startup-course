@@ -114,6 +114,12 @@ class ReviewFrom extends React.Component {
             return
         }
 
+        let eventName = this.props.revId ? 'review-updated' : 'review-added'
+        gtag('event', eventName, {
+            'event_category': 'engagement',
+            'event_label': `Review`,
+        })
+
         if (!this.props.fbUser) {
             pending.stageReview(this.props.profileId, data.review)
             this.setState({'error': null, redirect: '/signup'})

@@ -59,6 +59,12 @@ export default class ProfileForm extends React.Component {
 
         try {
             firebase.database().ref(path).update(data).then(() => {
+                if (this.props.onboard) {
+                    gtag('event', 'onboarding-completed', {
+                        'event_category': 'onboarding',
+                        'event_label': `Onboarding completed`,
+                    })
+                }
                 // flush pending action after onboarding
                 let redirectURI = pending.flush(this.props.fbUser)
                 this.setState({redirect: redirectURI || '/me'})
@@ -83,7 +89,7 @@ export default class ProfileForm extends React.Component {
         }
 
         return <div className="me">
-            <h1>{this.props.title || "Your Profile"}</h1>
+            <h1>{this.props.onboard ? 'Welcome to LetsResume!' : 'Your Profile'}</h1>
             <p>* required field</p>
             <Form onSubmit={this.onSubmit.bind(this)} data={this.state || {}}>
                 {this.state.error && (
@@ -174,9 +180,12 @@ export default class ProfileForm extends React.Component {
                         type="submit"
                         onTouchTap={this.onTouchTap.bind(this)}
                         className="btn btn-success">Save</button>
-                    <Link to="/me">
-                        <button type="button" className="btn btn-default">Back</button>
-                    </Link>
+
+                    {!this.props.onboard && (
+                        <Link to="/me">
+                            <button type="button" className="btn btn-default">Back</button>
+                        </Link>
+                    )}
                 </div>
             </Form>
         </div>

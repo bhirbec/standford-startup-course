@@ -2,6 +2,12 @@
 <head>
     <meta charset="utf-8" />
 
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${config.googleAnalytics.trackingId}`}></script>
+    <script dangerouslySetInnerHTML={{__html: `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments)};
+    `}}></script>
+
     <link rel="icon" href={asset("/public/img/favicon.jpg")} type="image/x-icon"/>
     <meta charSet="utf-8" />
     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />

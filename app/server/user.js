@@ -1,10 +1,12 @@
 import {admin, fb} from './init'
 import {unindexProfile} from './algolia-indexer'
 import {notifyAccountDeletion} from './mailer'
+import {gaEvent} from './tracking'
 
 
 function onCreate(event) {
     const user = event.data
+    gaEvent(user.uid, 'onboarding-signed-up', 'onboarding', 'signed-up')
 
     let photoURL = ""
     if (user.providerData && user.providerData[0]) {
@@ -32,10 +34,12 @@ function onCreate(event) {
     })
 }
 
+
 function onDelete(event) {
     let uid = event.data.uid
-    let profileSnap
+    gaEvent(uid, 'onboarding-account-deleted', 'onboarding', 'account-deleted')
 
+    let profileSnap
     fb.ref('profile').child(uid).once('value').then(snap => {
         profileSnap = snap
         return removeReviews(profileSnap)

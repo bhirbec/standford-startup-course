@@ -36,9 +36,38 @@ window.init = function () {
     })
 }
 
+
 function renderApp(fbUser, isAdmin, redirectUri) {
     let el = document.getElementById('app')
     ReactDOM.render(<Router history={history}>
-        <App fbUser={fbUser} isAdmin={isAdmin} />
+        <PageViewTracker>
+            <App fbUser={fbUser} isAdmin={isAdmin} />
+        </PageViewTracker>
     </Router>, el)
+}
+
+
+class PageViewTracker extends React.Component {
+    trackPage(page) {
+        gtag('config', window.config.googleAnalytics.trackingId, {'page_path': page})
+    }
+
+    componentDidMount() {
+        gtag('js', new Date())
+        this.page = window.location.pathname + window.location.search
+        this.trackPage(this.page)
+    }
+
+    componentWillReceiveProps(nextProps) {
+        let page = window.location.pathname + window.location.search
+
+        if (this.page !== page) {
+            this.trackPage(page)
+            this.page = page
+        }
+    }
+
+    render() {
+        return <div>{this.props.children}</div>
+    }
 }

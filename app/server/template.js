@@ -16,6 +16,9 @@ function renderHTML(req, res, Content) {
         algolia: {
             applicationId: config.algolia.applicationId,
             searchOnlyApiKey: config.algolia.searchOnlyApiKey
+        },
+        googleAnalytics: {
+            trackingId: config.googleAnalytics.trackingId
         }
     }
 

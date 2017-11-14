@@ -184,6 +184,10 @@ function loggedin(fbUser) {
         let onboarded = snap.val() || false
 
         if (!onboarded) {
+            gtag('event', 'onboarding-start', {
+                'event_category': 'onboarding',
+                'event_label': `Onboarding start`,
+            })
             return '/onboard'
         } else {
             /* we may have stored a "like/review" from an anonymous user. If so,

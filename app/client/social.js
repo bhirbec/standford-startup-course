@@ -41,14 +41,24 @@ const EmailIcon = generateShareIcon('email');
 
 
 class SocialButtons extends React.Component {
+  componentDidMount() {
+    $('div.button-container').on('click', e => {
+        let dest = $(e.target.closest('div.button-container')).data('dest')
+        gtag('event', `profile-share-${dest}`, {
+            'event_category': 'engagement',
+            'event_label': `Profile Shared (${dest})`
+        })
+    })
+  }
+
   render() {
-    const shareUrl = `https://letsresume.com/in/${this.props.profileId}`;
-    const title = this.props.title;
+    const shareUrl = this.props.shareUrl
+    const title = this.props.title
 
     return (
         <div className={this.props.className || "social-sharing"}>
             <div className="clearfix">
-                <div className="button-container clearfix">
+                <div className="button-container clearfix" data-dest="facebook">
                     <FacebookShareButton
                         url={shareUrl}
                         quote={title}
@@ -62,7 +72,7 @@ class SocialButtons extends React.Component {
                     </FacebookShareCount>
                 </div>
 
-                <div className="button-container clearfix">
+                <div className="button-container clearfix" data-dest="twitter">
                     <TwitterShareButton
                         url={shareUrl}
                         title={`${title} #letsresume`}
@@ -72,7 +82,7 @@ class SocialButtons extends React.Component {
                     <div className="share-count">&nbsp;</div>
                 </div>
 
-                <div className="button-container clearfix">
+                <div className="button-container clearfix" data-dest="google_plus">
                     <GooglePlusShareButton
                         url={shareUrl}
                         className="share-button">
@@ -85,7 +95,7 @@ class SocialButtons extends React.Component {
                     </GooglePlusShareCount>
                 </div>
 
-                <div className="button-container clearfix">
+                <div className="button-container clearfix" data-dest="linkedin">
                     <LinkedinShareButton
                         url={shareUrl}
                         title={title}

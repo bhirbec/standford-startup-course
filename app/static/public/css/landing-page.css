@@ -196,12 +196,16 @@ button.invite {
     color: #000;
     height: 650px;
     text-align: left;
-    background: url(/public/img/elena-cordery-114707.jpg?v=1) no-repeat center center;
+    background: url(/public/img/iStock-838414176.jpg?v=1) no-repeat center center;
     background-size: cover;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-color: #444;
+}
+
+h1.home-h1 {
+    margin-top: 60px !important;
 }
 
 .intro-header h1,

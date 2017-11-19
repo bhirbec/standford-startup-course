@@ -20,18 +20,15 @@ class Home extends React.Component {
                     title={`LetsResume - Resume built by the crowd`} />
 
                 <div className="container intro-message">
-                    <h2>
-                        Nobody wants to read your resume.
-                    </h2>
-                    <h1 className="main-color">
-                        LetsResume...only for badasses!
+                    <h1 className="home-h1">
+                        <span className="main-color">LetsResume</span><br />Résumés upvoted by the crowd.
                     </h1>
                     <Link to='/signup' onClick={this.onClickSignup.bind(this)}>
                         <button
                             id="signup"
                             type="button"
                             className="btn btn-success">
-                            Sign up
+                            Sign up Free
                         </button>
                     </Link>
                 </div>

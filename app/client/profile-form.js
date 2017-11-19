@@ -88,10 +88,16 @@ export default class ProfileForm extends React.Component {
             return <Redirect to={this.state.redirect} />
         }
 
+        let onboard = this.props.onboard
+
         return <div className="me">
-            <h1>{this.props.onboard ? 'Welcome to LetsResume!' : 'Your Profile'}</h1>
-            <p>* required field</p>
+            <h1>{onboard ? 'Welcome to LetsResume!' : 'Your Profile'}</h1>
+
+            <img src="/public/img/Lets-Resume-Sign-Up.png" className="onboard-img" />
+
             <Form onSubmit={this.onSubmit.bind(this)} data={this.state || {}}>
+                <p>* required field</p>
+
                 {this.state.error && (
                     <div className="form-error">{this.state.error}</div>
                 )}
@@ -181,7 +187,7 @@ export default class ProfileForm extends React.Component {
                         onTouchTap={this.onTouchTap.bind(this)}
                         className="btn btn-success">Save</button>
 
-                    {!this.props.onboard && (
+                    {!onboard && (
                         <Link to="/me">
                             <button type="button" className="btn btn-default">Back</button>
                         </Link>

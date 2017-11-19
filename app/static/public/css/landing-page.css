@@ -446,6 +446,11 @@ div.me div.hired-by h3 {
     margin-top: 0;
 }
 
+.onboard-img {
+    width: 100%;
+    margin: 25px auto;
+}
+
 /* search result */
 div.search-hit {
     min-height: 60px;

@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>LetsResume - Resume built by the crowd</title>
+    <title>LetsResume - Résumés upvoted by the crowd</title>
 
     <link href={asset("/public/css/bootstrap.min.css")} rel="stylesheet" />
     <link href={asset("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/5.1.1/bootstrap-social.min.css")} rel="stylesheet" />

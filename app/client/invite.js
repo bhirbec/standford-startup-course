@@ -36,7 +36,7 @@ export default class InviteForm extends React.Component {
 
     render() {
         return <button className="btn btn-success invite" onClick={this.changeMode.bind(this, 'open')}>
-            <i className="material-icons" title="Send a message">person_add</i>Invite
+            <i className="material-icons" title="Send a message">person_add</i>Invite a Reviewer
 
             <Snackbar
                 open={Boolean(this.state.ack)}

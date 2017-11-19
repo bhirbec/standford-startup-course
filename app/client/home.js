@@ -17,7 +17,7 @@ class Home extends React.Component {
             <div className="intro-header">
                 <SocialButtons
                     shareUrl={`https://letsresume.com`}
-                    title={`LetsResume - Resume built by the crowd`} />
+                    title={`LetsResume - Résumés upvoted by the crowd`} />
 
                 <div className="container intro-message">
                     <h1 className="home-h1">

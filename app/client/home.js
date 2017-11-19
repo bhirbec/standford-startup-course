@@ -44,7 +44,6 @@ class Home extends React.Component {
                             </h4>
                             <p className="mbr-text mbr-fonts-style display-7">
                                 Just fill in the basics in under 3 minutes.<br />
-                                (Recruiters won't read the rest anyways)
                             </p>
                         </div>
                     </div>

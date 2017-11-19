@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import {Link, Redirect} from 'react-router-dom'
 
+import InviteForm from './invite'
 import {postReview, pending} from './model'
 import Form from './form'
 import {UserAvatar} from './common'
@@ -14,9 +15,14 @@ class Reviews extends React.Component {
 
         return <div className="reviews">
             <h3>What the crowd is saying</h3>
-            {reviews.length == 0 && (
-                <p>No reviews...</p>
+            {(reviews.length == 0 && !this.props.me) && (
+                <p>No reviews just yet.</p>
             )}
+
+            {(reviews.length == 0 && this.props.me) && (
+                <InviteForm profileId={this.props.profileId} />
+            )}
+
             {reviews.map(rev => {
                 return <Review key={'review-' + rev.revId} rev={rev} {...this.props} />
             })}

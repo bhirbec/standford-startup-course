@@ -164,6 +164,7 @@ class Profile extends React.Component {
                         <i className="material-icons">school</i>{profile.school}
                     </div>
                 )}
+
                 {this.props.me && (
                     <div className="social-boarding">
                         <p>Share your profile to get up-voted and receive reviews</p>
@@ -180,7 +181,7 @@ class Profile extends React.Component {
                 )}
             </div>
 
-            {(fbUser === undefined || fbUser.uid !== this.props.profileId) && (
+            {!this.props.me && (
                 <div className="profile-actions">
                     <Link to={`/contact/${this.props.profileId}`}>
                         {/* TODO: implement send and signup flow */}

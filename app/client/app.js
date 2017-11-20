@@ -8,6 +8,7 @@ import Popover from 'material-ui/Popover';
 import Snackbar from 'material-ui/Snackbar';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
+import {Feedbacks} from './admin'
 import NoMatch from './error'
 import InviteForm from './invite'
 import Feedback from './feedback'
@@ -17,7 +18,6 @@ import {MyProfile, Profile} from './profile'
 import ProfileForm from './profile-form'
 import {SearchBox, SearchResult} from './search'
 import {ReviewFrom} from './review'
-import Test from './test'
 import {Signup, Login, SignoutLink, Loggedin, PasswordReset} from './auth'
 
 
@@ -126,13 +126,6 @@ class App extends React.Component {
                     <Route exact path="/search" render={(data) => (
                         <InnerLayout><SearchResult query={data.location.state ? data.location.state.query: ''} /></InnerLayout>
                     )} />
-                    <Route exact path="/test" render={() => (
-                        this.props.fbUser ? (
-                            <InnerLayout><Test fbUser={this.props.fbUser} /></InnerLayout>
-                        ) : (
-                            <Redirect to="/" />
-                        )
-                    )} />
                     <Route exact path="/in/:profileId" render={(data) => (
                         <InnerLayout>
                             <Profile
@@ -164,6 +157,15 @@ class App extends React.Component {
                     <Route exact path="/feedback" render={() => (
                         <InnerLayout><Feedback /></InnerLayout>
                     )} />
+                    {this.props.isAdmin && (
+                        <Route exact path="/admin" render={() => (
+                            this.props.fbUser ? (
+                                <InnerLayout><Feedbacks /></InnerLayout>
+                            ) : (
+                                <Redirect to="/" />
+                            )
+                        )} />
+                    )}
                     <Route render={(data) => (
                         <InnerLayout><NoMatch /></InnerLayout>
                     )}/>
@@ -395,8 +397,8 @@ class DrawerMenu extends React.Component {
 
             {this.props.isAdmin && (
                 <MenuItem>
-                    <Link to='/test'>
-                        <i className="material-icons">warning</i>Test
+                    <Link key="/admin" to='/admin'>
+                        <i className="material-icons">hot_tub</i>Admin
                     </Link>
                 </MenuItem>
             )}

@@ -28,7 +28,8 @@
       ".write": "auth.uid !== null"
     },
     "feedback": {
-      ".write": true
+      ".write": true,
+      ".read": "root.child('admin').child(auth.uid).exists() == true"
     }
   }
 }

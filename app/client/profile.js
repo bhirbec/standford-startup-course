@@ -192,7 +192,7 @@ class Profile extends React.Component {
 
                     <Link to={`/in/${this.props.profileId}/review/new`}>
                         <button type="button" className="btn btn-default">
-                            <i className="material-icons" title="Send a message">edit</i>Review
+                            <i className="material-icons" title="Send a message">edit</i>Write a Review
                         </button>
                     </Link>
                 </div>

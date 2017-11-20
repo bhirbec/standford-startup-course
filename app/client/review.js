@@ -166,7 +166,11 @@ class ReviewFrom extends React.Component {
                 <textarea id="review"
                     name="review"
                     rows={'4'}
-                    className="form-control"></textarea>
+                    className="form-control"
+                    placeholder={
+                        "Great team player, and rockstar sales person. Helped us increase " +
+                        "sales by 25%, and was loved by our customers. Highly recommend!"
+                    } />
             </div>
             <div className="actions">
                 <button type="submit" className="btn btn-success">

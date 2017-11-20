@@ -10,6 +10,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 import NoMatch from './error'
 import InviteForm from './invite'
+import Feedback from './feedback'
 import Home from './home'
 import ContactForm from './contact-form'
 import {MyProfile, Profile} from './profile'
@@ -159,6 +160,9 @@ class App extends React.Component {
                         <InnerLayout>
                             <DeleteAccount fbUser={this.props.fbUser} />
                         </InnerLayout>
+                    )} />
+                    <Route exact path="/feedback" render={() => (
+                        <InnerLayout><Feedback /></InnerLayout>
                     )} />
                     <Route render={(data) => (
                         <InnerLayout><NoMatch /></InnerLayout>
@@ -316,6 +320,13 @@ class UserAvatar extends React.Component {
                     <MenuItem key="to-signout" style={MenuItemStyle} disabled={true}>
                         {this.props.fbUser.email}
                     </MenuItem>
+
+                    <MenuItem style={MenuItemStyle}>
+                        <Link key="/feedback" to='/feedback'>
+                            <i className="material-icons">feedback</i>Feedback
+                        </Link>
+                    </MenuItem>
+
                     <MenuItem style={MenuItemStyle}>
                         <SignoutLink icon={
                             <i className="material-icons">eject</i>
@@ -351,7 +362,7 @@ class DrawerMenu extends React.Component {
             {!this.props.fbUser && ([
                 <Link key="to-search" to='/search'>
                     <MenuItem style={MenuItemStyle}>
-                        <i className="material-icons">search</i>Search
+                        <i className="material-icons">search</i>Search People
                     </MenuItem>
                 </Link>,
                 <Link key="to-login" to='/login'>
@@ -374,7 +385,7 @@ class DrawerMenu extends React.Component {
                 </Link>,
                 <Link key="to-search" to='/search'>
                     <MenuItem style={MenuItemStyle}>
-                        <i className="material-icons">search</i>Search
+                        <i className="material-icons">search</i>Search People
                     </MenuItem>
                 </Link>,
                 <MenuItem key="to-invit-form" style={MenuItemStyle}>

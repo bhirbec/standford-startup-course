@@ -573,6 +573,11 @@ div.review-body {
     margin-top: 40px;
 }
 
+.review-guidelines {
+    margin-top: 30px;
+    color: #555;
+}
+
 /* experience form */
 .experience-form {
     width: 40em;

@@ -180,8 +180,62 @@ class ReviewFrom extends React.Component {
                     <button type="button" className="btn btn-default">Back</button>
                 </Link>
             </div>
+            {guide}
         </Form>
     }
 }
+
+let guide = <div className="review-guidelines">
+    <h2>Review Guidelines</h2>
+    <p>
+        <b>The best LetsResume reviews are passionate, heartfelt, and intriguing. </b>
+        They offer a compelling narrative, unique detail, and a keen insight into how
+        you met, worked with, hired, or advised the person. How is this person special?
+        How are their skills unique? What sets them apart in your eyes?
+    </p>
+
+    <p>
+        Reviews can be written by: Employers (past or present), Co-Workers (past or
+        present), Mentors, Advisors, Professors, Classmates, Customers, Suppliers, or
+        Professionals that can offer keen insight into someone’s character, work ethic,
+        skillsets, ambitions, and potential. We encourage creativity too!
+    </p>
+
+    <p>Here are some tips to craft an awesome review:</p>
+    <ul>
+        <li>
+            <b>Personal Experience</b>: Tell us about your firsthand experience with
+            this individual, not what you heard from your co-worker. In a few
+            sentences, tell your own story without resorting to generalizations
+            and “fluffy” comments.
+            <ul>
+                <li>
+                    <b>Bad Example</b>: <i>"John was a good worker. He showed up on time, and did
+                    his job well."</i></li>
+                <li>
+                    <b>Good Example</b>: <i>"John was hands down one of our most valued employees during
+                    the 2 years that I had the pleasure of managing him at company xyz (from 2015-2017).
+                    He was a true team player, often showed up earlier than required, and stayed later
+                    than expected. That tremendous work ethic helped increase our sales by 20% even in
+                    the off season. I highly recommend John to any employer."</i>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <b>Accuracy</b>: Make sure your review is factually accurate. We want you to
+            express your opinions, but please don't exaggerate or misrepresent your experience.
+            We stay out of factual disputes, so we expect you to stand behind your posted review.
+        </li>
+        <li>
+            <b>The Golden Rule</b>: Treat others as you would want them to treat you. If you honestly
+            don’t have anything nice or helpful to say, you might think twice before writing a review.
+        </li>
+        <li>
+            <b>Length</b>: While we don’t limit review lenghts, the best reviews are between
+            3-5 sentences. Just long enough to convey a narrative, but short enough to not put
+            you to sleep.
+        </li>
+    </ul>
+</div>
 
 export {Reviews, ReviewFrom}

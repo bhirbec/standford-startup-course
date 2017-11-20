@@ -9,8 +9,7 @@
       {"source": "/me", "function": "app"},
       {"source": "/me/edit", "function": "app"},
       {"source": "/in/*", "function": "app"},
-      {"source": "/me/experience", "function": "app"},
-      {"source": "/me/experience/*", "function": "app"},
+      {"source": "/in/*/review/new", "function": "app"},
       {"source": "/onboard", "function": "app"},
       {"source": "/login", "function": "app"},
       {"source": "/signup", "function": "app"},
@@ -19,7 +18,8 @@
       {"source": "/search", "function": "app"},
       {"source": "/test", "function": "app"},
       {"source": "/account/*", "function": "app"},
-      {"source": "/message/*", "function": "app"}
+      {"source": "/message/*", "function": "app"},
+      {"source": "/feedback", "function": "app"},
     ]
   }
 }

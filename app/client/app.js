@@ -10,13 +10,13 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 import {Feedbacks} from './admin'
 import NoMatch from './error'
-import InviteForm from './invite'
 import Feedback from './feedback'
 import Home from './home'
 import ContactForm from './contact-form'
 import {MyProfile, Profile} from './profile'
 import ProfileForm from './profile-form'
 import {SearchBox, SearchResult} from './search'
+import ShareProfile from './share'
 import {ReviewFrom} from './review'
 import {Signup, Login, SignoutLink, Loggedin, PasswordReset} from './auth'
 
@@ -147,6 +147,13 @@ class App extends React.Component {
                                 fbUser={this.props.fbUser}
                                 revId={data.match.params.revId}
                                 profileId={data.match.params.profileId} />
+                        </InnerLayout>
+                    )} />
+                    <Route exact path="/in/:profileId/share" render={(data) => (
+                        <InnerLayout>
+                            <ShareProfile
+                                fbUser={this.props.fbUser}
+                                profileId={data.match.params.profileId}/>
                         </InnerLayout>
                     )} />
                     <Route exact path="/account/delete" render={(data) => (
@@ -385,14 +392,16 @@ class DrawerMenu extends React.Component {
                         <i className="material-icons">person</i>My Profile
                     </MenuItem>
                 </Link>,
+                <Link key="to-share" to={`/in/${this.props.fbUser.uid}/share`}>
+                    <MenuItem style={MenuItemStyle}>
+                        <i className="material-icons main-color">share</i>Share your profile
+                    </MenuItem>
+                </Link>,
                 <Link key="to-search" to='/search'>
                     <MenuItem style={MenuItemStyle}>
                         <i className="material-icons">search</i>Search People
                     </MenuItem>
                 </Link>,
-                <MenuItem key="to-invit-form" style={MenuItemStyle}>
-                    <InviteForm profileId={this.props.fbUser.uid} />
-                </MenuItem>,
             ])}
 
             {this.props.isAdmin && (

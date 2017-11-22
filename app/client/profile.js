@@ -135,6 +135,22 @@ class Profile extends React.Component {
 
         return <div className="me">
             <div className="profile-header">
+                {this.props.me && (
+                    <div className="social-boarding">
+                        <p>
+                            <b>Share your profile to get up-voted and receive
+                            positive reviews from your network!</b>
+                        </p>
+
+                        <Link to={`/in/${this.props.profileId}/share`}>
+                            <button className="btn btn-success invite">
+                                <i className="material-icons" title="Send a message">share</i>
+                                Share your profile!
+                            </button>
+                        </Link>
+                    </div>
+                )}
+
                 <h1 className="main-color">
                     {this.props.me ?
                         <Link to={'/me/edit'} className="main-color">
@@ -152,7 +168,7 @@ class Profile extends React.Component {
                     <p><Link to={`/in/${this.props.profileId}`}>View public profile</Link></p>
                 )}
                 {profile.identity.photoURL && (
-                    <Avatar src={profile.identity.photoURL} size={90} />
+                    <Avatar src={profile.identity.photoURL} size={110} />
                 )}
                 {profile.location && (
                     <div className="location">
@@ -165,15 +181,6 @@ class Profile extends React.Component {
                     </div>
                 )}
 
-                {this.props.me && (
-                    <div className="social-boarding">
-                        <p>Share your profile to get up-voted and receive reviews</p>
-                        <SocialButtons
-                            shareUrl={`https://letsresume.com/in/${this.props.profileId}`}
-                            title={`Checkout ${profile.identity.firstname} on LetsResume`}
-                            className="my-sharing" />
-                    </div>
-                )}
                 {!this.props.me && (
                     <SocialButtons
                         shareUrl={`https://letsresume.com/in/${this.props.profileId}`}

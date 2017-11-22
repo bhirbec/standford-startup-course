@@ -513,17 +513,16 @@ div.search-result h3 {
 
 /* hashtag */
 div div.hashtag:first-child {
-    border-left: none;
-    padding-left: 0;
 }
 
 div.hashtag {
     display: inline-block;
     font-size: 14px;
-    border-left: 1px solid #ddd;
-    padding-left: 10px;
     margin-right: 10px;
     margin-bottom: 5px;
+    border: 1px solid #eee;
+    padding: 3px 10px;
+    border-radius: 15px;
 }
 
 div.hashtag span {
@@ -531,7 +530,7 @@ div.hashtag span {
 }
 
 div.hashtag i {
-    font-size: 13px;
+    font-size: 15px;
     margin-left: 5px;
     margin-right: 2px;
 }
@@ -728,10 +727,10 @@ body {
 }
 
 div.social-boarding {
-    padding: 20px 0;
+    padding: 10px;
     margin: 25px auto;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
+    background-color: #eee;
+    border-radius: 15px;
 }
 
 div.my-sharing > div {
@@ -742,7 +741,8 @@ div.my-sharing > div {
 
 div.my-sharing div.button-container {
     float: left;
-    margin: 0 25px;
+    margin-right: 25px;
+    text-align: center;
 }
 
 @media(max-width:767px) { /* mobile */

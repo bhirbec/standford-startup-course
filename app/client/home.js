@@ -76,6 +76,13 @@ class Home extends React.Component {
                 </div>
             </div>
 
+            <div id="video-container" className="container media-container-row">
+                <h2>Watch the 1-minute how it works video</h2>
+                <iframe id="video"
+                    src="https://www.youtube.com/embed/cTsdmN-8to4?rel=0&amp;controls=0&amp;showinfo=0"
+                    frameborder="0"
+                    allowfullscreen="true"></iframe>
+            </div>
 
 
             {/*<div className="about-us">

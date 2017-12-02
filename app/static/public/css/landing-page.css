@@ -190,13 +190,17 @@ button.invite {
 }
 
 /* home */
+.home {
+    font-size: 18px;
+}
+
 .intro-header {
     /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
     padding-bottom: 50px;
     color: #000;
-    height: 650px;
+    height: 450px;
     text-align: left;
-    background: url(/public/img/iStock-838414176.jpg?v=1) no-repeat center center;
+    background: url(/public/img/iStock-838414176.jpg?v=1) no-repeat center bottom;
     background-size: cover;
     -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -232,8 +236,8 @@ h1.home-h1 {
 
 .features {
     text-align: center;
-    padding-top: 25px;
-    padding-bottom: 25px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     background-color: #fff;
 }
 
@@ -284,8 +288,8 @@ h1.home-h1 {
 }
 
 .about-us {
-    padding-top: 50px;
-    padding-bottom: 50px;
+    padding-top: 25px;
+    padding-bottom: 25px;
     background-color: #f5f5f5;
 }
 

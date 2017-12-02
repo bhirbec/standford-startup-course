@@ -13,7 +13,7 @@ import NoMatch from './error'
 import Feedback from './feedback'
 import Home from './home'
 import ContactForm from './contact-form'
-import {MyProfile, Profile} from './profile'
+import Profile from './profile'
 import ProfileForm from './profile-form'
 import {SearchBox, SearchResult} from './search'
 import ShareProfile from './share'
@@ -96,12 +96,10 @@ class App extends React.Component {
                             <Redirect to="/" />
                         )
                     )} />
-                    <Route path="/me" render={() => (
+                    <Route exact path="/me" render={() => (
                         this.props.fbUser ? (
                             <InnerLayout>
-                                {/* TODO: we could remove "me" parameter by merging
-                                 /me and /in/:myprofileid */}
-                                <MyProfile
+                                <Profile
                                     me={true}
                                     fbUser={this.props.fbUser}
                                     profileId={this.props.fbUser.uid} />
@@ -110,7 +108,17 @@ class App extends React.Component {
                             <Redirect to="/" />
                         )
                     )} />
-
+                    <Route exact path="/me/edit" render={() => (
+                        this.props.fbUser ? (
+                            <InnerLayout>
+                                <ProfileForm
+                                    fbUser={this.props.fbUser}
+                                    profileId={this.props.fbUser.uid} />
+                            </InnerLayout>
+                        ) : (
+                            <Redirect to="/" />
+                        )
+                    )} />
                     <Route path="/contact/:profileId" render={(data) => (
                         <InnerLayout>
                             {this.props.fbUser ? (

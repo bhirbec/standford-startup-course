@@ -1,28 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {Link, Redirect, Route} from 'react-router-dom'
+import {Link, Redirect} from 'react-router-dom'
 import Avatar from 'material-ui/Avatar'
 
 import NoMatch from './error'
 import {postHashtagLike, pending} from './model'
-import ProfileForm from './profile-form'
 import {Reviews} from './review'
 import SocialButtons from './social'
-
-
-class MyProfile extends React.Component {
-    render() {
-        // TODO: move routes to app.js?
-        return <div>
-            <Route exact path="/me" render={() => (
-                <Profile {...this.props} />
-            )} />
-            <Route exact path="/me/edit" render={() => (
-                <ProfileForm {...this.props} />
-            )} />
-        </div>
-    }
-}
 
 
 class Profile extends React.Component {
@@ -281,4 +265,4 @@ class Hashlike extends React.Component {
 }
 
 
-export {MyProfile, Profile}
+export default Profile

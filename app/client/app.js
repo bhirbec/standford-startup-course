@@ -329,13 +329,6 @@ class UserAvatar extends React.Component {
                     <MenuItem key="to-signout" style={MenuItemStyle} disabled={true}>
                         {this.props.fbUser.email}
                     </MenuItem>
-
-                    <MenuItem style={MenuItemStyle}>
-                        <Link key="/feedback" to='/feedback'>
-                            <i className="material-icons">feedback</i>Feedback
-                        </Link>
-                    </MenuItem>
-
                     <MenuItem style={MenuItemStyle}>
                         <SignoutLink icon={
                             <i className="material-icons">eject</i>
@@ -403,6 +396,12 @@ class DrawerMenu extends React.Component {
                     </MenuItem>
                 </Link>,
             ])}
+
+            <MenuItem style={MenuItemStyle}>
+                <Link key="/feedback" to='/feedback'>
+                    <i className="material-icons">feedback</i>Feedback
+                </Link>
+            </MenuItem>
 
             {this.props.isAdmin && (
                 <MenuItem>

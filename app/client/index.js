@@ -16,6 +16,11 @@ Router.history = history
 injectTapEventPlugin();
 
 window.init = function () {
+    // deactivate GA on localhost
+    if (window.location.href.substring(0, 16) == "http://localhost") {
+        window.gtag = () => {}
+    }
+
     // init Firebase
     firebase.initializeApp(window.config.fb)
 
